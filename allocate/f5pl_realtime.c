@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdbool.h> // boolean types
 
 // maximum limit for a file path
 #define MAX_PATH_SIZE 4096
@@ -80,9 +81,9 @@ void* node_handler(void* arg) {
             core.file_list_idx ++; // increment the file index
             pthread_mutex_unlock(&file_list_mutex); // unlock mutex
             
-        } else { // else exit loop
+        } else { // else look for new files again
             pthread_mutex_unlock(&file_list_mutex); // unlock mutex
-            break;
+            continue;
         }
 
         fprintf(stderr, "[t%d(%s)::INFO] Connecting to %s.\n",
@@ -291,9 +292,15 @@ int main(int argc, char* argv[]) {
     fclose(ip_list_fp); // close the ip file
 
 
-        // constantly read the list of .fast5.tar files from standard input
+        /* constantly read the list of .fast5.tar files from standard input
+        ** and update file list in headnode 
+        */
 
     int32_t i; // declaring for loop counter for later
+
+    // create threads
+    pthread_t node_thread[MAX_IPS] = {0}; // define array of null nodes
+    int32_t thread_id[MAX_IPS] = {0}; // define array of null thread ids   
 
     // initialising core attributes
     core.file_list_idx = 0;
@@ -304,6 +311,8 @@ int main(int argc, char* argv[]) {
     core.ip_cnt = ip_cnt;
 
     size_t line_size = MAX_PATH_SIZE;
+    bool threads_uninit = true; // threads not initialised yet
+    bool end_loop = false; // flag
     while (1) {
 
             // read the current list of files from standard input
@@ -319,10 +328,16 @@ int main(int argc, char* argv[]) {
             MALLOC_CHK(line); // check line isn't null, else exit with error msg
             int32_t readlinebytes = getline(&line, &line_size, stdin); // get the next line from standard input
 
-            // if the file has ended
-            if (readlinebytes == -1) {
+            // if EOF signaled
+            if (feof(stdin)) {
                 free(line);
+                end_loop = true;
                 break;
+
+            // if there is no line
+            } else if (readlinebytes == -1) {
+                free(line);
+                continue;
 
             // if filepath larger than max, exit with error msg   
             } else if (readlinebytes > MAX_PATH_SIZE) {
@@ -352,15 +367,15 @@ int main(int argc, char* argv[]) {
             file_list_cnt ++; // increment file counter
         }
 
-        if (file_list[0] == NULL) { // if the file list is empty
+        if (end_loop) {
+            free(file_list);
+            break;
+
+        } else if (file_list[0] == NULL) { // if the file list is empty
+            free(file_list);
             continue; // check again for new standard input
         }
 
-
-            // create new threads
-
-        pthread_t node_thread[MAX_IPS] = {0}; // define array of null nodes
-        int32_t thread_id[MAX_IPS] = {0}; // define array of null thread ids
 
         // update the core's attributes
         for (i = 0; i < file_list_cnt; i ++) {
@@ -368,16 +383,21 @@ int main(int argc, char* argv[]) {
         }
         core.file_list_cnt += file_list_cnt; // increase file count
 
-        // create threads for each node
-        for (i = 0; i < core.ip_cnt; i ++) {
-            thread_id[i] = i;
-            int ret = pthread_create( &node_thread[i], NULL, node_handler,
-                                    (void*) (&thread_id[i]) );
-            if (ret != 0) {
-                ERROR("Error joining thread %d", i);
-                exit(EXIT_FAILURE);
+        if (threads_uninit) { // if not done yet create threads for each node
+            for (i = 0; i < core.ip_cnt; i ++) {
+                thread_id[i] = i;
+                int ret = pthread_create( &node_thread[i], NULL, node_handler,
+                                        (void*) (&thread_id[i]) );
+                if (ret != 0) {
+                    ERROR("Error creating thread %d", i);
+                    exit(EXIT_FAILURE);
+                }
             }
+
+            threads_uninit = false;
         }
+
+        free(file_list);
     }
 
     // joining client side threads
@@ -388,45 +408,54 @@ int main(int argc, char* argv[]) {
             //exit(EXIT_FAILURE);
         }
         if (core.num_hangs[i] > 0) {
-            INFO("Node %s disconnected/hanged %d times", core.ip_list[i],
-                 core.num_hangs[i]);
+            INFO("Node %s disconnected/hanged %d times", 
+                core.ip_list[i], core.num_hangs[i]);
         }
     }
 
-    //failed files due to device hangs
+    free(ip_list);
+
+
+        // write fail logs
+
+    // write failure report due to device hangs
     if (core.failed_cnt > 0) {
-        FILE* failed_report = fopen("failed.cfg", "w");
-        NULL_CHK(failed_report);
-        ERROR("List of failures due to consecutively device hangs in %s","failed.cfg");
-        fprintf(
-            failed_report,
-            "# Files that failed due to devices that consecutively hanged.\n");
+
+        FILE* failed_report = fopen("failed.cfg", "w"); // open failure config file
+        NULL_CHK(failed_report); // check `failed_report` is not null
+
+        ERROR("List of failures due to consecutively device hangs in %s", "failed.cfg");
+
+        fprintf(failed_report, "# Files that failed due to devices that consecutively hanged.\n");
         for (i = 0; i < core.failed_cnt; i++) {
             int id = core.failed[i];
             //ERROR("%s was skipped due to a device retire", core.file_list[id]);
             fprintf(failed_report, "%s\n", core.file_list[id]);
         }
-        fclose(failed_report);
+
+        fclose(failed_report); // close report file
     }
 
-    //failed files due to segfaults or other non 0 exit status (see logs)
+    // write other failure report due to segfaults or other non 0 exit status (see logs)
     if (core.failed_other_cnt > 0) {
-        FILE* failed_report = fopen("failed_other.cfg", "w");
-        NULL_CHK(failed_report);
-        ERROR("List of failures with non 0 exit stats in %s","failed_other.cfg");
-        fprintf(failed_report,
-                "# Files that failed with a software crash or exited with non "
-                "0 status. Please inspect the device log for more info.\n");
+
+        FILE* other_failed_report = fopen("failed_other.cfg", "w"); // open other failure config file
+        NULL_CHK(other_failed_report); // check it is not null
+
+        ERROR("List of failures with non 0 exit stats in %s", "failed_other.cfg");
+
+        fprintf(other_failed_report,
+                "# Files that failed with a software crash or exited with non 0 status. Please inspect the device log for more info.\n");
         for (i = 0; i < core.failed_other_cnt; i++) {
             int id = core.failed_other[i];
             //WARNING("%s was skipped due to a software crash or a non 0 exit status. Please see the log for more info.", core.file_list[id]);
-            fprintf(failed_report, "%s\n", core.file_list[id]);
+            fprintf(other_failed_report, "%s\n", core.file_list[id]);
         }
-        fclose(failed_report);
+
+        fclose(other_failed_report); // close other report file
     }
 
     INFO("Everything done. Elapsed time: %.3fh",(realtime() - initial_time)/3600);
-    // (todo : free iplist and filelist)
 
     return 0;
 }
