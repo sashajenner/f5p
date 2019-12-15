@@ -6,7 +6,7 @@ DEPS = socket.h error.h f5pmisc.h
 
 .PHONY: clean distclean format test
 
-all: f5pd f5pl f5pl_test
+all: f5pd f5pl f5pl_test f5pl_realtime
 	
 f5pd : socket.c f5pd.c error.c $(DEPS)
 	$(CC) $(CFLAGS) socket.c f5pd.c error.c $(LDFLAGS) -o $@
@@ -16,9 +16,12 @@ f5pl : socket.c f5pl.c error.c $(DEPS)
 
 f5pl_test : socket.c f5pl_test.c error.c $(DEPS)
 	$(CC) $(CFLAGS) socket.c f5pl_test.c error.c $(LDFLAGS) -o $@
+
+f5pl_realtime : socket.c f5pl_realtime.c error.c $(DEPS)
+	$(CC) $(CFLAGS) socket.c f5pl_realtime.c error.c $(LDFLAGS) -o $@
 	
 clean:
-	rm -rf f5pd f5pl f5pl_test *.o *.out *.cfg
+	rm -rf f5pd f5pl f5pl_test f5pl_realtime *.o *.out *.cfg
 
 # Autoformat code with clang format
 format:
