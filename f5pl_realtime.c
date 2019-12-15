@@ -290,6 +290,7 @@ int main(int argc, char* argv[]) {
     }
 
     fclose(ip_list_fp); // close the ip file
+    printf("%s", ip_list[0]); // testing
 
 
         /* constantly read the list of .fast5.tar files from standard input
@@ -383,11 +384,13 @@ int main(int argc, char* argv[]) {
         }
         core.file_list_cnt += file_list_cnt; // increase file count
 
-        if (threads_uninit) { // if not done yet create threads for each node
+        if (threads_uninit == true) { // if not done yet create threads for each node
             for (i = 0; i < core.ip_cnt; i ++) {
                 thread_id[i] = i;
                 int ret = pthread_create( &node_thread[i], NULL, node_handler,
                                         (void*) (&thread_id[i]) );
+		
+		printf("creating thread %d", i); // testing
                 if (ret != 0) {
                     ERROR("Error creating thread %d", i);
                     exit(EXIT_FAILURE);
