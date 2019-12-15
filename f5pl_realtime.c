@@ -274,14 +274,12 @@ int main(int argc, char* argv[]) {
             exit(EXIT_FAILURE);
 
         // ignore comments and empty lines
-        } else if (line[0] == '#' || line[0] == '\n' ||
-            line[0] == '\r') { //comments and empty lines
+        } else if (line[0] == '#' || line[0] == '\n' || line[0] == '\r') {
             free(line);
             continue;
 
         // replace trailing newline characters to null byte
-        } else if (line[readlinebytes - 1] == '\n' ||
-            line[readlinebytes - 1] == '\r') {
+        } else if (line[readlinebytes - 1] == '\n' || line[readlinebytes - 1] == '\r') {
             line[readlinebytes - 1] = '\0';
         }
 
@@ -290,7 +288,6 @@ int main(int argc, char* argv[]) {
     }
 
     fclose(ip_list_fp); // close the ip file
-    printf("%s", ip_list[0]); // testing
 
 
         /* constantly read the list of .fast5.tar files from standard input
@@ -333,12 +330,14 @@ int main(int argc, char* argv[]) {
             if (feof(stdin)) {
                 free(line);
                 end_loop = true;
+		        printf("EOF signaled\n"); // testing
                 break;
 
-            // if there is no line
-            } else if (readlinebytes == -1) {
-                free(line);
-                continue;
+            // if there is no line (deprecated?)
+            // } else if (readlinebytes == -1) {
+                // free(line);
+		        // printf("hi no line?\n"); // testing
+                // continue;
 
             // if filepath larger than max, exit with error msg   
             } else if (readlinebytes > MAX_PATH_SIZE) {
@@ -356,24 +355,32 @@ int main(int argc, char* argv[]) {
                 
             // ignore comments and empty lines
             } else if (line[0] == '#' || line[0] == '\n' || line[0] == '\r') {
+                printf("comment or empty line\n"); // testing
                 free(line);
                 continue;
 
             // replace trailing newline characters to null byte
             } else if (line[readlinebytes - 1] == '\n' || line[readlinebytes - 1] == '\r') {
+                printf("removing null byte\n"); // testing
                 line[readlinebytes - 1] = '\0';
             }
+            
+            printf("adding file\n"); // testing
 
             file_list[file_list_cnt] = line; // add the filepath to the file list
             file_list_cnt ++; // increment file counter
+
+            break;
         }
 
-        if (end_loop) {
+        if (end_loop == true) {
             free(file_list);
+            printf("loop ended\n"); // testing
             break;
 
         } else if (file_list[0] == NULL) { // if the file list is empty
             free(file_list);
+            printf("file list empty\n"); // testing
             continue; // check again for new standard input
         }
 
@@ -381,16 +388,18 @@ int main(int argc, char* argv[]) {
         // update the core's attributes
         for (i = 0; i < file_list_cnt; i ++) {
             core.file_list[core.file_list_cnt + i] = file_list[i]; // append new files to current list
+            printf("%s", file_list[file_list_cnt]); // testing
         }
         core.file_list_cnt += file_list_cnt; // increase file count
 
         if (threads_uninit == true) { // if not done yet create threads for each node
+            printf("threads uninit"); // testing
             for (i = 0; i < core.ip_cnt; i ++) {
                 thread_id[i] = i;
                 int ret = pthread_create( &node_thread[i], NULL, node_handler,
                                         (void*) (&thread_id[i]) );
 		
-		printf("creating thread %d", i); // testing
+		        printf("creating thread %d\n", i); // testing
                 if (ret != 0) {
                     ERROR("Error creating thread %d", i);
                     exit(EXIT_FAILURE);
