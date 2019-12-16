@@ -82,7 +82,7 @@ void* node_handler(void* arg) {
             core.file_list_idx ++; // increment the file index
             pthread_mutex_unlock(&file_list_mutex); // unlock mutex
             
-        } else { // else look for new files again
+        } else if (fidx == core.file_list_cnt) { // else if there are no files to be processed look for files again
             pthread_mutex_unlock(&file_list_mutex); // unlock mutex
             continue;
         }
@@ -327,7 +327,7 @@ int main(int argc, char* argv[]) {
             char* line = (char*) malloc(sizeof(char) * (line_size)); // filepath + newline + nullbyte
             MALLOC_CHK(line); // check line isn't null, else exit with error msg
             int32_t readlinebytes = getline(&line, &line_size, stdin); // get the next line from standard input
-            printf("%s\n", line); // testing
+            printf("This line was read: %s\n", line); // testing
 
             // if EOF signaled
             if (feof(stdin)) {
@@ -364,7 +364,6 @@ int main(int argc, char* argv[]) {
 
             // replace trailing newline characters to null byte
             } else if (line[readlinebytes - 1] == '\n' || line[readlinebytes - 1] == '\r') {
-                printf("removing null byte\n"); // testing
                 line[readlinebytes - 1] = '\0';
             }
             
@@ -374,16 +373,16 @@ int main(int argc, char* argv[]) {
             break;
         }
 
-        if (end_loop == true) {
+        if (end_loop) {
             free(file_list);
             printf("loop ended\n"); // testing
             break;
 
-        } else if (file_list[0] == NULL) { // if the file list is empty
-            free(file_list);
-            printf("file list empty\n"); // testing
-            continue; // check again for new standard input
-        }
+        // } else if (file_list[0] == NULL) { // if the file list is empty (deprecated?)
+            // free(file_list);
+            // printf("file list empty\n"); // testing
+            // continue; // check again for new standard input
+        // }
 
         if (core.file_list_cnt == 0) { // if no files in the core's file list
             // create memory allocation for the core's list of files
@@ -474,6 +473,7 @@ int main(int argc, char* argv[]) {
         }
 
         fclose(other_failed_report); // close other report file
+        free(core.file_list);
     }
 
     INFO("Everything done. Elapsed time: %.3fh",(realtime() - initial_time)/3600);
