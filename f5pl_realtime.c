@@ -69,7 +69,8 @@ void* node_handler(void* arg) {
 
     // create report file
     char report_fname[100]; // declare file name
-    sprintf(report_fname, "dev%d.cfg", tid + 1); // define file name
+    // (todo: handle creating directory first if not already created)
+    sprintf(report_fname, "dev/dev%d.cfg", tid + 1); // define file name
     FILE* report = fopen(report_fname, "w"); // open file for writing
     NULL_CHK(report); // check file isn't null
 
@@ -384,19 +385,24 @@ int main(int argc, char* argv[]) {
             continue; // check again for new standard input
         }
 
+        if (core.file_list_cnt == 0) { // if no files in the core's file list
+            // create memory allocation for the core's list of files
+            core.file_list = (char**) malloc(sizeof(char*) * (MAX_FILES));
+            MALLOC_CHK(core.file_list); // check the core's file list isn't null, else exit with error msg
+        }
 
         // update the core's attributes
         for (i = 0; i < file_list_cnt; i ++) {
             printf("trying to append new files\n"); // testing
             printf("core.file_list_cnt: %d\n", core.file_list_cnt); // testing
             printf("file_list[%d]: %s\n", i, file_list[i]); // testing
+            printf("core.file_list: %p\n", (void*) core.file_list); // testing
             core.file_list[core.file_list_cnt + i] = file_list[i]; // append new files to current list
-            printf("%s", file_list[file_list_cnt]); // testing
         }
         core.file_list_cnt += file_list_cnt; // increase file count
 
-        if (threads_uninit == true) { // if not done yet create threads for each node
-            printf("threads uninit"); // testing
+        if (threads_uninit) { // if not done yet create threads for each node
+            printf("threads uninit\n"); // testing
             for (i = 0; i < core.ip_cnt; i ++) {
                 thread_id[i] = i;
                 int ret = pthread_create( &node_thread[i], NULL, node_handler,
