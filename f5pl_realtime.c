@@ -390,6 +390,8 @@ int main(int argc, char* argv[]) {
             MALLOC_CHK(core.file_list); // check the core's file list isn't null, else exit with error msg
         }
 
+        pthread_mutex_lock(&file_list_mutex); // lock mutex from other threads
+
         // update the core's attributes
         for (i = 0; i < file_list_cnt; i ++) {
             printf("trying to append new files\n"); // testing
@@ -399,6 +401,8 @@ int main(int argc, char* argv[]) {
             core.file_list[core.file_list_cnt + i] = file_list[i]; // append new files to current list
         }
         core.file_list_cnt += file_list_cnt; // increase file count
+
+        pthread_mutex_unlock(&file_list_mutex); // unlock mutex
 
         if (threads_uninit) { // if not done yet create threads for each node
             printf("threads uninit\n"); // testing
