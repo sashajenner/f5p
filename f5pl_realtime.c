@@ -226,6 +226,7 @@ void sig_handler(int sig) {
 
 int main(int argc, char* argv[]) {
     signal(SIGSEGV, sig_handler);
+    printf("started\n"); // testing
 
     // check there is 1 argument
     if (argc != 2) {
@@ -325,6 +326,7 @@ int main(int argc, char* argv[]) {
             char* line = (char*) malloc(sizeof(char) * (line_size)); // filepath + newline + nullbyte
             MALLOC_CHK(line); // check line isn't null, else exit with error msg
             int32_t readlinebytes = getline(&line, &line_size, stdin); // get the next line from standard input
+            printf("%s\n", line); // testing
 
             // if EOF signaled
             if (feof(stdin)) {
@@ -365,8 +367,6 @@ int main(int argc, char* argv[]) {
                 line[readlinebytes - 1] = '\0';
             }
             
-            printf("adding file\n"); // testing
-
             file_list[file_list_cnt] = line; // add the filepath to the file list
             file_list_cnt ++; // increment file counter
 
@@ -387,6 +387,9 @@ int main(int argc, char* argv[]) {
 
         // update the core's attributes
         for (i = 0; i < file_list_cnt; i ++) {
+            printf("trying to append new files\n"); // testing
+            printf("core.file_list_cnt: %d\n", core.file_list_cnt); // testing
+            printf("file_list[%d]: %s\n", i, file_list[i]); // testing
             core.file_list[core.file_list_cnt + i] = file_list[i]; // append new files to current list
             printf("%s", file_list[file_list_cnt]); // testing
         }
