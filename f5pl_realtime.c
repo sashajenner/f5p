@@ -394,7 +394,6 @@ int main(int argc, char* argv[]) {
 
         // update the core's attributes
         for (i = 0; i < file_list_cnt; i ++) {
-            printf("trying to append new files\n"); // testing
             printf("core.file_list_cnt: %d\n", core.file_list_cnt); // testing
             printf("file_list[%d]: %s\n", i, file_list[i]); // testing
             printf("core.file_list: %p\n", (void*) core.file_list); // testing
