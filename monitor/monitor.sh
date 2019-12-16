@@ -9,8 +9,14 @@ for dir in $@; do
 	monitor_dirs+=($(pwd)/$dir) # append the absolute path of each directory to array `monitor_dirs`
 done
 
+counter=0
+
 ## Set up monitoring of all input directory indefinitely for a file being written or moved to them
 inotifywait -m ${monitor_dirs[@]} -e close_write -e moved_to |
 	while read path action file; do
-		echo "$path$file" # ouput the absolute file path in such a case
+		echo "$path$file" # output the absolute file path in such a case
+        ((counter ++))
+        if [ $counter -eq 10 ]; then
+            break
+        fi
 	done
