@@ -377,7 +377,7 @@ int main(int argc, char* argv[]) {
             free(file_list);
             printf("loop ended\n"); // testing
             break;
-
+        }
         // } else if (file_list[0] == NULL) { // if the file list is empty (deprecated?)
             // free(file_list);
             // printf("file list empty\n"); // testing
@@ -476,7 +476,7 @@ int main(int argc, char* argv[]) {
         free(core.file_list);
     }
 
-    INFO("Everything done. Elapsed time: %.3fh",(realtime() - initial_time)/3600);
+    INFO("Everything done. Elapsed time: %.3fh", (realtime() - initial_time)/3600);
 
     return 0;
 }
