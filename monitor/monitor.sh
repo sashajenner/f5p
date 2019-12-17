@@ -38,12 +38,11 @@ done
 i=0 # define file counter
 
 ## Set up monitoring of all input directory indefinitely for a file being written or moved to them
-inotifywait -m ${monitor_dirs[@]} -e close_write -e moved_to |
 	while read path action file; do
 		echo "$path$file" # output the absolute file path in such a case
         
         ((i++)) # increment file counter
-        if [ $NO_FILES -eq $i ]; then # break after specified number of files found
+        if [ $NO_FILES -eq $i ]; then # exit after specified number of files found
             break
         fi 
-	done
+	done < <(inotifywait -m ${monitor_dirs[@]} -e close_write -e moved_to) # pass output to while loop
