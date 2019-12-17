@@ -93,14 +93,14 @@ void* node_handler(void* arg) {
         }
 
         fprintf(stderr, "[t%d(%s)::INFO] Connecting to %s.\n",
-                tid, core.ip_list[tid], core.ip_list[tid]);
+                tid + 1, core.ip_list[tid], core.ip_list[tid]);
         int socketfd = TCP_client_connect_try(core.ip_list[tid], PORT, CONNECT_TIME_OUT); // try to connect
 
         if (socketfd == -1) { // if no connection exit loop
 
             fprintf(stderr,
                     "[t%d(%s)::WARNING]\033[1;33m Connection initiation to device %s failed. Giving up hope on the device.\033[0m\n",
-                    tid, core.ip_list[tid], core.ip_list[tid]);
+                    tid + 1, core.ip_list[tid], core.ip_list[tid]);
 
             // (todo : factor this logic as a function?)
             pthread_mutex_lock(&file_list_mutex); // lock the mutex from other threads (todo : this can be a different lock for efficiency)
@@ -112,8 +112,8 @@ void* node_handler(void* arg) {
             break;
         }
 
-        fprintf(stderr, "[t%d(%s)::INFO] Assigning %s (%d of %d) to %s.\n", 
-                tid, core.ip_list[tid], core.file_list[fidx], fidx + 1 , core.file_list_cnt, core.ip_list[tid]);
+        fprintf(stderr, "[t%d(%s)::INFO] Assigning %s (%d of %d) to %s.\n",
+                tid + 1, core.ip_list[tid], core.file_list[fidx], fidx + 1 , core.file_list_cnt, core.ip_list[tid]);
         
         send_full_msg(socketfd, core.file_list[fidx], strlen(core.file_list[fidx])); // send filename to thread
         // read msg into buffer and receive the buffer's expected length
@@ -126,12 +126,12 @@ void* node_handler(void* arg) {
 
             fprintf(stderr,
                     "[t%d(%s)::WARNING]\033[1;33m Device %s has hung/disconnected. \033[0m\n",
-                    tid, core.ip_list[tid], core.ip_list[tid]);      
+                    tid + 1, core.ip_list[tid], core.ip_list[tid]);      
 
             if (count >= MAX_CONSECUTIVE_FAILURES) { // if the device failed too many times
                 fprintf(stderr,
                         "[t%d(%s)::ERROR]\033[1;31m Device %s failed %d times consecutively. Retiring the device. \033[0m\n",
-                        tid, core.ip_list[tid], core.ip_list[tid], count);
+                        tid + 1, core.ip_list[tid], core.ip_list[tid], count);
 
                 pthread_mutex_lock(&file_list_mutex); // lock the mutex from other threads (todo : this can be a different lock for efficiency)
                 int32_t failed_cnt = core.failed_cnt; // alias the current failed count
@@ -143,18 +143,18 @@ void* node_handler(void* arg) {
 
                 fprintf(stderr,
                         "[t%d(%s)::INFO] \033[1;34m Processed list: %s Elapsed time: %.3fh \033[0m\n",
-                        tid, core.ip_list[tid], report_fname, (realtime() - initial_time) / 3600);
+                        tid + 1, core.ip_list[tid], report_fname, (realtime() - initial_time) / 3600);
                 pthread_exit(0); // terminate the thread
             }
 
             fprintf(stderr, "[t%d(%s)::INFO] Connecting to %s\n", 
-                    tid, core.ip_list[tid], core.ip_list[tid]);
+                    tid + 1, core.ip_list[tid], core.ip_list[tid]);
             socketfd = TCP_client_connect_try(core.ip_list[tid], PORT, CONNECT_TIME_OUT); // try to connect again
 
             if (socketfd == -1){ // if no connection terminate thread
                 fprintf(stderr,
                         "[t%d(%s)::WARNING]\033[1;33m Connection initiation to device %s failed. Giving up hope on the device.\033[0m\n",
-                        tid, core.ip_list[tid], core.ip_list[tid]);  
+                        tid + 1, core.ip_list[tid], core.ip_list[tid]);  
 
                 pthread_mutex_lock(&file_list_mutex); // lock the mutex from other threads (todo : this can be a different lock for efficiency)
                 int32_t failed_cnt = core.failed_cnt; // alias the current failed count
@@ -166,13 +166,13 @@ void* node_handler(void* arg) {
 
                 fprintf(stderr,
                         "[t%d(%s)::INFO] \033[1;34m Processed list: %s Elapsed time: %.3fh \033[0m\n",
-                        tid, core.ip_list[tid], report_fname, (realtime() - initial_time) / 3600);
+                        tid + 1, core.ip_list[tid], report_fname, (realtime() - initial_time) / 3600);
                 pthread_exit(0); // terminate the thread
             }
 
             fprintf(stderr, 
                     "[t%d(%s)::INFO] Assigning %s (%d of %d) to %s\n", 
-                    tid, core.ip_list[tid], core.file_list[fidx], fidx + 1 , core.file_list_cnt, core.ip_list[tid]);
+                    tid + 1, core.ip_list[tid], core.file_list[fidx], fidx + 1 , core.file_list_cnt, core.ip_list[tid]);
 
             send_full_msg(socketfd, core.file_list[fidx], strlen(core.file_list[fidx])); // send filename to thread
             // read msg into buffer and receive the buffer's expected length
@@ -182,7 +182,7 @@ void* node_handler(void* arg) {
         buffer[received] = '\0'; // append with null character before printing
         fprintf(stderr, 
                 "[t%d(%s)::INFO] Received message '%s'.\n", // print msg to standard error
-                tid, core.ip_list[tid], buffer);
+                tid + 1, core.ip_list[tid], buffer);
 
         if (strcmp(buffer, "done.") == 0) { // if "done"
             fprintf(report, "%s\n", core.file_list[fidx]); // write filename to report
@@ -190,7 +190,7 @@ void* node_handler(void* arg) {
         } else if (strcmp(buffer, "crashed.") == 0) { // else if "crashed"
             fprintf(stderr,
                     "[t%d(%s)::WARNING]\033[1;33m %s terminated due to a signal. Please inspect the device log.\033[0m\n",
-                    tid,core.ip_list[tid], core.file_list[fidx]);
+                    tid + 1, core.ip_list[tid], core.file_list[fidx]);
 
             int32_t failed_cnt = core.failed_other_cnt;
             core.failed_other_cnt ++; // increment number of other failures
@@ -198,8 +198,8 @@ void* node_handler(void* arg) {
 
         } else {
             fprintf(stderr,
-                "[t%d(%s)::WARNING] \033[1;33m%s exited with a non 0 exit status. Please inspect the device log.\033[0m\n",
-                tid, core.ip_list[tid], core.file_list[fidx]);
+                    "[t%d(%s)::WARNING] \033[1;33m%s exited with a non 0 exit status. Please inspect the device log.\033[0m\n",
+                    tid + 1, core.ip_list[tid], core.file_list[fidx]);
 
             int32_t failed_cnt = core.failed_other_cnt;
             core.failed_other_cnt ++; // increment number of other failures
@@ -211,7 +211,7 @@ void* node_handler(void* arg) {
 
     fprintf(stderr,
             "[t%d(%s)::INFO] \033[1;34m Processed list: %s Elapsed time: %.3fh \033[0m\n",
-            tid, core.ip_list[tid], report_fname, (realtime() - initial_time) / 3600);
+            tid + 1, core.ip_list[tid], report_fname, (realtime() - initial_time) / 3600);
 
     fclose(report); // close the report
     pthread_exit(0); // terminate the thread
@@ -237,7 +237,7 @@ int main(int argc, char* argv[]) {
     // check there is 1 argument
     if (argc != 2) {
         ERROR("Not enough arguments. Usage %s <ip_list>\n",
-              argv[0]);
+                argv[0]);
         exit(EXIT_FAILURE);
     }
 
@@ -270,14 +270,14 @@ int main(int argc, char* argv[]) {
         } else if (readlinebytes > MAX_IP_LEN) {
             free(line);
             ERROR("The IP length %s is longer hard coded limit %d\n",
-                line, MAX_IP_LEN);
+                    line, MAX_IP_LEN);
             exit(EXIT_FAILURE);
 
         // if ip count larger than max, exit with error msg
         } else if (ip_cnt > MAX_IPS) {
             free(line);
             ERROR("The number of entries in %s exceeded the hard coded limit %d\n",
-                ip_list_name, MAX_IPS);
+                    ip_list_name, MAX_IPS);
             exit(EXIT_FAILURE);
 
         // ignore comments and empty lines
@@ -292,8 +292,6 @@ int main(int argc, char* argv[]) {
 
         ip_list[ip_cnt] = line; // add the ip to the ip list
         ip_cnt ++; // increment ip counter
-
-        // (todo : free line?)
     }
 
     fclose(ip_list_fp); // close the ip file
@@ -328,24 +326,16 @@ int main(int argc, char* argv[]) {
         char* line = (char*) malloc(sizeof(char) * (line_size));
         MALLOC_CHK(line); // check the line isn't null, else exit with error msg
         int32_t readlinebytes = getline(&line, &line_size, stdin); // get the next line from standard input
-        if (line != NULL) { // null check
-            printf("This line was read: %s\n", line); // testing
-        }
 
         // if EOF signaled free memory allocations and break from loop
         if (feof(stdin)) {
             free(line);
             printf("EOF signaled\n"); // testing
+
             pthread_mutex_lock(&file_list_mutex); // lock mutex from other threads
             core.eof_signalled = true; // set the core's EOF flag to true
             pthread_mutex_unlock(&file_list_mutex); // unlock mutex
             break;
-
-        // if there is no line (deprecated?)
-        // } else if (readlinebytes == -1) {
-            // free(line);
-            // printf("hi no line?\n"); // testing
-            // continue;
 
         // if filepath larger than max, exit with error msg   
         } else if (readlinebytes > MAX_PATH_SIZE) {
@@ -370,26 +360,23 @@ int main(int argc, char* argv[]) {
 
         pthread_mutex_lock(&file_list_mutex); // lock mutex from other threads
 
-        // update the core's attributes
-        printf("core.file_list_cnt: %d\n", core.file_list_cnt); // testing
-        printf("line: %s\n", line); // testing
-        
         // if file count larger than max, exit with error msg
-        if (++ core.file_list_cnt > MAX_FILES) {
+        if (core.file_list_cnt > MAX_FILES) {
             free(line);
             ERROR("The number of files exceeded the hard coded limit of %d\n",
                     MAX_FILES);
             exit(EXIT_FAILURE);
         }
 
-        core.file_list[core.file_list_cnt - 1] = line; // append new file to current list
+        // update the core's attributes
+        core.file_list[core.file_list_cnt] = line; // append new file to current list
+        core.file_list_cnt ++; // increment the file counter
 
         pthread_mutex_unlock(&file_list_mutex); // unlock mutex
 
         if (threads_uninit) { // if not done yet create threads for each node
             for (i = 0; i < core.ip_cnt; i ++) {
                 thread_id[i] = i;
-                // (todo : don't create all threads at the start only if num files over num nodes)x
                 int ret = pthread_create( &node_thread[i], NULL, node_handler,
                                         (void*) (&thread_id[i]) );
 		
@@ -405,7 +392,7 @@ int main(int argc, char* argv[]) {
     }
 
     // joining client side threads
-    for (i = 0; i < ip_cnt; i++) {
+    for (i = 0; i < ip_cnt; i ++) {
         int ret = pthread_join(node_thread[i], NULL);
         // (todo : only join a thread if it has been used)
         printf("joining thread %d\n", i + 1); // testing
@@ -420,7 +407,7 @@ int main(int argc, char* argv[]) {
     }
 
     // free each ip string in the list of ips
-    for(i = 0; i < ip_cnt; i ++) {
+    for (i = 0; i < ip_cnt; i ++) {
         free(ip_list[i]);
     }
     free(ip_list); // free the ip list
@@ -437,7 +424,7 @@ int main(int argc, char* argv[]) {
         ERROR("List of failures due to consecutively device hangs in %s", "failed.cfg");
 
         fprintf(failed_report, "# Files that failed due to devices that consecutively hanged.\n");
-        for (i = 0; i < core.failed_cnt; i++) {
+        for (i = 0; i < core.failed_cnt; i ++) {
             int id = core.failed[i];
             //ERROR("%s was skipped due to a device retire", core.file_list[id]);
             fprintf(failed_report, "%s\n", core.file_list[id]);
@@ -456,7 +443,7 @@ int main(int argc, char* argv[]) {
 
         fprintf(other_failed_report,
                 "# Files that failed with a software crash or exited with non 0 status. Please inspect the device log for more info.\n");
-        for (i = 0; i < core.failed_other_cnt; i++) {
+        for (i = 0; i < core.failed_other_cnt; i ++) {
             int id = core.failed_other[i];
             //WARNING("%s was skipped due to a software crash or a non 0 exit status. Please see the log for more info.", core.file_list[id]);
             fprintf(other_failed_report, "%s\n", core.file_list[id]);
