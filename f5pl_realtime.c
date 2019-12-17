@@ -405,7 +405,7 @@ int main(int argc, char* argv[]) {
 		
 		        printf("creating thread %d\n", i + 1); // testing
                 if (ret != 0) {
-                    ERROR("Error creating thread %d", i);
+                    ERROR("Error creating thread %d", i + 1);
                     exit(EXIT_FAILURE);
                 }
             }
@@ -422,7 +422,7 @@ int main(int argc, char* argv[]) {
         // (todo : only join a thread if it has been used)
         printf("joining thread %d\n", i + 1); // testing
         if (ret != 0) {
-            ERROR("Error joining thread %d", i);
+            ERROR("Error joining thread %d", i + 1);
             //exit(EXIT_FAILURE);
         }
         if (core.num_hangs[i] > 0) {
