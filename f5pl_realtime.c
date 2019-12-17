@@ -54,6 +54,7 @@ typedef struct {
     int32_t failed_other      // failed due to another reason. See the logs.
         [MAX_FILES];
     int32_t failed_other_cnt; // the number of other failures
+    bool eof_signalled;        // the flag for EOF signalled
 } node_global_args_t;
 
 node_global_args_t core; // remember that core is used throughout
@@ -78,7 +79,11 @@ void* node_handler(void* arg) {
         pthread_mutex_lock(&file_list_mutex); // lock mutex from other threads (todo : try to lock first?)
         int32_t fidx = core.file_list_idx; // define current file index
 
-        if (fidx < core.file_list_cnt) { // if there are files to be processed
+        if (core.eof_signalled) { // if EOF has been signalled exit loop
+            pthread_mutex_unlock(&file_list_mutex); // unlock mutex
+            break;
+
+        } else if (fidx < core.file_list_cnt) { // if there are files to be processed
             core.file_list_idx ++; // increment the file index
             pthread_mutex_unlock(&file_list_mutex); // unlock mutex
             
@@ -311,19 +316,14 @@ int main(int argc, char* argv[]) {
     core.failed_other_cnt = 0;
     core.ip_list = ip_list;
     core.ip_cnt = ip_cnt;
+    core.eof_signalled = false;
 
     size_t line_size = MAX_PATH_SIZE;
     bool threads_uninit = true; // threads not initialised yet
-    bool end_loop = false; // flag
     while (1) {
 
             // read the current list of files from standard input
 
-        // create memory allocation for list of files
-        char** file_list = (char**) malloc(sizeof(char*) * (MAX_FILES));
-        MALLOC_CHK(file_list); // check `file_list` is not null
-        int32_t file_list_cnt = 0; // define file counter
-        
         // create memory allocation for filename from standard input
         char* line = (char*) malloc(sizeof(char) * (line_size));
         MALLOC_CHK(line); // check the line isn't null, else exit with error msg
@@ -333,8 +333,10 @@ int main(int argc, char* argv[]) {
         // if EOF signaled free memory allocations and break from loop
         if (feof(stdin)) {
             free(line);
-            free(file_list);
             printf("EOF signaled\n"); // testing
+            pthread_mutex_lock(&file_list_mutex); // lock mutex from other threads
+            core.eof_signalled = true; // set the core's EOF flag to true
+            pthread_mutex_unlock(&file_list_mutex); // unlock mutex
             break;
 
         // if there is no line (deprecated?)
@@ -346,26 +348,14 @@ int main(int argc, char* argv[]) {
         // if filepath larger than max, exit with error msg   
         } else if (readlinebytes > MAX_PATH_SIZE) {
             free(line);
-            free(file_list);
             ERROR("The file path %s is longer hard coded limit %d\n", 
                     line, MAX_PATH_SIZE);
             exit(EXIT_FAILURE);
 
-        // if file count larger than max, exit with error msg
-        } else if (file_list_cnt > MAX_FILES) {
-            free(line);
-            free(file_list);
-            ERROR("The number of entries in stdin exceeded the hard coded limit %d\n",
-                    MAX_FILES);
-            exit(EXIT_FAILURE);
-            
         // replace trailing newline characters to null byte
         } else if (line[readlinebytes - 1] == '\n' || line[readlinebytes - 1] == '\r') {
             line[readlinebytes - 1] = '\0';
         }
-        
-        file_list[file_list_cnt] = line; // add the filepath to the file list
-        file_list_cnt ++; // increment file counter
 
 
             // configure threads
@@ -379,12 +369,18 @@ int main(int argc, char* argv[]) {
         pthread_mutex_lock(&file_list_mutex); // lock mutex from other threads
 
         // update the core's attributes
-        for (i = 0; i < file_list_cnt; i ++) {
-            printf("core.file_list_cnt: %d\n", core.file_list_cnt); // testing
-            printf("file_list[%d]: %s\n", i, file_list[i]); // testing
-            core.file_list[core.file_list_cnt + i] = file_list[i]; // append new files to current list
+        printf("core.file_list_cnt: %d\n", core.file_list_cnt); // testing
+        printf("line: %s\n", line); // testing
+        
+        // if file count larger than max, exit with error msg
+        if (++ core.file_list_cnt > MAX_FILES) {
+            free(line);
+            ERROR("The number of files exceeded the hard coded limit of %d\n",
+                    MAX_FILES);
+            exit(EXIT_FAILURE);
         }
-        core.file_list_cnt += file_list_cnt; // increase file count
+
+        core.file_list[core.file_list_cnt - 1] = line; // append new file to current list
 
         pthread_mutex_unlock(&file_list_mutex); // unlock mutex
 
@@ -405,8 +401,7 @@ int main(int argc, char* argv[]) {
             threads_uninit = false;
         }
 
-        free(file_list);
-        free(line);
+        free(line); // (deprecated ?)
     }
 
     // joining client side threads
