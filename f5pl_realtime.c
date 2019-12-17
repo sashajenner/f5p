@@ -328,7 +328,9 @@ int main(int argc, char* argv[]) {
         char* line = (char*) malloc(sizeof(char) * (line_size));
         MALLOC_CHK(line); // check the line isn't null, else exit with error msg
         int32_t readlinebytes = getline(&line, &line_size, stdin); // get the next line from standard input
-        printf("This line was read: %s\n", line); // testing
+        if (line != NULL) { // null check
+            printf("This line was read: %s\n", line); // testing
+        }
 
         // if EOF signaled free memory allocations and break from loop
         if (feof(stdin)) {
