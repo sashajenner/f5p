@@ -287,6 +287,8 @@ int main(int argc, char* argv[]) {
 
         ip_list[ip_cnt] = line; // add the ip to the ip list
         ip_cnt ++; // increment ip counter
+
+        // (todo : free line?)
     }
 
     fclose(ip_list_fp); // close the ip file
@@ -322,61 +324,51 @@ int main(int argc, char* argv[]) {
         MALLOC_CHK(file_list); // check `file_list` is not null
         int32_t file_list_cnt = 0; // define file counter
         
-        while (1) { // loop until EOF or error
+        // create memory allocation for filename from standard input
+        char* line = (char*) malloc(sizeof(char) * (line_size));
+        MALLOC_CHK(line); // check the line isn't null, else exit with error msg
+        int32_t readlinebytes = getline(&line, &line_size, stdin); // get the next line from standard input
+        printf("This line was read: %s\n", line); // testing
 
-            char* line = (char*) malloc(sizeof(char) * (line_size)); // filepath + newline + nullbyte
-            MALLOC_CHK(line); // check line isn't null, else exit with error msg
-            int32_t readlinebytes = getline(&line, &line_size, stdin); // get the next line from standard input
-            printf("This line was read: %s\n", line); // testing
-
-            // if EOF signaled
-            if (feof(stdin)) {
-                free(line);
-                end_loop = true;
-		        printf("EOF signaled\n"); // testing
-                break;
-
-            // if there is no line (deprecated?)
-            // } else if (readlinebytes == -1) {
-                // free(line);
-		        // printf("hi no line?\n"); // testing
-                // continue;
-
-            // if filepath larger than max, exit with error msg   
-            } else if (readlinebytes > MAX_PATH_SIZE) {
-                free(line);
-                ERROR("The file path %s is longer hard coded limit %d\n", 
-                        line, MAX_PATH_SIZE);
-                exit(EXIT_FAILURE);
-
-            // if file count larger than max, exit with error msg
-            } else if (file_list_cnt > MAX_FILES) {
-                free(line);
-                ERROR("The number of entries in stdin exceeded the hard coded limit %d\n",
-                        MAX_FILES);
-                exit(EXIT_FAILURE);
-                
-            // replace trailing newline characters to null byte
-            } else if (line[readlinebytes - 1] == '\n' || line[readlinebytes - 1] == '\r') {
-                line[readlinebytes - 1] = '\0';
-            }
-            
-            file_list[file_list_cnt] = line; // add the filepath to the file list
-            file_list_cnt ++; // increment file counter
-
-            break;
-        }
-
-        if (end_loop) {
+        // if EOF signaled free memory allocations and break from loop
+        if (feof(stdin)) {
+            free(line);
             free(file_list);
-            printf("loop ended\n"); // testing
+            printf("EOF signaled\n"); // testing
             break;
+
+        // if there is no line (deprecated?)
+        // } else if (readlinebytes == -1) {
+            // free(line);
+            // printf("hi no line?\n"); // testing
+            // continue;
+
+        // if filepath larger than max, exit with error msg   
+        } else if (readlinebytes > MAX_PATH_SIZE) {
+            free(line);
+            free(file_list);
+            ERROR("The file path %s is longer hard coded limit %d\n", 
+                    line, MAX_PATH_SIZE);
+            exit(EXIT_FAILURE);
+
+        // if file count larger than max, exit with error msg
+        } else if (file_list_cnt > MAX_FILES) {
+            free(line);
+            free(file_list);
+            ERROR("The number of entries in stdin exceeded the hard coded limit %d\n",
+                    MAX_FILES);
+            exit(EXIT_FAILURE);
+            
+        // replace trailing newline characters to null byte
+        } else if (line[readlinebytes - 1] == '\n' || line[readlinebytes - 1] == '\r') {
+            line[readlinebytes - 1] = '\0';
         }
-        // } else if (file_list[0] == NULL) { // if the file list is empty (deprecated?)
-            // free(file_list);
-            // printf("file list empty\n"); // testing
-            // continue; // check again for new standard input
-        // }
+        
+        file_list[file_list_cnt] = line; // add the filepath to the file list
+        file_list_cnt ++; // increment file counter
+
+
+            // configure threads
 
         if (core.file_list_cnt == 0) { // if no files in the core's file list
             // create memory allocation for the core's list of files
@@ -399,7 +391,7 @@ int main(int argc, char* argv[]) {
         if (threads_uninit) { // if not done yet create threads for each node
             for (i = 0; i < core.ip_cnt; i ++) {
                 thread_id[i] = i;
-                // (todo : don't create all threads at the start only if num files over num nodes)
+                // (todo : don't create all threads at the start only if num files over num nodes)x
                 int ret = pthread_create( &node_thread[i], NULL, node_handler,
                                         (void*) (&thread_id[i]) );
 		
@@ -414,6 +406,7 @@ int main(int argc, char* argv[]) {
         }
 
         free(file_list);
+        free(line);
     }
 
     // joining client side threads
