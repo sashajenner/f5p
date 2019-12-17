@@ -4,36 +4,34 @@
 
 ###############################################################################
 
-#some changeable definitions
+# some changeable definitions
 
-#program paths
+# program paths
 MINIMAP=/nanopore/bin/minimap2-arm
-METHCALL=/nanopore/bin/f5c #or nanopolish
+METHCALL=/nanopore/bin/f5c # or nanopolish
 SAMTOOLS=/nanopore/bin/samtools
 
-#reference fasta
+# reference fasta
 REF=/nanopore/reference/hg38noAlt.fa
-#reference index for minimap2
+# reference index for minimap2
 REFIDX=/nanopore/reference/hg38noAlt.idx
 
-#temporary space on the local storage or the network mount
+# temporary space on the local storage or the network mount
 SCRATCH=/nanopore/scratch
 
 ###############################################################################
 
-#argument is a path of a tar file
+# argument is a path of a tar file
 if [ "$#" -ne 1 ]; then
     echo "usage : $0 <filepath>"
         exit 1
 fi
-filepath=$1
-#get the folder which the tar files reside (strip the file name from $filepath)
-folderf5=${filepath%/*}
-#get the folder which the datasets reside (one level up of $folderf5)
-folder=${folderf5%/*}
 
-#initial exit status is assumed to be success
-exit_status=0
+filepath=$1
+folderf5=${filepath%/*} # strip filename from tar filepath
+folder=${folderf5%/*} # get folder one heirarchy higher
+
+exit_status=0 # initial exit status is assumed to be success
 
 #the name of the tar file (strip the path and get only the name with extension)
 file=$(basename $filepath)
