@@ -1,4 +1,5 @@
 #!/bin/bash
+# @author: Sasha Jenner (jenner.sasha@gmail.com)
 
 ### Simulator of sequenced fast5 and fastq files into the NAS at intervals
 
