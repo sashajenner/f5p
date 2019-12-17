@@ -48,48 +48,50 @@ SOFTWARE.
 #define MAXARG 256
 static inline int system_async(char* buffer) {
     int i = 0;
-    int pid;               //process id
-    char* arglist[MAXARG]; //store the arguments
-    char* pch;             //for strtok
+    int pid;               // process id
+    char* arglist[MAXARG]; // store the arguments
+    char* pch;             // for strtok
 
-    pch = strtok(buffer, " \n"); //Initiate breaking into tokens
+    pch = strtok(buffer, " \n"); // initiate breaking into tokens
 
-    for (i = 0; i < MAXARG; i++) { //fill the argument list
+    for (i = 0; i < MAXARG; i ++) { // fill the argument list
 
-        /*if there is a tokened argument add it to the argument list*/
+        // if there is a tokened argument add it to the argument list
         if (pch != NULL) {
             arglist[i] = malloc(sizeof(char) * 256);
             strcpy(arglist[i], pch);
             pch = strtok(NULL, " \n");
         }
 
-        /*If end of scanned string make the entries in argument list null*/
+        // if end of scanned string make the entries in argument list null
         else {
             arglist[i] = NULL;
             break;
         }
     }
 
-    /* fork a new process. If child replace the binary. Wait parent till child exists */
+    // fork a new process. If child replace the binary. Wait parent till child exists
     pid = fork();
 
     if (pid < 0) {
         perror("Fork failed");
         exit(EXIT_FAILURE);
-    }
-    if (pid == 0) {
+
+    } else if (pid == 0) {
         int check = execv(arglist[0], arglist);
-        if (check == -1) { /* If cannot execute print an error and exit child*/
+        if (check == -1) { // if cannot execute print an error and exit child
             fprintf(stderr,
                     "[%s::ERROR]\033[1;31m Execution failed : %s.\033[0m\n",
                     __func__, strerror(errno));
             exit(EXIT_FAILURE);
         }
+
     } else {
         return pid;
-        //int status;
-        //wait(&status); /*parent waits till child closes*/
+        //int status; (deprecated ?)
+        //wait(&status); // parent waits till child closes
     }
+
     return pid;
 }
 
@@ -107,7 +109,7 @@ static inline int wait_async(int pid) {
     }
 }
 
-//a function to get ip using host name
+// function to get ip using host name
 static inline int get_ip(char* hostname, char* ip) {
     struct hostent* he;
     struct in_addr** addr_list;
@@ -130,14 +132,6 @@ static inline double realtime(void) {
     struct timezone tzp;
     gettimeofday(&tp, &tzp);
     return tp.tv_sec + tp.tv_usec * 1e-6;
-}
-
-// taken from minimap2/misc
-static inline double cputime(void) {
-    struct rusage r;
-    getrusage(RUSAGE_SELF, &r);
-    return r.ru_utime.tv_sec + r.ru_stime.tv_sec +
-           1e-6 * (r.ru_utime.tv_usec + r.ru_stime.tv_usec);
 }
 
 #endif
