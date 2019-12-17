@@ -75,7 +75,7 @@ void* node_handler(void* arg) {
     NULL_CHK(report); // check file isn't null
 
     while (1) {
-        pthread_mutex_lock(&file_list_mutex); // lock mutex from other threads
+        pthread_mutex_lock(&file_list_mutex); // lock mutex from other threads (todo : try to lock first?)
         int32_t fidx = core.file_list_idx; // define current file index
 
         if (fidx < core.file_list_cnt) { // if there are files to be processed
