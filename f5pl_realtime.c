@@ -356,12 +356,6 @@ int main(int argc, char* argv[]) {
                         MAX_FILES);
                 exit(EXIT_FAILURE);
                 
-            // ignore comments and empty lines
-            } else if (line[0] == '#' || line[0] == '\n' || line[0] == '\r') {
-                printf("comment or empty line\n"); // testing
-                free(line);
-                continue;
-
             // replace trailing newline characters to null byte
             } else if (line[readlinebytes - 1] == '\n' || line[readlinebytes - 1] == '\r') {
                 line[readlinebytes - 1] = '\0';
@@ -396,7 +390,6 @@ int main(int argc, char* argv[]) {
         for (i = 0; i < file_list_cnt; i ++) {
             printf("core.file_list_cnt: %d\n", core.file_list_cnt); // testing
             printf("file_list[%d]: %s\n", i, file_list[i]); // testing
-            printf("core.file_list: %p\n", (void*) core.file_list); // testing
             core.file_list[core.file_list_cnt + i] = file_list[i]; // append new files to current list
         }
         core.file_list_cnt += file_list_cnt; // increase file count
@@ -404,13 +397,13 @@ int main(int argc, char* argv[]) {
         pthread_mutex_unlock(&file_list_mutex); // unlock mutex
 
         if (threads_uninit) { // if not done yet create threads for each node
-            printf("threads uninit\n"); // testing
             for (i = 0; i < core.ip_cnt; i ++) {
                 thread_id[i] = i;
+                // (todo : don't create all threads at the start only if num files over num nodes)
                 int ret = pthread_create( &node_thread[i], NULL, node_handler,
                                         (void*) (&thread_id[i]) );
 		
-		        printf("creating thread %d\n", i); // testing
+		        printf("creating thread %d\n", i + 1); // testing
                 if (ret != 0) {
                     ERROR("Error creating thread %d", i);
                     exit(EXIT_FAILURE);
@@ -426,6 +419,8 @@ int main(int argc, char* argv[]) {
     // joining client side threads
     for (i = 0; i < ip_cnt; i++) {
         int ret = pthread_join(node_thread[i], NULL);
+        // (todo : only join a thread if it has been used)
+        printf("joining thread %d\n", i + 1); // testing
         if (ret != 0) {
             ERROR("Error joining thread %d", i);
             //exit(EXIT_FAILURE);
