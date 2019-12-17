@@ -78,27 +78,26 @@ int main(int argc, char* argv[]) {
         char command[PATH_MAX * 2 + 1]; // declare a string to pass command
         sprintf(command, "%s %s", SCRIPT, buffer); // define the command
         INFO("Command to be run %s.", command);
-        int pid = system_async(command); // 
+        int pid = system_async(command); // execute command
         int status = wait_async(pid);
 
-        //Copy a string to buffer
-        if (status == 0) { //successful execution
+        // copy a string to buffer
+        if (status == 0) { // successful execution
             strcpy(buffer, "done.");
-        } else if (status == -1) { //terminated due to signal
+
+        } else if (status == -1) { // terminated due to signal
             strcpy(buffer, "crashed.");
+
         } else if (status > 0) {
             sprintf(buffer, "failed with exit status %d.", status);
         }
 
-        //send a message to the client
-        send_full_msg(connectfd, buffer, strlen(buffer));
+        send_full_msg(connectfd, buffer, strlen(buffer)); // send a message to the client
 
-        //close down the client connection
-        TCP_server_disconnect_client(connectfd);
+        TCP_server_disconnect_client(connectfd); // close down the client connection
     }
 
-    //close the down the listening socket
-    TCP_server_shutdown(listenfd);
+    TCP_server_shutdown(listenfd); // close the down the listening socket
 
     return 0;
 }
