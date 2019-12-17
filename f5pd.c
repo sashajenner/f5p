@@ -36,24 +36,19 @@ SOFTWARE.
 #include <string.h>
 #include <unistd.h>
 
-//maximum limit for a file path
-#define PATH_MAX 4096
-//upper limit for the communication buffer
-#define BUFFER_SIZE 4096
-//hardcoded location of the pipeline script
-#define SCRIPT "/nanopore/bin/fast5_pipeline.sh"
-//port in which the deamon will listen
-#define PORT 20022
+#define PATH_MAX 4096 // maximum limit for a file path
+#define BUFFER_SIZE 4096 // upper limit for the communication buffer
+#define SCRIPT "/nanopore/bin/fast5_pipeline.sh" // hardcoded location of the pipeline script
+#define PORT 20022 // port in which the deamon will listen
 
 void sig_handler(int sig) {
     void* array[100];
     size_t size = backtrace(array, 100);
-    ERROR("I regret to inform that a segmentation fault occurred. But at least "
-          "it is better than a wrong answer%s",
-          ".");
+    ERROR("I regret to inform that a segmentation fault occurred. "
+            "But at least it is better than a wrong answer.%s",
+            "");
     fprintf(stderr,
-            "[%s::DEBUG]\033[1;35m Here is the backtrace in case it is of any "
-            "use:\n",
+            "[%s::DEBUG]\033[1;35m Here is the backtrace in case it is of any use:\n",
             __func__);
     backtrace_symbols_fd(&array[2], size - 1, STDERR_FILENO);
     fprintf(stderr, "\033[0m\n");
@@ -63,33 +58,27 @@ void sig_handler(int sig) {
 int main(int argc, char* argv[]) {
     signal(SIGSEGV, sig_handler);
 
-    //buffer for communication
-    char buffer[BUFFER_SIZE];
+    char buffer[BUFFER_SIZE]; // buffer for communication
 
-    //create a listening socket on port
-    int listenfd = TCP_server_init(PORT);
+    int listenfd = TCP_server_init(PORT); // create a listening socket on port
 
     while (1) {
-        //accept a client connection
-        int connectfd = TCP_server_accept_client(listenfd);
+        int connectfd = TCP_server_accept_client(listenfd); // accept a client connection
+        int received = recv_full_msg(connectfd, buffer, BUFFER_SIZE); // get message from client
 
-        //get message from client
-        int received = recv_full_msg(connectfd, buffer, BUFFER_SIZE);
+        // print the message
+        buffer[received] = '\0'; // append null byte before printing the string
+        INFO("Received %s.", buffer);
 
-        //print the message
-        buffer[received] = '\0'; //null character before printing the string
-        INFO("Recieved %s.", buffer);
-
-        //some hidden quit method
-        if (strcmp(buffer, "quit!") == 0) {
+        if (strcmp(buffer, "quit!") == 0) { // exit if the message is "quit!"
             return 0;
         }
 
-        //execute the script
-        char command[PATH_MAX * 2];
-        sprintf(command, "%s %s", SCRIPT, buffer);
+        // execute the script
+        char command[PATH_MAX * 2 + 1]; // declare a string to pass command
+        sprintf(command, "%s %s", SCRIPT, buffer); // define the command
         INFO("Command to be run %s.", command);
-        int pid = system_async(command);
+        int pid = system_async(command); // 
         int status = wait_async(pid);
 
         //Copy a string to buffer
