@@ -400,8 +400,6 @@ int main(int argc, char* argv[]) {
 
             threads_uninit = false;
         }
-
-        free(line); // (deprecated ?)
     }
 
     // joining client side threads
@@ -419,7 +417,11 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    free(ip_list);
+    // free each ip string in the list of ips
+    for(i = 0; i < ip_cnt; i ++) {
+        free(ip_list[i]);
+    }
+    free(ip_list); // free the ip list
 
 
         // write fail logs
@@ -459,7 +461,12 @@ int main(int argc, char* argv[]) {
         }
 
         fclose(other_failed_report); // close other report file
-        free(core.file_list);
+
+        // free each filename in the list of files
+        for (i = 0; i < core.file_list_cnt; i ++) {
+            free(core.file_list[i]);
+        }
+        free(core.file_list); // free the file list
     }
 
     INFO("Everything done. Elapsed time: %.3fh", (realtime() - initial_time)/3600);
