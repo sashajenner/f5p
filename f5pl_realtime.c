@@ -54,14 +54,14 @@ typedef struct {
     int32_t failed_other      // failed due to another reason. See the logs.
         [MAX_FILES];
     int32_t failed_other_cnt; // the number of other failures
-    bool eof_signalled;        // the flag for EOF signalled
+    bool eof_signalled;       // the flag for EOF signalled
 } node_global_args_t;
 
 node_global_args_t core; // remember that core is used throughout
 
 double initial_time = 0;
 
-// thread function that handles each node
+/ thread function that handles each node
 void* node_handler(void* arg) {
     
     int32_t tid = *((int32_t*) arg); // thread index
