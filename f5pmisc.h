@@ -89,11 +89,7 @@ static inline int system_async(char* buffer) {
                     __func__, strerror(errno));
             exit(EXIT_FAILURE);
         }
-
-    } //else {
-        //int status; (deprecated ?)
-        //wait(&status); // parent waits till child closes
-    //}
+    }
 
     return pid;
 }
@@ -101,10 +97,12 @@ static inline int system_async(char* buffer) {
 static inline int wait_async(int pid) {
     int status = 0;
     int ret = waitpid(pid, &status, 0);
+
     if (ret < 0) {
         perror("Waiting failed. Premature exit of a child?");
         exit(EXIT_FAILURE);
     }
+
     if (WIFEXITED(status)) {
         return WEXITSTATUS(status);
     } else {
