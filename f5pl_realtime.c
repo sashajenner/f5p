@@ -393,9 +393,9 @@ int main(int argc, char* argv[]) {
 
     // joining client side threads
     for (i = 0; i < ip_cnt; i ++) {
+        printf("joining thread %d\n", i + 1); // testing
         int ret = pthread_join(node_thread[i], NULL);
         // (todo : only join a thread if it has been used)
-        printf("joining thread %d\n", i + 1); // testing
         if (ret != 0) {
             ERROR("Error joining thread %d", i + 1);
             //exit(EXIT_FAILURE);
