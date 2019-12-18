@@ -61,7 +61,7 @@ node_global_args_t core; // remember that core is used throughout
 
 double initial_time = 0;
 
-/ thread function that handles each node
+// thread function that handles each node
 void* node_handler(void* arg) {
     
     int32_t tid = *((int32_t*) arg); // thread index
