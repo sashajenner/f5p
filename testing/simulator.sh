@@ -38,7 +38,7 @@ for filename_path in $F5_DIR/*.tar; do # files with tar extension in the fast5 d
 	
 	((i++)) # increment the counter
 	
-	filename_pathless=$(basename -- "$filename_path") # extract the filename without the path
+	filename_pathless=$(basename $filename_path) # extract the filename without the path
 	filename="${filename_pathless%%.*}" # extract the filename without the extension nor the path
 
 	## Copy the corresponding fast5 and fastq to the output directory
@@ -49,7 +49,7 @@ for filename_path in $F5_DIR/*.tar; do # files with tar extension in the fast5 d
 
 	# if file copying fails
 	if [ "$(mkdir -p $OUTPUT_DIR/fast5 && cp $F5_DIR/$filename.fast5.tar "$_")" -a \
-		"$(mkdir -p $OUTPUT_DIR/fastq && cp $FQ_DIR*$filename.fastq.gz "$_")" == 0 ]; then
+		"$(mkdir -p $OUTPUT_DIR/fastq && cp $FQ_DIR/fastq_*_$filename.fastq.gz "$_")" == 0 ]; then
         printf $GREEN
 		echo "- failed copy $i"
         printf $NORMAL
