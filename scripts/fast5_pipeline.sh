@@ -83,8 +83,4 @@ rm -f $SAM_LOCAL $BAM_LOCAL $BAM_LOCAL.bai $METH_LOCAL # remove SAM, BAM and met
 
 ls -a $SCRATCH # testing
 
-exit $exit_status # return the exit status  
-
-
-
-
+exit $exit_status # return the exit status
