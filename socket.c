@@ -36,10 +36,10 @@ SOFTWARE.
 #include <netinet/tcp.h>
 #include <stdint.h>
 
-//verbosity
-int verbose_socklibc = 1; //1 special-recommended //2 errors, //3 warnings //4 info
+// verbosity
+int verbose_socklibc = 1; // 1 special-recommended, 2 errors, 3 warnings, 4 info
 
-/*****************Internal Function prototypes that are not included in socket.h ***********************/
+/*****************Internal function prototypes that are not included in socket.h*****************/
 
 /*Die on error. Print the error and exit if the return value of the previous function is -1*/
 void errorCheck(int ret, char* msg);
@@ -63,15 +63,15 @@ int recv_all_try(int socket, void* buffer, int64_t length, int times);
 #define INFO(arg, ...)                                                         \
     fprintf(stderr, "[%s::INFO] " arg "\n", __func__, __VA_ARGS__)
 
-/*******************************Blocking send and receive***********************************/
+/************************************Blocking send and receive************************************/
 
-/*Send the number of bytes to be sent. Then send the actual data.*/
+// Send the number of bytes to be sent. Then send the actual data.
 void send_full_msg(int socket, void* buffer, int64_t length) {
     send_all(socket, &length, sizeof(int64_t));
     send_all(socket, buffer, length);
 }
 
-/*First receive the number of bytes to be received. Then receive the actual data to the buffer. */
+// First receive the number of bytes to be received. Then receive the actual data to the buffer.
 int64_t recv_full_msg(int socket, void* buffer, int64_t length) {
     int64_t expected_length = 0;
     recv_all(socket, &expected_length, sizeof(int64_t));
@@ -112,11 +112,11 @@ int64_t recv_full_msg_try(int socket, void* buffer, int64_t length, int times) {
     return expected_length;
 }
 
-/***************************Server side*******************************************************/
+/*******************************************Server side*******************************************/
 
-/*Create a TCP socket, bind and then listen*/
+// Create a TCP socket, bind and then listen
 int TCP_server_init(int PORT) {
-    //initialize variables
+    // initialize variables
     int listenfd, ret;
     struct sockaddr_in server;
 
@@ -124,21 +124,24 @@ int TCP_server_init(int PORT) {
     server.sin_addr.s_addr = htonl(INADDR_ANY);
     server.sin_port = htons(PORT);
 
-    //open socket bind and listen
+    // open socket bind and listen
     listenfd = socket(AF_INET, SOCK_STREAM, 0);
     errorCheck(listenfd, "Cannot create socket");
 
-    /****sophisticated way of binding*/
+    // sophisticated way of binding 
 
-    //This lets a port be used as soon as the using program ends. Otherwise you will get "Cannot bind : Address is used"
-    //for few minutes after the program that previously used the port exists
+    /* 
+    ** This lets a port be used as soon as the using program ends. 
+    ** Otherwise you will get "Cannot bind : Address is used"
+    ** for few minutes after the program that previously used the port exists 
+    */
     int enable = 1;
     if (setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) <
         0 && verbose_socklibc>=1) {
         WARNING("%s", "setsockopt(SO_REUSEADDR) failed");
     }
 
-    //try binding
+    // try binding
     ret = -1;
     while (ret == -1) {
         ret = bind(listenfd, (struct sockaddr*)&server, sizeof(server));
@@ -153,18 +156,14 @@ int TCP_server_init(int PORT) {
         }
     }
 
-    /*** end of the sophisticated way*/
-
-    /*following (commented) is the simplest way of doing it. But You will get "Cannot bind : Address is used"
-    for few minutes after the program that used the port exited */
-    //ret=bind(listenfd,(struct sockaddr *)&server, sizeof(server));
+    // end of the sophisticated way
 
     errorCheck(ret, "Cannot bind");
     if(verbose_socklibc>=4){
 		INFO("Binding successfull to port %d.", PORT);
 	}
 
-    //now listen
+    // now listen
     ret = listen(listenfd, 5);
     errorCheck(ret, "Cannot listen");
 	if(verbose_socklibc>=4){
@@ -174,18 +173,18 @@ int TCP_server_init(int PORT) {
     return listenfd;
 }
 
-/*Accept a client*/
+// Accept a client
 int TCP_server_accept_client(int listenfd) {
     int connectfd;
 
     struct sockaddr_in client;
     socklen_t clientlen = sizeof(client);
 
-    //accept connections
+    // accept connections
     connectfd = accept(listenfd, (struct sockaddr*)&client, &clientlen);
     errorCheck(connectfd, "Cannot accept");
 
-    //get ip to string
+    // get ip to string
     char ip[16];
     inet_ntop(AF_INET, &client.sin_addr, ip, clientlen);
 	if(verbose_socklibc>=4){
@@ -195,9 +194,9 @@ int TCP_server_accept_client(int listenfd) {
     return connectfd;
 }
 
-/*Disconnect a connected client*/
+// Disconnect a connected client
 void TCP_server_disconnect_client(int connectfd) {
-    //close sockets
+    // close sockets
     int ret = close(connectfd);
     errorCheck(ret, "Cannot close socket.");
     if(verbose_socklibc>=4){
@@ -205,23 +204,23 @@ void TCP_server_disconnect_client(int connectfd) {
 	}
 }
 
-/*Close down the listening socket*/
+// Close down the listening socket
 void TCP_server_shutdown(int listenfd) {
-    //we do not need the listening socket now
+    // we do not need the listening socket now
     int ret = close(listenfd);
     errorCheck(ret, "Cannot close socket.");
 }
 
-/********************************Client side***************************************************/
+/*******************************************Client side*******************************************/
 
-/* Connect to a TCP server at PORT at ip*/
+// Connect to a TCP server at PORT at ip
 int TCP_client_connect(char* ip, int PORT) {
-    //socket for connecting
+    // socket for connecting
     int socketfd = socket(AF_INET, SOCK_STREAM, 0);
     errorCheck(socketfd, "Cannot create socket.");
 
-    //tcpkeepalive activation (https://www.tldp.org/HOWTO/html_single/TCP-Keepalive-HOWTO/)
-    /* Set the option active */   
+    // tcpkeepalive activation (https://www.tldp.org/HOWTO/html_single/TCP-Keepalive-HOWTO/)
+    // Set the option active  
     int optval = 1;
     socklen_t optlen = sizeof(optval);
     if(setsockopt(socketfd, SOL_SOCKET, SO_KEEPALIVE, &optval, optlen) < 0 ) {
@@ -230,9 +229,16 @@ int TCP_client_connect(char* ip, int PORT) {
 		}
     }
     else{
-        //TCP_KEEPCNT: overrides tcp_keepalive_probes : the number of unacknowledged probes to send before considering the connection dead and notifying the application layer
-        //TCP_KEEPIDLE: overrides tcp_keepalive_time : the interval between the last data packet sent (simple ACKs are not considered data) and the first keepalive probe; after the connection is marked to need keepalive, this counter is not used any further
-        //TCP_KEEPINTVL: overrides  tcp_keepalive_intvl : the interval between subsequential keepalive probes, regardless of what the connection has exchanged in the meantime
+        /* TCP_KEEPCNT: overrides tcp_keepalive_probes : the number of unacknowledged probes to send
+         * before considering the connection dead and notifying the application layer
+         *
+         * TCP_KEEPIDLE: overrides tcp_keepalive_time : the interval between the last data packet sent
+         * (simple ACKs are not considered data) and the first keepalive probe; after the connection is
+         * marked to need keepalive, this counter is not used any further
+         * 
+         * TCP_KEEPINTVL: overrides  tcp_keepalive_intvl : the interval between subsequential keepalive probes,
+         * regardless of what the connection has exchanged in the meantime
+         */
         optval=5;
         int ret1=setsockopt(socketfd, IPPROTO_TCP, TCP_KEEPCNT, &optval, optlen);
         optval=300;
@@ -247,16 +253,13 @@ int TCP_client_connect(char* ip, int PORT) {
                   
     }
 
-    //initializing the server address and assigning port numbers
+    // initializing the server address and assigning port numbers
     struct sockaddr_in server;
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = inet_addr(ip);
     server.sin_port = htons(PORT);
 
-    //connecting. The following (comment) tries ones and giveup
-    //int ret=connect(socketfd,(struct sockaddr *)&server, sizeof(server));
-
-    //try connecting until successful. this is better than trying once and giving up
+    // try connecting until successful
     int ret = -1;
     while (ret == -1) {
         ret = connect(socketfd, (struct sockaddr*)&server, sizeof(server));
@@ -272,23 +275,30 @@ int TCP_client_connect(char* ip, int PORT) {
 }
 
 
-/* Connect to a TCP server at PORT at ip, but give up after 'times' number of times*/
+// Connect to a TCP server at PORT at ip, but give up after 'times' number of times
 int TCP_client_connect_try(char* ip, int PORT, int times) {
-    //socket for connecting
+    // socket for connecting
     int socketfd = socket(AF_INET, SOCK_STREAM, 0);
     errorCheck(socketfd, "Cannot create socket.");
 
-    //tcp keepalive activation (https://www.tldp.org/HOWTO/html_single/TCP-Keepalive-HOWTO/)
-    /* Set the option active */   
+    // tcp keepalive activation (https://www.tldp.org/HOWTO/html_single/TCP-Keepalive-HOWTO/)
+    // Set the option active
     int optval = 1;
     socklen_t optlen = sizeof(optval);
     if(setsockopt(socketfd, SOL_SOCKET, SO_KEEPALIVE, &optval, optlen) < 0) {
         if(verbose_socklibc>=1) WARNING("%s","Could not enable tcp keepalive. Dead host detection will not work.");        
     }
     else{
-        //TCP_KEEPCNT: overrides tcp_keepalive_probes : the number of unacknowledged probes to send before considering the connection dead and notifying the application layer
-        //TCP_KEEPIDLE: overrides tcp_keepalive_time : the interval between the last data packet sent (simple ACKs are not considered data) and the first keepalive probe; after the connection is marked to need keepalive, this counter is not used any further
-        //TCP_KEEPINTVL: overrides  tcp_keepalive_intvl : the interval between subsequential keepalive probes, regardless of what the connection has exchanged in the meantime
+        /* TCP_KEEPCNT: overrides tcp_keepalive_probes : the number of unacknowledged probes to send
+         * before considering the connection dead and notifying the application layer
+         *
+         * TCP_KEEPIDLE: overrides tcp_keepalive_time : the interval between the last data packet sent
+         * (simple ACKs are not considered data) and the first keepalive probe; after the connection is
+         * marked to need keepalive, this counter is not used any further
+         * 
+         * TCP_KEEPINTVL: overrides  tcp_keepalive_intvl : the interval between subsequential keepalive probes,
+         * regardless of what the connection has exchanged in the meantime
+         */
         optval=5;
         int ret1=setsockopt(socketfd, IPPROTO_TCP, TCP_KEEPCNT, &optval, optlen);
         optval=300;
@@ -303,16 +313,14 @@ int TCP_client_connect_try(char* ip, int PORT, int times) {
                   
     }
 
-    //initializing the server address and assigning port numbers
+    // initializing the server address and assigning port numbers
     struct sockaddr_in server;
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = inet_addr(ip);
     server.sin_port = htons(PORT);
 
-    //connecting. The following (comment) tries ones and giveup
-    //int ret=connect(socketfd,(struct sockaddr *)&server, sizeof(server));
 
-    //try connecting until successful. this is better than trying once and giving up
+    // try connecting until successful
     int ret = -1;
     int counter = 0;
     while (ret == -1) {
@@ -335,18 +343,19 @@ int TCP_client_connect_try(char* ip, int PORT, int times) {
     return socketfd;
 }
 
-/* Disconnect*/
+// Disconnect
 void TCP_client_disconnect(int socketfd) {
-    //closing sockets
+    // closing sockets
     int ret = shutdown(socketfd, SHUT_RDWR);
     errorCheck(ret, "Cannot disconnect.");
     ret = close(socketfd);
     errorCheck(ret, "Cannot close socket.");
 }
 
-/************************************Internal Functions*****************************************/
 
-/*Die on error. Print the error and exit if the return value of the previous function is -1*/
+/***************************************Internal Functions***************************************/
+
+// Die on error. Print the error and exit if the return value of the previous function is -1
 void errorCheck(int ret, char* msg) {
     if (ret == -1) {
         if(verbose_socklibc>=1){
@@ -356,7 +365,7 @@ void errorCheck(int ret, char* msg) {
     }
 }
 
-/*Send length number of bytes from the buffer. This is a blocking call.*/
+// Send length number of bytes from the buffer. This is a blocking call.
 void send_all(int socket, void* buffer, int64_t length) {
     char* ptr = (char*)buffer;
     int64_t i = 0;
@@ -374,7 +383,7 @@ void send_all(int socket, void* buffer, int64_t length) {
     return;
 }
 
-/*Receive length number of bytes to the buffer. This is a blocking call. Make sure that buffer is big enough.*/
+// Receive length number of bytes to the buffer. This is a blocking call. Make sure that buffer is big enough.
 void recv_all(int socket, void* buffer, int64_t length) {
     char* ptr = (char*)buffer;
     int64_t i = 0;
@@ -392,7 +401,7 @@ void recv_all(int socket, void* buffer, int64_t length) {
     return;
 }
 
-/*Receive length number of bytes to the buffer. This is a blocking call. Make sure that buffer is big enough.*/
+// Receive length number of bytes to the buffer. This is a blocking call. Make sure that buffer is big enough.
 int recv_all_try(int socket, void* buffer, int64_t length, int times) {
     char* ptr = (char*)buffer;
     int64_t i = 0;
