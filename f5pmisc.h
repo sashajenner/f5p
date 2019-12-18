@@ -70,15 +70,19 @@ static inline int system_async(char* buffer) {
         }
     }
 
-    // fork a new process. If child replace the binary. Wait parent till child exists
+    /* fork a new process
+     * child executes script
+     * parent waits till child exits */
+
     pid = fork();
 
-    if (pid < 0) {
+    if (pid < 0) { // if the fork failed
         perror("Fork failed");
         exit(EXIT_FAILURE);
 
-    } else if (pid == 0) {
-        int check = execv(arglist[0], arglist);
+    } else if (pid == 0) { // if child process
+        int check = execv(arglist[0], arglist); // execute the script
+
         if (check == -1) { // if cannot execute print an error and exit child
             fprintf(stderr,
                     "[%s::ERROR]\033[1;31m Execution failed : %s.\033[0m\n",
@@ -86,11 +90,10 @@ static inline int system_async(char* buffer) {
             exit(EXIT_FAILURE);
         }
 
-    } else {
-        return pid;
+    } //else {
         //int status; (deprecated ?)
         //wait(&status); // parent waits till child closes
-    }
+    //}
 
     return pid;
 }
