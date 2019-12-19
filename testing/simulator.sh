@@ -29,6 +29,7 @@ FQ_DIR="$INPUT_DIR"/fastq/
 TIME=$3
 NO_FILES=${4:--1} # default value of -1 if parameter unset
 
+RED="\033[0;31m"
 GREEN="\033[34m"
 NORMAL="\033[0;39m"
 i=0 # initialise a file counter
@@ -44,18 +45,32 @@ for filename_path in $F5_DIR/*.tar; do # files with tar extension in the fast5 d
 	## Copy the corresponding fast5 and fastq to the output directory
     
     printf $GREEN # set font colour to green
-	echo "copying $i" # print without newline
+	echo "fast5: copying $i"
     printf $NORMAL # set font colour back to normal
 
-	# if file copying fails
-	if [ "$(mkdir -p $OUTPUT_DIR/fast5 && cp $F5_DIR/$filename.fast5.tar "$_")" -a \
-		"$(mkdir -p $OUTPUT_DIR/fastq && cp $FQ_DIR/fastq_*.$filename.fastq.gz "$_")" == 0 ]; then
-        printf $GREEN
-		echo "- failed copy $i"
+	# if fast5 file copying fails
+	if [ "$(mkdir -p $OUTPUT_DIR/fast5 && cp $F5_DIR/$filename.fast5.tar "$_")" == 0 ]; then
+        printf $RED
+		echo "- fast5: failed copy $i"
         printf $NORMAL
 	else
         printf $GREEN
-		echo "+ finished copy $i"
+		echo "+ fast5: finished copy $i"
+        printf $NORMAL
+	fi
+
+	printf $GREEN
+	echo "fastq: copying $i"
+    printf $NORMAL
+
+	# if fastq file copying fails
+	if [ "$(mkdir -p $OUTPUT_DIR/fastq && cp $FQ_DIR/fastq_*.$filename.fastq.gz "$_")" == 0 ]; then
+        printf $RED
+		echo "- fastq: failed copy $i"
+        printf $NORMAL
+	else
+        printf $GREEN
+		echo "+ fastq: finished copy $i"
         printf $NORMAL
 	fi
 
