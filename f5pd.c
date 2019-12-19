@@ -39,7 +39,7 @@ SOFTWARE.
 #define PATH_MAX 4096 // maximum limit for a file path
 #define BUFFER_SIZE 4096 // upper limit for the communication buffer
 #define SCRIPT "/nanopore/bin/fast5_pipeline.sh" // hardcoded location of the pipeline script
-#define PORT 20022 // port in which the deamon will listen
+#define PORT 20022 // port in which the daemon will listen
 
 void sig_handler(int sig) {
     void* array[100];
