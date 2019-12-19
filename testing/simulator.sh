@@ -44,34 +44,22 @@ for filename_path in $F5_DIR/*.tar; do # files with tar extension in the fast5 d
 
 	## Copy the corresponding fast5 and fastq to the output directory
     
-    printf $GREEN # set font colour to green
-	echo "fast5: copying $i"
-    printf $NORMAL # set font colour back to normal
+	echo -e $GREEN"fast5: copying $i"$NORMAL # set font colour to green and then back to normal
 
 	# if fast5 file copying fails
 	if [ "$(mkdir -p $OUTPUT_DIR/fast5 && cp $F5_DIR/$filename.fast5.tar "$_")" == 0 ]; then
-        printf $RED
-		echo "- fast5: failed copy $i"
-        printf $NORMAL
+		echo -e $RED"- fast5: failed copy $i"$NORMAL
 	else
-        printf $GREEN
-		echo "+ fast5: finished copy $i"
-        printf $NORMAL
+		echo -e $GREEN"+ fast5: finished copy $i"$NORMAL
 	fi
 
-	printf $GREEN
-	echo "fastq: copying $i"
-    printf $NORMAL
+	echo -e $GREEN"fastq: copying $i"$NORMAL
 
 	# if fastq file copying fails
 	if [ "$(mkdir -p $OUTPUT_DIR/fastq && cp $FQ_DIR/fastq_*.$filename.fastq.gz "$_")" == 0 ]; then
-        printf $RED
-		echo "- fastq: failed copy $i"
-        printf $NORMAL
+		echo -e $RED"- fastq: failed copy $i"$NORMAL
 	else
-        printf $GREEN
-		echo "+ fastq: finished copy $i"
-        printf $NORMAL
+		echo -e $GREEN"+ fastq: finished copy $i"$NORMAL
 	fi
 
     if [ $i -eq $NO_FILES ]; then

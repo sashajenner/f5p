@@ -70,8 +70,7 @@ void* node_handler(void* arg) {
 
     // create report file
     char report_fname[100]; // declare file name
-    // (todo: handle creating directory first if not already created)
-    sprintf(report_fname, "dev/dev%d.cfg", tid + 1); // define file name
+    sprintf(report_fname, "dev%d.cfg", tid + 1); // define file name
     FILE* report = fopen(report_fname, "w"); // open file for writing
     NULL_CHK(report); // check file isn't null
 

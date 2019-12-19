@@ -4,8 +4,8 @@ test -e data/logs/failed_other.cfg || exit 1
 
 mkdir data/logs/failed_other/
 
-grep -v "^#" data/logs/failed_other.cfg | while read filepath
-do
+grep -v "^#" data/logs/failed_other.cfg | 
+while read filepath; do
 
 	file=$(basename $filepath)
     prefix=${file%%.*} 
