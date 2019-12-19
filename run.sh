@@ -1,11 +1,12 @@
 #!/bin/bash
 # @author: Hasindu Gamaarachchi (hasindu@unsw.edu.au)
+# @coauthor: Sasha Jenner (jenner.sasha@gmail.com)
 
 ###############################################################################
 
 ## Some changeable definitions
 
-# folder containing the dataset
+# folder containing test dataset
 FOLDER=/mnt/778/778-1500ng/778-1500ng_albacore-2.1.3/
 
 # folder containing the fast5 tar files
@@ -53,27 +54,27 @@ test -d $FAST5FOLDER || exit 1
 # copy the pipeline script across the worker nodes
 ansible all -m copy -a "src=$PIPELINE_SCRIPT dest=/nanopore/bin/fast5_pipeline.sh mode=0755" 
 
-./f5pd & #(when + where is this supposed to be executed?)
+# (deprecated?) ansible all -m shell -a "cd /nanopore/bin/; ./f5pd &" #(when + where is this supposed to be executed?)
 
 # testing
 # execute simulator in the background giving time for monitor to set up
-(sleep 10; bash testing/simulator.sh ../../../scratch_nas/778/778-1500ng/778-1500ng_albacore-2.1.3/ testing/simulator_out $TIME_BETWEEN_FILES $NO_FILES) &
+(sleep 10; bash testing/simulator.sh /mnt/778/778-1500ng/778-1500ng_albacore-2.1.3/ /mnt/simulator_out $TIME_BETWEEN_FILES $NO_FILES) &
 
 # monitor the new file creation in fast5 folder and execute realtime f5 pipeline
-bash monitor/monitor.sh -n $NO_FILES testing/simulator_out/fast5/ | /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg 2>&1 | tee log.txt
+bash monitor/monitor.sh -n $NO_FILES /mnt/simulator_out/fast5/ | /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg 2>&1 | tee log.txt
 
-pkill f5pd
-pkill inotifywait
+pkill inotifywait # kill background simulator (does this work?)
 
 # handle the logs
 ansible all -m shell -a "cd /nanopore/scratch && tar zcvf logs.tgz *.log"
 gather.sh /nanopore/scratch/logs.tgz data/logs/log tgz #https://github.com/hasindu2008/nanopore-cluster/blob/master/system/gather.sh (todo : comment explanation)
 
-cp log.txt data/logs/
-mv *.cfg data/logs/
-cp $0 data/logs/
-cp $PIPELINE_SCRIPT data/logs/
+# move + copy files to logs folder
+cp log.txt data/logs/ # copy log file
+mv *.cfg data/logs/ # move all config files
+cp $0 data/logs/ # copy current script
+cp $PIPELINE_SCRIPT data/logs/ # copy pipeline script
 
-# get the logs of the datasets which the pipeline crashed
-scripts/failed_device_logs.sh
-cp -r data $FOLDER/f5pmaster
+scripts/failed_device_logs.sh # get the logs of the datasets which the pipeline crashed
+
+cp -r data $FOLDER/f5pmaster # copy entire data folder to local f5pmaster folder
