@@ -26,7 +26,7 @@ while [ ! $# -eq 0 ]; do # while there are arguments
             # iterating through the parameter directories
             for dir in $@; do
                 # append the absolute path of each directory to array `monitor_dirs`
-                monitor_dirs+=($(pwd)/$dir)
+                monitor_dirs+=$dir
             done
             break
 
