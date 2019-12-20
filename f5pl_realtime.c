@@ -37,24 +37,30 @@
 #define CONNECT_TIME_OUT 200
 
 // lock for accessing the list of tar files
-pthread_mutex_t file_list_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t global_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 // the global data structure used by threads
 typedef struct {
     char** file_list;         // the list of tar files
     int32_t file_list_idx;    // the current index for file_list
     int32_t file_list_cnt;    // the number of filled entries in file_list
+    int32_t completed_files;  // the number of completed files
+
     char** ip_list;           // the list of IP addresses
     int32_t ip_cnt;           // the number of filled entries in ip_list
+
     int32_t failed
-        [MAX_FILES];          // the indices (of file_list) for completely failed tar files due to device hangs (todo : malloc later)
+        [MAX_FILES];          // the indices (of file_list) for failed tar files due to device hangs (todo : malloc later)
     int32_t failed_cnt;       // the number of such failures
     int32_t num_hangs
         [MAX_IPS];            // number of times a node disconnected (todo : malloc later)
-    int32_t failed_other      // failed due to another reason. See the logs.
-        [MAX_FILES];
+
+    int32_t failed_other     
+        [MAX_FILES];          // failed due to processing failure
     int32_t failed_other_cnt; // the number of other failures
+
     bool eof_signalled;       // the flag for EOF signalled
+
 } node_global_args_t;
 
 node_global_args_t core; // remember that core is used throughout
@@ -74,24 +80,61 @@ void* node_handler(void* arg) {
     FILE* report = fopen(report_fname, "w"); // open file for writing
     NULL_CHK(report); // check file isn't null
 
+    int32_t i; // declaring for loop counter for later
+
     while (1) {
-        pthread_mutex_lock(&file_list_mutex); // lock mutex from other threads (todo : try to lock first?)
+        pthread_mutex_lock(&global_mutex); // lock mutex from other threads (todo : try to lock first?)
         int32_t fidx = core.file_list_idx; // define current file index
 
-        if (core.eof_signalled) { // if EOF has been signalled exit loop
-            pthread_mutex_unlock(&file_list_mutex); // unlock mutex
-            break;
-
-        } else if (fidx < core.file_list_cnt) { // if there are files to be processed
+        if (fidx < core.file_list_cnt) { // if there are files to be processed
             core.file_list_idx ++; // increment the file index
-            pthread_mutex_unlock(&file_list_mutex); // unlock mutex
+            pthread_mutex_unlock(&global_mutex); // unlock mutex
+        
+        // if EOF has been signalled exit loop and all the files are complete
+        } else if (core.eof_signalled && 
+                    core.completed_files == (core.file_list_cnt - core.failed_cnt - core.failed_other_cnt)) {
+            pthread_mutex_unlock(&global_mutex); // unlock mutex
+            break;
             
         } else if (fidx == core.file_list_cnt) { // else if there are no files to be processed look for files again
-            pthread_mutex_unlock(&file_list_mutex); // unlock mutex
+            pthread_mutex_unlock(&global_mutex); // unlock mutex
             continue;
+
+        } else { // there has been an error (fidx > core.file_list_cnt)
+            pthread_mutex_unlock(&global_mutex); // unlock mutex
+            fprintf(stderr, 
+                    "[t%d(%s)::INFO] Error while waiting for next file.\n",
+                    tid + 1, core.ip_list[tid]);
+            break;
         }
 
-        fprintf(stderr, "[t%d(%s)::INFO] Connecting to %s.\n",
+        // define flag for whether file is being reprocessed
+        bool reprocessing = false; // default false
+        /* retrieve the index first occurrence of the file in the file list for better error messages
+        with reprocessed files */
+        for (i = 0; i < core.file_list_cnt; i ++) { // loop through file names
+            if (core.file_list[i] == core.file_list[fidx]) { // if there is a match
+
+                if (fidx != i) { // if the current file index matches the counter
+                    fidx = i; // set file index to index first occurrence in file list
+                    reprocessing = true; // the file is being reprocessed
+                }
+                
+                break;
+            }
+        }
+
+        // define a counter for the number of failed files before the current file index
+        int32_t failed_before_cnt = 0;
+        for (i = 0; i < core.failed_cnt; i ++) { // loop through all the failed files
+            int32_t failed_idx = core.failed[i]; // retrieve the failed indices
+
+            if (failed_idx < fidx) { // if there is a failed file before the current file index
+                failed_before_cnt ++; // increment the counter
+            }
+        }
+
+        fprintf(stderr, "[t%d(%s)::INFO] Connecting to %s\n",
                 tid + 1, core.ip_list[tid], core.ip_list[tid]);
         int socketfd = TCP_client_connect_try(core.ip_list[tid], PORT, CONNECT_TIME_OUT); // try to connect
 
@@ -102,17 +145,33 @@ void* node_handler(void* arg) {
                     tid + 1, core.ip_list[tid], core.ip_list[tid]);
 
             // (todo : factor this logic as a function?)
-            pthread_mutex_lock(&file_list_mutex); // lock the mutex from other threads (todo : this can be a different lock for efficiency)
+            pthread_mutex_lock(&global_mutex); // lock the mutex from other threads (todo : this can be a different lock for efficiency)
+            
             int32_t failed_cnt = core.failed_cnt; // alias the current failed count
             core.failed_cnt ++; // increment the failed counter
             core.failed[failed_cnt] = fidx; // add file index to the failed array
-            pthread_mutex_unlock(&file_list_mutex); // unlock mutex
+
+            if (core.file_list_cnt <= MAX_FILES) { // if file count less than or equal to max continue
+                // append failed file to file list to be reprocessed
+                core.file_list[core.file_list_cnt] = core.file_list[fidx];
+                core.file_list_cnt ++; // increment the file counter
+            
+            } else { // else exit with error msg
+                ERROR("The number of files exceeded the hard coded limit of %d\n",
+                        MAX_FILES);
+                pthread_mutex_unlock(&global_mutex); // unlock mutex
+                exit(EXIT_FAILURE);
+            }
+
+            pthread_mutex_unlock(&global_mutex); // unlock mutex
 
             break;
         }
 
-        fprintf(stderr, "[t%d(%s)::INFO] Assigning %s (%d of %d) to %s.\n",
-                tid + 1, core.ip_list[tid], core.file_list[fidx], fidx + 1 , core.file_list_cnt, core.ip_list[tid]);
+        fprintf(stderr,
+                "[t%d(%s)::INFO] %s %s (%d) to %s\n",
+                tid + 1, core.ip_list[tid], reprocessing ? "Reassigning" : "Assigning",
+                core.file_list[fidx], fidx + 1 - failed_before_cnt, core.ip_list[tid]);
         
         send_full_msg(socketfd, core.file_list[fidx], strlen(core.file_list[fidx])); // send filename to thread
         // read msg into buffer and receive the buffer's expected length
@@ -132,11 +191,25 @@ void* node_handler(void* arg) {
                         "[t%d(%s)::ERROR]\033[1;31m Device %s failed %d times consecutively. Retiring the device. \033[0m\n",
                         tid + 1, core.ip_list[tid], core.ip_list[tid], count);
 
-                pthread_mutex_lock(&file_list_mutex); // lock the mutex from other threads (todo : this can be a different lock for efficiency)
+                pthread_mutex_lock(&global_mutex); // lock the mutex from other threads (todo : this can be a different lock for efficiency)
+                
                 int32_t failed_cnt = core.failed_cnt; // alias the current failed count
                 core.failed_cnt ++; // increment the number of failures
                 core.failed[failed_cnt] = fidx; // add the file index to the failed array
-                pthread_mutex_unlock(&file_list_mutex); // unlock the mutex
+                
+                if (core.file_list_cnt <= MAX_FILES) { // if file count less than or equal to max continue
+                    // append failed file to file list to be reprocessed
+                    core.file_list[core.file_list_cnt] = core.file_list[fidx];
+                    core.file_list_cnt ++; // increment the file counter
+            
+                } else { // else exit with error msg
+                    ERROR("The number of files exceeded the hard coded limit of %d\n",
+                            MAX_FILES);
+                    pthread_mutex_unlock(&global_mutex); // unlock mutex
+                    exit(EXIT_FAILURE);
+                }
+
+                pthread_mutex_unlock(&global_mutex); // unlock mutex
 
                 fclose(report); // close the report file
 
@@ -150,16 +223,30 @@ void* node_handler(void* arg) {
                     tid + 1, core.ip_list[tid], core.ip_list[tid]);
             socketfd = TCP_client_connect_try(core.ip_list[tid], PORT, CONNECT_TIME_OUT); // try to connect again
 
-            if (socketfd == -1){ // if no connection terminate thread
+            if (socketfd == -1) { // if no connection terminate thread
                 fprintf(stderr,
                         "[t%d(%s)::WARNING]\033[1;33m Connection initiation to device %s failed. Giving up hope on the device.\033[0m\n",
                         tid + 1, core.ip_list[tid], core.ip_list[tid]);  
 
-                pthread_mutex_lock(&file_list_mutex); // lock the mutex from other threads (todo : this can be a different lock for efficiency)
+                pthread_mutex_lock(&global_mutex); // lock the mutex from other threads (todo : this can be a different lock for efficiency)
+                
                 int32_t failed_cnt = core.failed_cnt; // alias the current failed count
                 core.failed_cnt ++; // increment the number of failures
                 core.failed[failed_cnt] = fidx; // add the file index to the failed array
-                pthread_mutex_unlock(&file_list_mutex); // unlock the mutex
+
+                if (core.file_list_cnt <= MAX_FILES) { // if file count less than or equal to max continue
+                    // append failed file to file list to be reprocessed
+                    core.file_list[core.file_list_cnt] = core.file_list[fidx];
+                    core.file_list_cnt ++; // increment the file counter
+            
+                } else { // else exit with error msg
+                    ERROR("The number of files exceeded the hard coded limit of %d\n",
+                            MAX_FILES);
+                    pthread_mutex_unlock(&global_mutex); // unlock mutex
+                    exit(EXIT_FAILURE);
+                }
+
+                pthread_mutex_unlock(&global_mutex); // unlock the mutex
 
                 fclose(report); // close the report file
 
@@ -169,9 +256,10 @@ void* node_handler(void* arg) {
                 pthread_exit(0); // terminate the thread
             }
 
-            fprintf(stderr, 
-                    "[t%d(%s)::INFO] Assigning %s (%d of %d) to %s\n", 
-                    tid + 1, core.ip_list[tid], core.file_list[fidx], fidx + 1 , core.file_list_cnt, core.ip_list[tid]);
+            fprintf(stderr,
+                    "[t%d(%s)::INFO] %s %s (%d) to %s\n",
+                    tid + 1, core.ip_list[tid], reprocessing ? "Reassigning" : "Assigning",
+                    core.file_list[fidx], fidx + 1 - failed_before_cnt, core.ip_list[tid]);
 
             send_full_msg(socketfd, core.file_list[fidx], strlen(core.file_list[fidx])); // send filename to thread
             // read msg into buffer and receive the buffer's expected length
@@ -180,30 +268,38 @@ void* node_handler(void* arg) {
 
         buffer[received] = '\0'; // append with null character before printing
         fprintf(stderr, 
-                "[t%d(%s)::INFO] Received message '%s'.\n", // print msg to standard error
-                tid + 1, core.ip_list[tid], buffer);
+                "[t%d(%s)::INFO] Received message '%s' (%d).\n", // print msg to standard error
+                tid + 1, core.ip_list[tid], buffer, fidx + 1 - failed_before_cnt);
 
         if (strcmp(buffer, "done.") == 0) { // if "done"
             fprintf(report, "%s\n", core.file_list[fidx]); // write filename to report
 
         } else if (strcmp(buffer, "crashed.") == 0) { // else if "crashed"
             fprintf(stderr,
-                    "[t%d(%s)::WARNING]\033[1;33m %s terminated due to a signal. Please inspect the device log.\033[0m\n",
-                    tid + 1, core.ip_list[tid], core.file_list[fidx]);
+                    "[t%d(%s)::WARNING]\033[1;33m %s (%d) terminated due to a signal. Please inspect the device log.\033[0m\n",
+                    tid + 1, core.ip_list[tid], core.file_list[fidx], fidx + 1 - failed_before_cnt);
 
+            pthread_mutex_lock(&global_mutex); // lock the mutex from other threads (todo : this can be a different lock for efficiency)
             int32_t failed_cnt = core.failed_other_cnt;
             core.failed_other_cnt ++; // increment number of other failures
             core.failed_other[failed_cnt] = fidx; // add file index to the other failed array
+            pthread_mutex_unlock(&global_mutex); // unlock the mutex
 
         } else {
             fprintf(stderr,
                     "[t%d(%s)::WARNING] \033[1;33m%s exited with a non 0 exit status. Please inspect the device log.\033[0m\n",
                     tid + 1, core.ip_list[tid], core.file_list[fidx]);
 
+            pthread_mutex_lock(&global_mutex); // lock the mutex from other threads (todo : this can be a different lock for efficiency)
             int32_t failed_cnt = core.failed_other_cnt;
             core.failed_other_cnt ++; // increment number of other failures
             core.failed_other[failed_cnt] = fidx; // add file index to the other failed array
+            pthread_mutex_unlock(&global_mutex); // unlock the mutex
         }
+
+        pthread_mutex_lock(&global_mutex); // lock the mutex from other threads (todo : this can be a different lock for efficiency)
+        core.completed_files ++; // increment the number of completed files
+        pthread_mutex_unlock(&global_mutex); // unlock the mutex
 
         TCP_client_disconnect(socketfd); // close the connection
     }
@@ -232,6 +328,7 @@ void sig_handler(int sig) {
 int main(int argc, char* argv[]) {
     signal(SIGSEGV, sig_handler);
     printf("started\n"); // testing
+    fflush(stdout); // will now print everything in the stdout buffer // testing
 
     // check there is 1 argument
     if (argc != 2) {
@@ -309,6 +406,7 @@ int main(int argc, char* argv[]) {
     // initialising core attributes
     core.file_list_idx = 0;
     core.file_list_cnt = 0;
+    core.completed_files = 0;
     core.failed_cnt = 0;
     core.failed_other_cnt = 0;
     core.ip_list = ip_list;
@@ -330,10 +428,11 @@ int main(int argc, char* argv[]) {
         if (feof(stdin)) {
             free(line);
             printf("EOF signaled\n"); // testing
+            fflush(stdout); // will now print everything in the stdout buffer // testing
 
-            pthread_mutex_lock(&file_list_mutex); // lock mutex from other threads
+            pthread_mutex_lock(&global_mutex); // lock mutex from other threads
             core.eof_signalled = true; // set the core's EOF flag to true
-            pthread_mutex_unlock(&file_list_mutex); // unlock mutex
+            pthread_mutex_unlock(&global_mutex); // unlock mutex
             break;
 
         // if filepath larger than max, exit with error msg   
@@ -357,7 +456,7 @@ int main(int argc, char* argv[]) {
             MALLOC_CHK(core.file_list); // check the core's file list isn't null, else exit with error msg
         }
 
-        pthread_mutex_lock(&file_list_mutex); // lock mutex from other threads
+        pthread_mutex_lock(&global_mutex); // lock mutex from other threads
 
         // if file count larger than max, exit with error msg
         if (core.file_list_cnt > MAX_FILES) {
@@ -371,7 +470,7 @@ int main(int argc, char* argv[]) {
         core.file_list[core.file_list_cnt] = line; // append new file to current list
         core.file_list_cnt ++; // increment the file counter
 
-        pthread_mutex_unlock(&file_list_mutex); // unlock mutex
+        pthread_mutex_unlock(&global_mutex); // unlock mutex
 
         if (threads_uninit) { // if not done yet create threads for each node
             for (i = 0; i < core.ip_cnt; i ++) {
@@ -380,6 +479,7 @@ int main(int argc, char* argv[]) {
                                         (void*) (&thread_id[i]) );
 		
 		        printf("creating thread %d\n", i + 1); // testing
+                fflush(stdout); // will now print everything in the stdout buffer // testing
                 if (ret != 0) {
                     ERROR("Error creating thread %d", i + 1);
                     exit(EXIT_FAILURE);
@@ -393,12 +493,14 @@ int main(int argc, char* argv[]) {
     // joining client side threads
     for (i = 0; i < ip_cnt; i ++) {
         printf("joining thread %d\n", i + 1); // testing
+        fflush(stdout); // will now print everything in the stdout buffer // testing
         int ret = pthread_join(node_thread[i], NULL);
-        // (todo : only join a thread if it has been used)
+        
         if (ret != 0) {
             ERROR("Error joining thread %d", i + 1);
             //exit(EXIT_FAILURE);
         }
+
         if (core.num_hangs[i] > 0) {
             INFO("Node %s disconnected/hanged %d times", 
                 core.ip_list[i], core.num_hangs[i]);
