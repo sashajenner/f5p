@@ -16,7 +16,7 @@ FAST5FOLDER=$FOLDER/fast5
 PIPELINE_SCRIPT="scripts/fast5_pipeline.sh"
 
 # testing constants
-NO_FILES=2
+NO_FILES=40
 TIME_BETWEEN_FILES=5
 
 ###############################################################################
@@ -58,11 +58,9 @@ ansible all -m copy -a "src=$PIPELINE_SCRIPT dest=/nanopore/bin/fast5_pipeline.s
 # execute simulator in the background giving time for monitor to set up
 (sleep 10; bash testing/simulator.sh /mnt/778/778-1500ng/778-1500ng_albacore-2.1.3/ /mnt/simulator_out $TIME_BETWEEN_FILES $NO_FILES) &
 
-bash monitor/monitor.sh -n $NO_FILES /mnt/simulator_out/fast5/ | bash monitor/ensure.sh # testing
-exit # testing
-
 # monitor the new file creation in fast5 folder and execute realtime f5 pipeline
-bash monitor/monitor.sh -n $NO_FILES /mnt/simulator_out/fast5/ | /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg 2>&1 | tee log.txt
+# close after 10 minutes
+bash monitor/monitor.sh -n $((NO_FILES*2)) -t -m 10 /mnt/simulator_out/fast5/ /mnt/simulator_out/fastq/ | bash monitor/ensure.sh | /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg 2>&1 | tee log.txt
 
 pkill inotifywait # kill background simulator (does this work?)
 
