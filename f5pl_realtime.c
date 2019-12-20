@@ -214,7 +214,7 @@ void* node_handler(void* arg) {
                 fclose(report); // close the report file
 
                 fprintf(stderr,
-                        "[t%d(%s)::INFO] \033[1;34m Processed list: %s Elapsed time: %.3fh \033[0m\n",
+                        "[t%d(%s)::INFO]\033[1;34m Processed list: %s Elapsed time: %.3fh \033[0m\n",
                         tid + 1, core.ip_list[tid], report_fname, (realtime() - initial_time) / 3600);
                 pthread_exit(0); // terminate the thread
             }
@@ -251,7 +251,7 @@ void* node_handler(void* arg) {
                 fclose(report); // close the report file
 
                 fprintf(stderr,
-                        "[t%d(%s)::INFO] \033[1;34m Processed list: %s Elapsed time: %.3fh \033[0m\n",
+                        "[t%d(%s)::INFO]\033[1;34m Processed list: %s Elapsed time: %.3fh \033[0m\n",
                         tid + 1, core.ip_list[tid], report_fname, (realtime() - initial_time) / 3600);
                 pthread_exit(0); // terminate the thread
             }
@@ -287,7 +287,7 @@ void* node_handler(void* arg) {
 
         } else {
             fprintf(stderr,
-                    "[t%d(%s)::WARNING] \033[1;33m%s exited with a non 0 exit status. Please inspect the device log.\033[0m\n",
+                    "[t%d(%s)::WARNING]\033[1;33m %s exited with a non 0 exit status. Please inspect the device log.\033[0m\n",
                     tid + 1, core.ip_list[tid], core.file_list[fidx]);
 
             pthread_mutex_lock(&global_mutex); // lock the mutex from other threads (todo : this can be a different lock for efficiency)
@@ -305,7 +305,7 @@ void* node_handler(void* arg) {
     }
 
     fprintf(stderr,
-            "[t%d(%s)::INFO] \033[1;34m Processed list: %s Elapsed time: %.3fh \033[0m\n",
+            "[t%d(%s)::INFO]\033[1;34m Processed list: %s Elapsed time: %.3fh \033[0m\n",
             tid + 1, core.ip_list[tid], report_fname, (realtime() - initial_time) / 3600);
 
     fclose(report); // close the report
