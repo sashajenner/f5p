@@ -29,12 +29,10 @@ format:
 	./scripts/autoformat.sh	
 
 test: all
-	./f5pd &
 	# execute simulator in the background giving time for monitor to set up
 	(sleep 10; bash testing/simulator.sh ../../../scratch_nas/778/778-1500ng/778-1500ng_albacore-2.1.3/ testing/simulator_out $(TIME_BETWEEN_FILES) $(NO_FILES)) &
 	# monitor the new file creation in fast5 folder and execute realtime f5 pipeline
 	bash monitor/monitor.sh -n $(NO_FILES) testing/simulator_out/fast5/ | /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg
-	pkill f5pd
 	pkill inotifywait
 		
 rsync: all
