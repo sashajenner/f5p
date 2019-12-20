@@ -23,21 +23,15 @@ file_list=() # declare file list
 
 while read filename; do
     parent_dir=${filename%/*} # strip filename from tar filepath
-    echo parent dir: $parent_dir # testing
     grandparent_dir=${parent_dir%/*} # strip parent directory from filepath
-    echo grandpa dir: $grandparent_dir # testing
     pathless=$(basename $filename) # strip path
-    echo pathless: $pathless # testing
     temp_prefix=${pathless%.*} # remove one extension
     prefix=${temp_prefix%.*} # extract the filename without the path or extension (remove 2nd extension)
-    echo prefix: $prefix # testing
-    echo --------------- # testing
 
     if echo $filename | grep -q .fast5.tar; then # if it is a fast5 file
         fastq_filename=$grandparent_dir/fastq/fastq_*.$prefix.fastq.gz
         
-        if [[ $file_list =~ (^|[[:space:]])"$fastq_filename"($|[[:space:]]) ]]; then # the fastq file exists
-            echo fast5 has corresponding fastq # testing
+        if echo ${file_list[@]} | grep -wq $fastq_filename; then # the fastq file exists
             echo $filename
             file_list=( "${file_list[@]/$fastq_filename}" ) # remove fastq filename from array
 
@@ -48,8 +42,7 @@ while read filename; do
     elif echo $filename | grep -q .fastq.gz; then # if it a fastq file
         fast5_filename=$grandparent_dir/fast5/${prefix##*.}.fast5.tar
         
-        if [[ $file_list =~ (^|[[:space:]])"$fast5_filename"($|[[:space:]]) ]]; then # the fast5 file exists
-            echo fastq has corresponding fast5 # testing
+        if echo ${file_list[@]} | grep -wq $fast5_filename; then # the fast5 file exists
             echo $fast5_filename
             file_list=( "${file_list[@]/$fast5_filename}" ) # remove fast5 filename from array
         
@@ -57,5 +50,5 @@ while read filename; do
             file_list+=( $filename )
         fi
     fi
-    echo ++++++++ # testing
+    
 done
