@@ -75,7 +75,7 @@ int main(int argc, char* argv[]) {
         }
 
         // execute the script
-        char command[PATH_MAX * 2 + 1]; // declare a string to pass command
+        char command[PATH_MAX * 2 + 2]; // declare a string to pass command
         sprintf(command, "%s %s", SCRIPT, buffer); // define the command
         INFO("Command to be run %s.", command);
         int pid = system_async(command); // execute command
