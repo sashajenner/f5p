@@ -18,7 +18,7 @@ $3 - time between copying batches
 
 '
 # require 3 parameters else give error msg
-: ${3?"Usage: $0 <in_dir> <out_dir> <time_between> [<no_files>]"}
+: ${3?"Usage: $0 <in_dir> <out_dir> <time_between> [<no_batches>]"}
 
 INPUT_DIR=$1
 OUTPUT_DIR=$2
@@ -27,7 +27,7 @@ F5_DIR="$INPUT_DIR"/fast5/
 FQ_DIR="$INPUT_DIR"/fastq/
 
 TIME=$3
-NO_FILES=${4:--1} # default value of -1 if parameter unset
+NO_BATCHES=${4:--1} # default value of -1 if parameter unset
 
 RED="\033[0;31m"
 GREEN="\033[34m"
@@ -62,7 +62,7 @@ for filename_path in $F5_DIR/*.tar; do # files with tar extension in the fast5 d
 		echo -e $GREEN"+ fastq: finished copy $i"$NORMAL
 	fi
 
-    if [ $i -eq $NO_FILES ]; then
+    if [ $i -eq $NO_BATCHES ]; then
         break
     fi
 
