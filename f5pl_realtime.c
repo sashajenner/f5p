@@ -92,9 +92,9 @@ void* node_handler(void* arg) {
         
         // if EOF has been signalled exit loop and all the files are complete
         } else if (core.eof_signalled && 
-                    core.completed_files == (core.file_list_cnt - core.failed_cnt - core.failed_other_cnt)) {
+                    core.completed_files == (core.file_list_cnt - core.failed_cnt)) {
             pthread_mutex_unlock(&global_mutex); // unlock mutex
-            break;
+            break; // (todo : exit thread properly (TCP disconnect?))
             
         } else if (fidx == core.file_list_cnt) { // else if there are no files to be processed look for files again
             pthread_mutex_unlock(&global_mutex); // unlock mutex
@@ -424,10 +424,10 @@ int main(int argc, char* argv[]) {
         MALLOC_CHK(line); // check the line isn't null, else exit with error msg
         int32_t readlinebytes = getline(&line, &line_size, stdin); // get the next line from standard input
 
-        // if EOF signaled free memory allocations and break from loop
+        // if EOF signalled free memory allocations and break from loop
         if (feof(stdin)) {
             free(line);
-            printf("EOF signaled\n"); // testing
+            printf("EOF signalled\n"); // testing
             fflush(stdout); // will now print everything in the stdout buffer // testing
 
             pthread_mutex_lock(&global_mutex); // lock mutex from other threads
