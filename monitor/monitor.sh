@@ -9,14 +9,14 @@ TEMP_FILE=temp # temporary file
 
 monitor_dirs=() # declare empty list of directories to monitor
 timeout=false # no timeout enabled by default
+flag=false # no flag on exit enabled by default
 
 ## Handle flags
 while [ ! $# -eq 0 ]; do # while there are arguments
     case "$1" in
 
-        --num_files | -n)
-            NO_FILES=$2
-            shift
+        --flag | -f)
+            flag=true
             ;;
 
         --help | -h)
@@ -29,6 +29,11 @@ while [ ! $# -eq 0 ]; do # while there are arguments
         -m, --minutes   "---------------" minutes
         -hr, --hours    "---------------" hours'
             exit
+            ;;
+
+        --num_files | -n)
+            NO_FILES=$2
+            shift
             ;;
 
         --timeout | -t)
@@ -81,7 +86,12 @@ reset_timer() {
 
 exit_safely() {
     rm $TEMP_FILE # remove the temporary file
-    kill -PIPE 0 # kill current and child processes
+
+    if $flag; then # if the flag option is enabled
+        echo -1
+    fi
+
+    # (todo : kill background while loop?)
 }
 
 touch $TEMP_FILE # create the temporary file

@@ -22,6 +22,11 @@ done
 file_list=() # declare file list
 
 while read filename; do
+
+    if [ "$filename" = "-1" ]; then # exit if flag sent
+        exit
+    fi
+
     parent_dir=${filename%/*} # strip filename from tar filepath
     grandparent_dir=${parent_dir%/*} # strip parent directory from filepath
     pathless=$(basename $filename) # strip path
