@@ -15,8 +15,8 @@ $1 - directory for files to be taken
 $2 - directory for files to be placed
 $3 - time between copying batches
 [$4 - number of batches]
-
 '
+
 # require 3 parameters else give error msg
 : ${3?"Usage: $0 <in_dir> <out_dir> <time_between> [<no_batches>]"}
 

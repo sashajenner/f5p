@@ -77,7 +77,8 @@ void* node_handler(void* arg) {
     // create report file
     char report_fname[100]; // declare file name
     sprintf(report_fname, "dev%d.cfg", tid + 1); // define file name
-    FILE* report = fopen(report_fname, "w"); // open file for writing
+    char *prp;
+    FILE* report = fopen(report_fname, "a"); // open file for writing
     NULL_CHK(report); // check file isn't null
 
     int32_t i; // declaring for loop counter for later

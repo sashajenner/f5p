@@ -10,10 +10,15 @@ TEMP_FILE=temp # temporary file
 monitor_dirs=() # declare empty list of directories to monitor
 timeout=false # no timeout enabled by default
 flag=false # no flag on exit enabled by default
+existing=false # existing files not outputed by default
 
 ## Handle flags
 while [ ! $# -eq 0 ]; do # while there are arguments
     case "$1" in
+
+        --existing | -e)
+            existing=true
+            ;;
 
         --flag | -f)
             flag=true
@@ -22,6 +27,8 @@ while [ ! $# -eq 0 ]; do # while there are arguments
         --help | -h)
             echo $USAGE
             echo 'Flags:
+-e, --existing      output existing files in monitor director(y/ies)
+-f, --flag          output flag of -1 if exited due to completion
 -h, --help          help message
 -n, --num_files     exits after given number of files
 -t, --timeout       exits after a specified time period of no new files
@@ -56,6 +63,8 @@ while [ ! $# -eq 0 ]; do # while there are arguments
                 *)
                     echo $USAGE
                     echo 'Flags:
+-e, --existing      output existing files in monitor director(y/ies)
+-f, --flag          output flag of -1 if exited due to completion
 -h, --help          help message
 -n, --num_files     exits after given number of files
 -t, --timeout       exits after a specified time period of no new files
@@ -79,6 +88,10 @@ while [ ! $# -eq 0 ]; do # while there are arguments
     esac
     shift
 done
+
+if $existing; then # if existing files option set
+    ls ${monitor_dirs[@]} -p | grep -v /
+fi
 
 reset_timer() {
     echo 0 > $TEMP_FILE # send flag to reset timer

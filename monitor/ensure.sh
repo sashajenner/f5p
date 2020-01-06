@@ -4,6 +4,8 @@
 
 USAGE="Usage: monitor.sh <fast5_dir> <fastq_dir> | $0" # piped with monitor.sh script
 
+resume=false # set resume option to false by default
+
 ## Handle flags
 while [ ! $# -eq 0 ]; do # while there are arguments
     case "$1" in
@@ -11,9 +13,13 @@ while [ ! $# -eq 0 ]; do # while there are arguments
         --help | -h)
             echo $USAGE
             echo "Flags:
--h, --help          help message"
+-h, --help          help message
+-r, --resume        check if dev files contain any filenames"
             exit
             ;;
+
+        --resume | -r)
+            resume=true
 
     esac
     shift
@@ -25,6 +31,10 @@ while read filename; do
 
     if [ "$filename" = "-1" ]; then # exit if flag sent
         exit
+    fi
+
+    if $resume; then # if resume option set
+        
     fi
 
     parent_dir=${filename%/*} # strip filename from tar filepath
