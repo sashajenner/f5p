@@ -60,6 +60,7 @@ typedef struct {
     int32_t failed_other_cnt; // the number of other failures
 
     bool eof_signalled;       // the flag for EOF signalled
+    bool resuming;            // the flag for processing resuming
 
 } node_global_args_t;
 
@@ -77,8 +78,9 @@ void* node_handler(void* arg) {
     // create report file
     char report_fname[100]; // declare file name
     sprintf(report_fname, "dev%d.cfg", tid + 1); // define file name
-    char *prp;
-    FILE* report = fopen(report_fname, "a"); // open file for writing
+    // if resume option set, define opening flag to appending, else to writing
+    char* opening_flag = core.resuming ? "a" : "w";
+    FILE* report = fopen(report_fname, opening_flag); // open file for writing or appending
     NULL_CHK(report); // check file isn't null
 
     int32_t i; // declaring for loop counter for later
@@ -274,6 +276,7 @@ void* node_handler(void* arg) {
 
         if (strcmp(buffer, "done.") == 0) { // if "done"
             fprintf(report, "%s\n", core.file_list[fidx]); // write filename to report
+            fflush(report); // flush filename to the report
 
         } else if (strcmp(buffer, "crashed.") == 0) { // else if "crashed"
             fprintf(stderr,
@@ -331,11 +334,18 @@ int main(int argc, char* argv[]) {
     printf("started\n"); // testing
     fflush(stdout); // will now print everything in the stdout buffer // testing
 
-    // check there is 1 argument
-    if (argc != 2) {
-        ERROR("Not enough arguments. Usage %s <ip_list>\n",
+    if (argc == 3 && 
+        ( strcmp(argv[2],"--resume") || strcmp(argv[2],"-r") )
+        ) { // if there are 2 args and the 2nd is "--resume" or "-r"
+        core.resuming = true; // set resume option to true
+
+    } else if (argc != 2) { // check there is at least 1 arg
+        ERROR("Not enough arguments. Usage %s <ip_list> [--resume | -r]\n",
                 argv[0]);
         exit(EXIT_FAILURE);
+
+    } else { // if there is one arg
+        core.resuming = false; // set resume option to false
     }
 
     initial_time = realtime(); // retrieving initial time

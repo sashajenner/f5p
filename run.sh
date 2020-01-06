@@ -22,6 +22,10 @@ LOG=log.txt
 TIME_BETWEEN_BATCHES=10
 NO_BATCHES= # copy all batches
 
+if [ "$1" = "-r" -o "$1" = "--resume" ]; then # if the first argument is -r or --resume
+    RESUME=$1
+fi
+
 ###############################################################################
 
 # test before cleaning logs
@@ -42,8 +46,10 @@ rm -rf /scratch_nas/scratch/*
 ansible all -m shell -a "rm -rf /nanopore/scratch/*" # force for no error if no files exist
 
 # remove previous logs
-test -d data/logs && rm -r data/logs
-mkdir data/logs || exit 1
+if ! $RESUME; then
+    test -d data/logs && rm -r data/logs
+    mkdir data/logs || exit 1
+fi
 
 # create folders to copy the results (SAM files, BAM files, logs and methylation calls)
 test -d $FOLDER/sam || mkdir $FOLDER/sam || exit 1
@@ -64,26 +70,30 @@ cp /dev/null $LOG
 # execute simulator in the background giving time for monitor to set up
 (sleep 10; bash testing/simulator.sh /mnt/778/778-1500ng/778-1500ng_albacore-2.1.3/ /mnt/simulator_out $TIME_BETWEEN_BATCHES $NO_BATCHES 2>&1 | tee -a $LOG) &
 
+move_dev_files() {
+    # handle the logs
+    ansible all -m shell -a "cd /nanopore/scratch && tar zcvf logs.tgz *.log"
+    # copies log files from each node locally
+    gather.sh /nanopore/scratch/logs.tgz data/logs/log tgz #https://github.com/hasindu2008/nanopore-cluster/blob/master/system/gather.sh
+
+    # move + copy files to logs folder
+    cp $LOG data/logs/ # copy log file
+    mv *.cfg data/logs/ # move all config files
+    cp $0 data/logs/ # copy current script
+    cp $PIPELINE_SCRIPT data/logs/ # copy pipeline script
+
+    bash scripts/failed_device_logs.sh # get the logs of the datasets which the pipeline crashed
+
+    cp -r data $FOLDER/f5pmaster # copy entire data folder to local f5pmaster folder
+}
+
+trap move_dev_files EXIT # catch exit of script with function
+
 # monitor the new file creation in fast5 folder and execute realtime f5 pipeline
 # close after 30 minutes of no new file
 bash monitor/monitor.sh -t -m 30 -f /mnt/simulator_out/fast5/ /mnt/simulator_out/fastq/ |
-bash monitor/ensure.sh -r |
-/usr/bin/time -v ./f5pl_realtime data/ip_list.cfg -r 2>&1 |
+bash monitor/ensure.sh $RESUME |
+/usr/bin/time -v ./f5pl_realtime data/ip_list.cfg $RESUME 2>&1 |
 tee -a $LOG
 
 # (todo : kill any background processes?)
-
-# handle the logs
-ansible all -m shell -a "cd /nanopore/scratch && tar zcvf logs.tgz *.log"
-# copies log files from each node locally
-gather.sh /nanopore/scratch/logs.tgz data/logs/log tgz #https://github.com/hasindu2008/nanopore-cluster/blob/master/system/gather.sh
-
-# move + copy files to logs folder
-cp $LOG data/logs/ # copy log file
-mv *.cfg data/logs/ # move all config files
-cp $0 data/logs/ # copy current script
-cp $PIPELINE_SCRIPT data/logs/ # copy pipeline script
-
-bash scripts/failed_device_logs.sh # get the logs of the datasets which the pipeline crashed
-
-cp -r data $FOLDER/f5pmaster # copy entire data folder to local f5pmaster folder

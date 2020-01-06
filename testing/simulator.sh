@@ -23,8 +23,8 @@ $3 - time between copying batches
 INPUT_DIR=$1
 OUTPUT_DIR=$2
 
-F5_DIR="$INPUT_DIR"/fast5/
-FQ_DIR="$INPUT_DIR"/fastq/
+F5_DIR="$INPUT_DIR"fast5/
+FQ_DIR="$INPUT_DIR"fastq/
 
 TIME=$3
 NO_BATCHES=${4:--1} # default value of -1 if parameter unset

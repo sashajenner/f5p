@@ -27,14 +27,14 @@ done
 
 file_list=() # declare file list
 
+# testing
+i_new=0
+i_old=0
+
 while read filename; do
 
     if [ "$filename" = "-1" ]; then # exit if flag sent
         exit
-    fi
-
-    if $resume; then # if resume option set
-        
     fi
 
     parent_dir=${filename%/*} # strip filename from tar filepath
@@ -44,6 +44,22 @@ while read filename; do
     prefix=${temp_prefix%.*} # extract the filename without the path or extension (remove 2nd extension)
 
     if echo $filename | grep -q .fast5.tar; then # if it is a fast5 file
+
+        if $resume; then # if resume option set
+            grep -q $filename data/logs/dev*.cfg # check if filename exists in config files
+            
+            if [ $? -eq "0" ]; then # if the file has been processed
+                ((i_old ++))
+                >&2 echo "already processed ($i_old): $filename"
+                continue
+                
+            else # else it is new
+                ((i_new ++))
+                >&2 echo "new ($i_new): $filename"
+            fi
+
+        fi
+
         fastq_filename=$grandparent_dir/fastq/fastq_*.$prefix.fastq.gz
         
         if echo ${file_list[@]} | grep -wq $fastq_filename; then # the fastq file exists
@@ -56,6 +72,21 @@ while read filename; do
 
     elif echo $filename | grep -q .fastq.gz; then # if it a fastq file
         fast5_filename=$grandparent_dir/fast5/${prefix##*.}.fast5.tar
+
+        if $resume; then # if resume option set
+            grep -q $fast5_filename data/logs/dev*.cfg # check if filename exists in config files
+            
+            if [ $? -eq "0" ]; then # if the file has been processed
+                ((i_old ++))
+                >&2 echo "already processed ($i_old): $filename"
+                continue
+
+            else # else it is new
+                ((i_new ++))
+                >&2 echo "new ($i_new): $filename"
+            fi
+
+        fi
         
         if echo ${file_list[@]} | grep -wq $fast5_filename; then # the fast5 file exists
             echo $fast5_filename
