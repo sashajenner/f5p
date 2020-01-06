@@ -4,6 +4,8 @@
 
 ###############################################################################
 
+USAGE="Usage: $0 [options ...]"
+
 ## Some changeable definitions
 
 # folder containing test dataset
@@ -22,12 +24,28 @@ LOG=log.txt
 TIME_BETWEEN_BATCHES=10
 NO_BATCHES= # copy all batches
 
-if [ "$1" = "-r" -o "$1" = "--resume" ]; then # if the first argument is -r or --resume
-    RESUMING=true
-    RESUMING_ARG=$1
-else # otherwise
-    RESUMING=false
-fi
+RESUMING=false # set resuming option to false by default
+
+## Handle flags
+while [ ! $# -eq 0 ]; do # while there are arguments
+    case "$1" in
+
+        --help | -h)
+            echo $USAGE
+            echo 'Flags:
+-h, --help          help message
+-r, --resume        resumes from last processing position'
+            exit
+            ;;
+
+        --resume | -r)
+            RESUMING=true
+            RESUMING_ARG=$1
+            ;;
+
+    esac
+    shift
+done
 
 ###############################################################################
 

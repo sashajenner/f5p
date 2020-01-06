@@ -4,7 +4,7 @@
 
 USAGE="Usage: monitor.sh <fast5_dir> <fastq_dir> | $0" # piped with monitor.sh script
 
-resume=false # set resume option to false by default
+RESUME=false # set resume option to false by default
 
 ## Handle flags
 while [ ! $# -eq 0 ]; do # while there are arguments
@@ -19,7 +19,7 @@ while [ ! $# -eq 0 ]; do # while there are arguments
             ;;
 
         --resume | -r)
-            resume=true
+            RESUME=true
 
     esac
     shift
@@ -27,7 +27,6 @@ done
 
 file_list=() # declare file list
 
-# testing
 i_new=0
 i_old=0
 
@@ -45,7 +44,7 @@ while read filename; do
 
     if echo $filename | grep -q .fast5.tar; then # if it is a fast5 file
 
-        if $resume; then # if resume option set
+        if $RESUME; then # if resume option set
             grep -q $filename data/logs/dev*.cfg # check if filename exists in config files
             
             if [ $? -eq "0" ]; then # if the file has been processed
@@ -73,7 +72,7 @@ while read filename; do
     elif echo $filename | grep -q .fastq.gz; then # if it a fastq file
         fast5_filename=$grandparent_dir/fast5/${prefix##*.}.fast5.tar
 
-        if $resume; then # if resume option set
+        if $RESUME; then # if resume option set
             grep -q $fast5_filename dev*.cfg # check if filename exists in config files
             
             if [ $? -eq "0" ]; then # if the file has been processed
