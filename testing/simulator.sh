@@ -134,9 +134,9 @@ if $REAL_SIM; then # if the realistic simulation option is set
 			: # do nothing
 		done
 
-		file=${file_time_map[$ordered_time]} # extract file from map
+		filename_path=${file_time_map[$ordered_time]} # extract file from map
 
-		echo "actual time: ${SECONDS}s | file completed: ${ordered_time}s | file: $file" # testing
+		echo "actual time: ${SECONDS}s | file completed: ${ordered_time}s | file: $filename_path" # testing
 
 		filename_pathless=$(basename $filename_path) # extract the filename without the path
 		filename="${filename_pathless%%.*}" # extract the filename without the extension nor the path
