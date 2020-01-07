@@ -136,13 +136,12 @@ if $REAL_SIM; then # if the realistic simulation option is set
 
 		file=${file_time_map[$ordered_time]} # extract file from map
 
-		echo "${SECONDS}s | $ordered_time $file" # testing
+		echo "actual time: ${SECONDS}s | file completed: ${ordered_time}s | file: $file" # testing
 
 		filename_pathless=$(basename $filename_path) # extract the filename without the path
 		filename="${filename_pathless%%.*}" # extract the filename without the extension nor the path
 		
-		# testing
-		#copy_files $filename # copy fast5 and fastq files into output directory
+		copy_files $filename # copy fast5 and fastq files into output directory
 	done
 
 else ## Iterate through the files normally
