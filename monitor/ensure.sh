@@ -2,7 +2,7 @@
 # @author: Sasha Jenner (jenner.sasha@gmail.com)
 ### Ensures output of fast5 tar file has a corresponding fastq file
 
-USAGE="Usage: monitor.sh <fast5_dir> <fastq_dir> | $0" # piped with monitor.sh script
+USAGE="Usage: monitor.sh [options ...] <fast5_dir> <fastq_dir> | $0" # piped with monitor.sh script
 
 RESUME=false # set resume option to false by default
 
@@ -14,7 +14,7 @@ while [ ! $# -eq 0 ]; do # while there are arguments
             echo $USAGE
             echo "Flags:
 -h, --help          help message
--r, --resume        check if dev files contain any filenames"
+-r, --resume        check if dev files already contain any of the filenames"
             exit
             ;;
 
@@ -73,7 +73,7 @@ while read filename; do
         fast5_filename=$grandparent_dir/fast5/${prefix##*.}.fast5.tar
 
         if $RESUME; then # if resume option set
-            grep -q $fast5_filename dev*.cfg # check if filename exists in config files
+            grep -q $fast5_filename data/logs/dev*.cfg # check if filename exists in config files
             
             if [ $? -eq "0" ]; then # if the file has been processed
                 ((i_old ++))

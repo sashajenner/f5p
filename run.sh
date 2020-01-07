@@ -14,6 +14,9 @@ FOLDER=/mnt/778/778-1500ng/778-1500ng_albacore-2.1.3/
 # folder containing the fast5 tar files
 FAST5FOLDER=$FOLDER/fast5
 
+# parent directory with fast5 and fastq subdirectories which is monitored for new files
+MONITOR_PARENT_DIR=mnt/simulator_out
+
 # the script to be copied and run on worker nodes
 PIPELINE_SCRIPT="scripts/fast5_pipeline.sh"
 
@@ -40,7 +43,6 @@ while [ ! $# -eq 0 ]; do # while there are arguments
 
         --resume | -r)
             RESUMING=true
-            RESUMING_ARG=$1
             ;;
 
     esac
@@ -67,7 +69,7 @@ rm -rf /scratch_nas/scratch/*
 ansible all -m shell -a "rm -rf /nanopore/scratch/*" # force for no error if no files exist
 
 if $RESUMING; then # if resume option set
-    test dev*.cfg && mv dev*.cfg data/logs # move any remaining dev files
+    mv dev*.cfg data/logs # move remaining dev file
 
 else # else remove previous logs
     test -d data/logs && rm -r data/logs
@@ -91,14 +93,23 @@ cp /dev/null $LOG
 
 # testing
 # execute simulator in the background giving time for monitor to set up
-(sleep 10; bash testing/simulator.sh /mnt/778/778-1500ng/778-1500ng_albacore-2.1.3/ /mnt/simulator_out $TIME_BETWEEN_BATCHES $NO_BATCHES 2>&1 | tee -a $LOG) &
+(sleep 10; bash testing/simulator.sh -t $TIME_BETWEEN_BATCHES $FOLDER $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
 
 # monitor the new file creation in fast5 folder and execute realtime f5 pipeline
 # close after 30 minutes of no new file
-bash monitor/monitor.sh -t -m 30 -f /mnt/simulator_out/fast5/ /mnt/simulator_out/fastq/ |
-bash monitor/ensure.sh $RESUMING_ARG |
-/usr/bin/time -v ./f5pl_realtime data/ip_list.cfg $RESUMING_ARG 2>&1 |
-tee -a $LOG
+if $RESUMING; then
+    ( bash monitor/monitor.sh -t -m 30 -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ |
+    bash monitor/ensure.sh -r |
+    /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg -r 
+    ) 2>&1 | # redirect all stderr to stdout
+    tee -a $LOG
+else
+    ( bash monitor/monitor.sh -t -m 30 -f $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ |
+    bash monitor/ensure.sh |
+    /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg
+    ) 2>&1 | # redirect all stderr to stdout
+    tee -a $LOG
+fi
 
 # (todo : kill any background processes?)
 

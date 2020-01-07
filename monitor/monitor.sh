@@ -30,7 +30,7 @@ while [ ! $# -eq 0 ]; do # while there are arguments
 -e, --existing      output existing files in monitor director(y/ies)
 -f, --flag          output flag of -1 if exited due to completion
 -h, --help          help message
--n, --num_files     exits after given number of files
+-n, --num-files     exits after given number of files
 -t, --timeout       exits after a specified time period of no new files
         -s, --seconds   timeout format in seconds
         -m, --minutes   "---------------" minutes
@@ -38,7 +38,7 @@ while [ ! $# -eq 0 ]; do # while there are arguments
             exit
             ;;
 
-        --num_files | -n)
+        --num-files | -n)
             NO_FILES=$2
             shift
             ;;
@@ -66,7 +66,7 @@ while [ ! $# -eq 0 ]; do # while there are arguments
 -e, --existing      output existing files in monitor director(y/ies)
 -f, --flag          output flag of -1 if exited due to completion
 -h, --help          help message
--n, --num_files     exits after given number of files
+-n, --num-files     exits after given number of files
 -t, --timeout       exits after a specified time period of no new files
         -s, --seconds   timeout format in seconds
         -m, --minutes   "---------------" minutes
