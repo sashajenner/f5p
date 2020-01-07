@@ -141,6 +141,7 @@ if $REAL_SIM; then # if the realistic simulation option is set
 		filename_pathless=$(basename $filename_path) # extract the filename without the path
 		filename="${filename_pathless%%.*}" # extract the filename without the extension nor the path
 		
+		((i++)) # increment the counter
 		copy_files $filename # copy fast5 and fastq files into output directory
 	done
 
