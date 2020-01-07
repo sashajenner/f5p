@@ -16,7 +16,7 @@ $2 - directory for files to be placed
 '
 
 # require 3 parameters else give error msg
-: ${3?"Usage: $0 [options ...] <in_dir> <out_dir>"}
+: ${2?"Usage: $0 [options ...] <in_dir> <out_dir>"}
 
 NO_BATCHES=-1 # default value of -1 if parameter unset
 TIME=0s # 0s between copying by default
@@ -93,7 +93,7 @@ copy_files () {
 	fi
 }
 
-if $REAL_SIM; then
+if $REAL_SIM; then # if the realistic simulation option is set
 	LOGS_DIR="$INPUT_DIR"logs/ # extract logs directory when sequencing summary files are contained
 	declare -A file_time_map # declare an associative array to hold the file with corresponding completion time
 
@@ -104,36 +104,45 @@ if $REAL_SIM; then
 
 		# extract corresponding sequencing summary filename
 		seq_summary_file=$LOGS_DIR/sequencing_summary."$filename".txt.gz
+		# cat the sequencing summary txt.gz file to awk
+		# which prints the highest start_time + duration (i.e. the completion time of that file)
 		end_time=$(zcat $seq_summary_file | awk '
-			BEGIN{FS="\t"; final_time=0}
+			BEGIN { FS="\t"; final_time=0 } # set the file separator to tabs
+											# define final time to 0
 			
 			{
-				if ($5 + $6 > final_time) {
-					final_time = $5 + $6
+				if ($5 + $6 > final_time) { # if the start-time + duration is greater than the current final time
+					final_time = $5 + $6 # update the final time
 				}
 			} 
 			
-			END{printf final_time}')
+			END { printf final_time }') # end by printing the final time
 		
-		file_time_map["$end_time"]=$seq_summary_file
+		file_time_map["$end_time"]=$seq_summary_file # set a key, value combination of the end time and file
 	done
 
 	SECONDS=0 # restart the timer
 	for ordered_time in $(
-		for time in "${!file_time_map[@]}"; do
-			echo $time
+		for time in "${!file_time_map[@]}"; do # for each time in the keys of the associative array
+			echo $time # output the time
 		done |
-		sort -n
+		sort -g # sort the output in ascending generic numerical order (including floating point numbers)
 		)
 	do
-		while [ $ordered_time < SECONDS ]; do # while the file's has not been completed
-			break # exit loop
+		while (( $(echo "$SECONDS < $ordered_time" | bc -l) )) # while the file's has not been 'completed'
+		do
+			: # do nothing
 		done
 
-		file=file_time_map[$ordered_time] # extract file from map
-		>&2 $ordered_time $file # testing
+		file=${file_time_map[$ordered_time]} # extract file from map
+
+		echo "${SECONDS}s | $ordered_time $file" # testing
+
+		filename_pathless=$(basename $filename_path) # extract the filename without the path
+		filename="${filename_pathless%%.*}" # extract the filename without the extension nor the path
+		
 		# testing
-		#copy_files $file # copy fast5 and fastq files into output directory
+		#copy_files $filename # copy fast5 and fastq files into output directory
 	done
 
 else ## Iterate through the files normally
@@ -143,7 +152,7 @@ else ## Iterate through the files normally
 		filename_pathless=$(basename $filename_path) # extract the filename without the path
 		filename="${filename_pathless%%.*}" # extract the filename without the extension nor the path
 
-		copy_files $file # copy fast5 and fastq files into output directory
+		copy_files $filename # copy fast5 and fastq files into output directory
 		sleep $TIME # pause for a given time
 	done
 fi
