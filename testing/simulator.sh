@@ -118,7 +118,7 @@ if $REAL_SIM; then # if the realistic simulation option is set
 			
 			END { printf final_time }') # end by printing the final time
 		
-		file_time_map["$end_time"]=$seq_summary_file # set a key, value combination of the end time and file
+		file_time_map["$end_time"]=$filename_path # set a key, value combination of the end time and file
 	done
 
 	SECONDS=0 # restart the timer
