@@ -15,7 +15,7 @@ FOLDER=/mnt/778/778-1500ng/778-1500ng_albacore-2.1.3/
 FAST5FOLDER=$FOLDER/fast5
 
 # parent directory with fast5 and fastq subdirectories which is monitored for new files
-MONITOR_PARENT_DIR=mnt/simulator_out
+MONITOR_PARENT_DIR=/mnt/simulator_out
 
 # the script to be copied and run on worker nodes
 PIPELINE_SCRIPT="scripts/fast5_pipeline.sh"
@@ -93,7 +93,7 @@ cp /dev/null $LOG
 
 # testing
 # execute simulator in the background giving time for monitor to set up
-(sleep 10; bash testing/simulator.sh -r $FOLDER $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
+(sleep 10; bash testing/simulator.sh -t $TIME_BETWEEN_BATCHES $FOLDER $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
 
 # monitor the new file creation in fast5 folder and execute realtime f5 pipeline
 # close after 30 minutes of no new file
