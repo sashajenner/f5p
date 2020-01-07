@@ -91,10 +91,8 @@ int64_t recv_full_msg(int socket, void* buffer, int64_t length) {
 
 int64_t recv_full_msg_try(int socket, void* buffer, int64_t length, int times) {
     int64_t expected_length = 0;
-    INFO("%s", "1. About to try receive all"); // testing
     int64_t ret = recv_all_try(socket, &expected_length, sizeof(int64_t), times);
     if (ret < 0) {
-        INFO("%s", "1. Receive return < 0"); // testing
         return ret;
     }
 
@@ -107,13 +105,10 @@ int64_t recv_full_msg_try(int socket, void* buffer, int64_t length, int times) {
                 expected_length);
     }
 
-    INFO("%s", "2. About to try receive all"); // testing
     ret = recv_all_try(socket, buffer, expected_length, times);
     if (ret < 0) {
-        INFO("%s", "2. Receive return < 0"); // testing
         return ret;
     }
-    INFO("%s", "Final return"); // testing
     return expected_length;
 }
 
