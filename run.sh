@@ -86,8 +86,9 @@ test -d $FAST5FOLDER || exit 1
 # copy the pipeline script across the worker nodes
 ansible all -m copy -a "src=$PIPELINE_SCRIPT dest=/nanopore/bin/fast5_pipeline.sh mode=0755" 
 
-# clear log file
-cp /dev/null $LOG
+if $RESUMING; then # if resuming option set
+    cp /dev/null $LOG # clear log file
+fi
 
 # testing
 # execute simulator in the background giving time for monitor to set up
@@ -95,7 +96,7 @@ cp /dev/null $LOG
 
 # monitor the new file creation in fast5 folder and execute realtime f5 pipeline
 # close after 30 minutes of no new file
-if $RESUMING; then
+if $RESUMING; then # if resuming option set
     ( bash monitor/monitor.sh -t -hr 1 -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ |
     bash monitor/ensure.sh -r |
     /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg -r 
