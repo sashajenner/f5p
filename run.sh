@@ -146,7 +146,7 @@ fi
 if $resuming; then # if resuming option set
     ( bash monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ |
     bash monitor/ensure.sh -r |
-    /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg -r 
+    /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg -r
     ) 2>&1 | # redirect all stderr to stdout
     tee -a $LOG
 else
