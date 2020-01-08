@@ -30,6 +30,10 @@ file_list=() # declare file list
 i_new=0
 i_old=0
 
+YELLOW="\e[33m"
+RED="\e[31m"
+NORMAL="\033[0;39m"
+
 while read filename; do
 
     if [ "$filename" = "-1" ]; then # exit if flag sent
@@ -49,12 +53,12 @@ while read filename; do
             
             if [ $? -eq "0" ]; then # if the file has been processed
                 ((i_old ++))
-                >&2 echo "old file ($i_old): $filename"
+                >&2 echo -e $RED"old file ($i_old): $filename"$NORMAL
                 continue
                 
             else # else it is new
                 ((i_new ++))
-                >&2 echo "new file ($i_new): $filename"
+                >&2 echo -e $YELLOW"new file ($i_new): $filename"$NORMAL
             fi
 
         fi
@@ -73,16 +77,16 @@ while read filename; do
         fast5_filename=$grandparent_dir/fast5/${prefix##*.}.fast5.tar
 
         if $RESUME; then # if resume option set
-            grep -q $fast5_filename dev*.cfg # check if filename exists in config files
+            grep -q $filename dev*.cfg # check if filename exists in config files
             
             if [ $? -eq "0" ]; then # if the file has been processed
                 ((i_old ++))
-                >&2 echo "already processed ($i_old): $filename"
+                >&2 echo -e $RED"old file ($i_old): $filename"$NORMAL
                 continue
-
+                
             else # else it is new
                 ((i_new ++))
-                >&2 echo "new ($i_new): $filename"
+                >&2 echo -e $YELLOW"new file ($i_new): $filename"$NORMAL
             fi
 
         fi

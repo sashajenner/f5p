@@ -27,7 +27,12 @@ LOG=log.txt
 TIME_BETWEEN_BATCHES=10
 NO_BATCHES= # copy all batches
 
-RESUMING=false # set resuming option to false by default
+# set options off by default
+resuming=false
+
+# default timeout of 1 hour
+TIME_FACTOR="hr"
+TIME_INACTIVE=1
 
 ## Handle flags
 while [ ! $# -eq 0 ]; do # while there are arguments
@@ -37,12 +42,54 @@ while [ ! $# -eq 0 ]; do # while there are arguments
             echo $USAGE
             echo 'Flags:
 -h, --help          help message
--r, --resume        resumes from last processing position'
+-r, --resume        resumes from last processing position
+-t, --timeout       exits after a specified time period of no new files
+        -s, --seconds       timeout format in seconds
+        -m, --minutes       "---------------" minutes
+        -hr, --hours        "---------------" hours
+        -a, --automatic     timeout calculated automatically to testing data'
             exit
             ;;
 
         --resume | -r)
-            RESUMING=true
+            resuming=true
+            ;;
+
+        --timeout | -t)
+            TIME_INACTIVE=$3 # time to wait until timeout
+
+            case "$2" in
+                --seconds | -s)
+                    TIME_FACTOR="s" 
+                    shift
+                    ;;
+                --minutes | -m)
+                    TIME_FACTOR="m"
+                    shift
+                    ;;
+                --hours | -hr)
+                    TIME_FACTOR="hr"
+                    shift
+                    ;;
+                --automatic | -a)
+                    TIME_FACTOR="s"
+                    TIME_INACTIVE=$(bash max_time_between_files $FOLDER)
+                    shift
+                    ;;
+                *)
+                    echo $USAGE
+                    echo 'Flags:
+-h, --help          help message
+-r, --resume        resumes from last processing position
+-t, --timeout       exits after a specified time period of no new files
+        -s, --seconds       timeout format in seconds
+        -m, --minutes       "---------------" minutes
+        -hr, --hours        "---------------" hours
+        -a, --automatic     timeout calculated automatically to testing data'
+                    exit
+                    ;;
+            esac
+            shift
             ;;
 
     esac
@@ -52,7 +99,7 @@ done
 ###############################################################################
 
 # test before cleaning logs
-if ! $RESUMING; then # if not resuming
+if ! $resuming; then # if not resuming
     while true; do
         read -p "This will overwrite stats from the previous run. Do you wish to continue? (y/n) " yn
         case $yn in
@@ -86,7 +133,7 @@ test -d $FAST5FOLDER || exit 1
 # copy the pipeline script across the worker nodes
 ansible all -m copy -a "src=$PIPELINE_SCRIPT dest=/nanopore/bin/fast5_pipeline.sh mode=0755" 
 
-if $RESUMING; then # if resuming option set
+if ! $resuming; then # if resuming option not set
     cp /dev/null $LOG # clear log file
 fi
 
@@ -96,14 +143,14 @@ fi
 
 # monitor the new file creation in fast5 folder and execute realtime f5 pipeline
 # close after 30 minutes of no new file
-if $RESUMING; then # if resuming option set
-    ( bash monitor/monitor.sh -t -hr 1 -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ |
+if $resuming; then # if resuming option set
+    ( bash monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ |
     bash monitor/ensure.sh -r |
     /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg -r 
     ) 2>&1 | # redirect all stderr to stdout
     tee -a $LOG
 else
-    ( bash monitor/monitor.sh -t -hr 1 -f $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ |
+    ( bash monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ |
     bash monitor/ensure.sh |
     /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg
     ) 2>&1 | # redirect all stderr to stdout
