@@ -52,14 +52,16 @@ done
 ###############################################################################
 
 # test before cleaning logs
-while true; do
-    read -p "This will overwrite stats from the previous run. Do you wish to continue? (y/n) " yn
-    case $yn in
-        [Yy]* ) break;;
-        [Nn]* ) exit;;
-        * ) echo "Please answer yes or no.";;
-    esac
-done
+if ! $RESUMING; then # if not resuming
+    while true; do
+        read -p "This will overwrite stats from the previous run. Do you wish to continue? (y/n) " yn
+        case $yn in
+            [Yy]* ) break;;
+            [Nn]* ) exit;;
+            * ) echo "Please answer yes or no.";;
+        esac
+    done
+fi
 
 # freshly compile files
 make clean && make || exit 1
@@ -68,13 +70,9 @@ make clean && make || exit 1
 rm -rf /scratch_nas/scratch/*
 ansible all -m shell -a "rm -rf /nanopore/scratch/*" # force for no error if no files exist
 
-if $RESUMING; then # if resume option set
-    mv dev*.cfg data/logs # move remaining dev file
-
-else # else remove previous logs
-    test -d data/logs && rm -r data/logs
-    mkdir data/logs || exit 1
-fi
+# clean and empty logs directory
+test -d data/logs && rm -r data/logs
+mkdir data/logs || exit 1
 
 # create folders to copy the results (SAM files, BAM files, logs and methylation calls)
 test -d $FOLDER/sam || mkdir $FOLDER/sam || exit 1
@@ -98,13 +96,13 @@ cp /dev/null $LOG
 # monitor the new file creation in fast5 folder and execute realtime f5 pipeline
 # close after 30 minutes of no new file
 if $RESUMING; then
-    ( bash monitor/monitor.sh -t -m 30 -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ |
+    ( bash monitor/monitor.sh -t -hr 1 -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ |
     bash monitor/ensure.sh -r |
     /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg -r 
     ) 2>&1 | # redirect all stderr to stdout
     tee -a $LOG
 else
-    ( bash monitor/monitor.sh -t -m 30 -f $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ |
+    ( bash monitor/monitor.sh -t -hr 1 -f $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ |
     bash monitor/ensure.sh |
     /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg
     ) 2>&1 | # redirect all stderr to stdout

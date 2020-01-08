@@ -45,16 +45,16 @@ while read filename; do
     if echo $filename | grep -q .fast5.tar; then # if it is a fast5 file
 
         if $RESUME; then # if resume option set
-            grep -q $filename data/logs/dev*.cfg # check if filename exists in config files
+            grep -q $filename dev*.cfg # check if filename exists in config files
             
             if [ $? -eq "0" ]; then # if the file has been processed
                 ((i_old ++))
-                >&2 echo "already processed ($i_old): $filename"
+                >&2 echo "old file ($i_old): $filename"
                 continue
                 
             else # else it is new
                 ((i_new ++))
-                >&2 echo "new ($i_new): $filename"
+                >&2 echo "new file ($i_new): $filename"
             fi
 
         fi
@@ -73,7 +73,7 @@ while read filename; do
         fast5_filename=$grandparent_dir/fast5/${prefix##*.}.fast5.tar
 
         if $RESUME; then # if resume option set
-            grep -q $fast5_filename data/logs/dev*.cfg # check if filename exists in config files
+            grep -q $fast5_filename dev*.cfg # check if filename exists in config files
             
             if [ $? -eq "0" ]; then # if the file has been processed
                 ((i_old ++))

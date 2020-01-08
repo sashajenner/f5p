@@ -57,7 +57,7 @@ while [ ! $# -eq 0 ]; do # while there are arguments
                     shift
                     ;;
                 --hours | -hr)
-                    TIME_FORMAT=3600 # 3600 sec in an hour
+                    TIME_FACTOR=3600 # 3600 sec in an hour
                     shift
                     ;;
                 *)
@@ -90,7 +90,8 @@ while [ ! $# -eq 0 ]; do # while there are arguments
 done
 
 if $existing; then # if existing files option set
-    ls ${monitor_dirs[@]} -p | grep -v /
+# output the absolute path of all existing fast5 and fastq files 
+    find ${monitor_dirs[@]} | grep '\.fast5\|\.fastq'
 fi
 
 reset_timer() {
