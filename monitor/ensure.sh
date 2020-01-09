@@ -50,7 +50,7 @@ while read filename; do
     if echo $filename | grep -q .fast5.tar; then # if it is a fast5 file
 
         if $RESUME; then # if resume option set
-            grep -q $filename dev*.cfg # check if filename exists in config files
+            grep -q $prefix dev*.cfg # check if filename exists in config files
             
             if [ $? -eq "0" ]; then # if the file has been processed
                 ((i_old ++))
@@ -78,7 +78,7 @@ while read filename; do
         fast5_filename=$grandparent_dir/fast5/${prefix##*.}.fast5.tar
 
         if $RESUME; then # if resume option set
-            grep -q $filename dev*.cfg # check if filename exists in config files
+            grep -q ${prefix##*.} dev*.cfg # check if filename exists in config files
             
             if [ $? -eq "0" ]; then # if the file has been processed
                 ((i_old ++))
