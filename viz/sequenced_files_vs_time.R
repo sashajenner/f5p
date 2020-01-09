@@ -1,4 +1,5 @@
 #!/usr/bin/env Rscript
+.libPaths("~/R_packages")
 
 end_times_vec <- vector() # declare empty vector
 
@@ -29,4 +30,5 @@ sort(end_times_vec)
 file_number <- c(1:length(seq_sum_files))
 
 require(plotly)
-plot_ly(x = seq_sum_files, y = file_number, type = "scatter", mode = "lines")
+sequenced_files_vs_time <- plot_ly(x = seq_sum_files, y = file_number, type = "scatter", mode = "lines")
+plotly_IMAGE(sequenced_files_vs_time, width = 500, height = 500, format = "png", scale = 2, file = "sequenced_files_vs_time.png")
