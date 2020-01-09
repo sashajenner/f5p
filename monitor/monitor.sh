@@ -105,6 +105,8 @@ exit_safely() {
         echo -1
     fi
 
+    >&2 echo "[monitor.sh] exiting" # testing
+
     # (todo : kill background while loop?)
 }
 

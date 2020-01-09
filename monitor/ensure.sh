@@ -37,6 +37,7 @@ NORMAL="\033[0;39m"
 while read filename; do
 
     if [ "$filename" = "-1" ]; then # exit if flag sent
+        >&2 echo "[ensure.sh] exiting" # testing
         exit
     fi
 

@@ -572,5 +572,7 @@ int main(int argc, char* argv[]) {
 
     INFO("Everything done. Elapsed time: %.3fh", (realtime() - initial_time)/3600);
 
+    printf("[f5pl_realtime.c] exiting\n"); //testing
+    fflush(stdout); // testing
     return 0;
 }
