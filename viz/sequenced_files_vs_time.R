@@ -1,22 +1,25 @@
 #!/usr/bin/env Rscript
 .libPaths("~/R_packages")
 require(plotly)
+require(rowr)
 
 Sys.setenv("plotly_username" = "sjen")
 Sys.setenv("plotly_api_key" = "7xblqr4HsNp3qVueLko0")
 
-end_times_list <- list() # declare empty list
+all_end_times_df <- data.frame() # declare empty dataframe
 
-paths = c("../../realf5p_data/1500",
-          "../../realf5p_data/5000")
+log_paths = c("../../realf5p_data/1500/logs",
+          "../../realf5p_data/5000/logs")
 
-for (data_dir in paths) {
-    seq_sum_files <- list.files(path = data_dir,
+for (log_dir in log_paths) {
+    seq_sum_files <- list.files(path = log_dir,
                                 pattern = "s*.txt$",
                                 full.names = T,
                                 recursive = F)
     
-    end_times_vec <- vector() # declare empty vector
+    file_end_times_df <- data.frame(matrix(ncol = 2, nrow = 0)) # declare empty dataframe
+    colnames(file_end_times_df) <- c("end_time", "num_bases")
+
     for (i in 1:length(seq_sum_files)) {
         seq_sum_df <- read.table(seq_sum_files[i],
                                  sep = "\t",
@@ -32,24 +35,43 @@ for (data_dir in paths) {
             }
         }
 
-        end_times_vec <- c(end_times_vec, end_time)
-        end_times_vec <- sort(end_times_vec) / 3600 # Get time in hours (3600s in 1h)
+        seq_sum_file_path <- seq_sum_files[i]
+        seq_sum_file_pathless <- system(paste0("basename ", seq_sum_file_path), intern = T)
+        file_id <- 
+            system(paste0("file_pathless='", seq_sum_file_pathless, "';",
+                          "file_extless=${file_pathless%.*};",
+                          "temp=${file_extless##*.};",
+                          "echo $temp"), intern = T)
+        fastq_file <- paste0("fastq_*.", file_id, ".fastq.gz")
+        num_bases <- 
+            system(paste0("zcat ", log_dir, "/../fastq/", fastq_file, " |",
+                          "awk 'BEGIN {sum = 0}",
+                          "{ if(NR % 4 == 2) {sum = sum + length($0);} }",
+                          "END {print sum}'"), intern = T)
+
+        file_end_times_df[nrow(file_end_times_df) + 1, ] <- c(end_time, num_bases)
     }
-    cat("end_times_vec for ", data_dir, ": \n", end_times_vec, "\n")
+       
+    file_end_times_df <- file_end_times_df[order(file_end_times_df["end_time"]), ]
+    file_end_times_df["end_time"] <- file_end_times_df["end_time"] / 3600 # Get time in hours (3600s in 1h)
     
-    end_times_list[data_dir] <- list(end_times_vec)
+    print(file_end_times_df) # testing
+
+    all_end_times_df <- cbind.fill(all_end_times_df, file_end_times_df, fill = NA)
 }
 
-print(end_times_list)
+all_end_times_df <- all_end_times_df[-c(1)]
+colnames(all_end_times_df) <- c("time_1500", "bases_1500", "time_5000", "bases_5000")
+print(all_end_times_df) # testing
 
-end_times_df <- data.frame(matrix(unlist(end_times_list)), nrow = length(end_times_list), byrow = T)
-
-sequenced_files_vs_time <- plot_ly(end_times_df, x =~../../realf5p_data/1500, y = c(1, nrow(end_times_df)),
-                                   name = "1500", type = "scatter", mode = "lines") %>%
-                            add_trace(x =~../../realf5p_data/5000, name = "5000") %>%
+sequenced_files_vs_time <- plot_ly(all_end_times_df,
+                                   x = ~time_1500, y = ~bases_1500, name = "1500",
+                                   type = "scatter", mode = "lines") %>%
+                            add_trace(x =~time_5000, y = ~bases_5000, name = "5000") %>%
                             layout(title = "Files Sequenced Over Time",
                                     xaxis = list(title = "Time (h)"),
-                                    yaxis = list(title = "Number of Files Sequenced"))                               
+                                    yaxis = list(title = "Number of Files Sequenced"))
+
 plotly_IMAGE(sequenced_files_vs_time, format = "png", out_file = "sequenced_files_vs_time.png")
 
 options(browser = "false")
