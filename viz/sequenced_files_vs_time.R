@@ -51,8 +51,12 @@ for (log_dir in log_paths) {
 
         file_end_times_df[nrow(file_end_times_df) + 1, ] <- c(end_time, num_bases)
     }
+
+    print(file_end_times_df) # testing
        
-    file_end_times_df <- file_end_times_df[order(file_end_times_df["end_time"]), ]
+    file_end_times_df[] <- lapply(file_end_times_df, function(x) as.numeric(as.character(x)))
+    file_end_times_df <- file_end_times_df[with(file_end_times_df, order(end_time)), ]
+    print(file_end_times_df) # testing
     file_end_times_df["end_time"] <- file_end_times_df["end_time"] / 3600 # Get time in hours (3600s in 1h)
     
     print(file_end_times_df) # testing
@@ -64,7 +68,7 @@ all_end_times_df <- all_end_times_df[-c(1)]
 colnames(all_end_times_df) <- c("time_1500", "bases_1500", "time_5000", "bases_5000")
 print(all_end_times_df) # testing
 
-sequenced_files_vs_time <- plot_ly(all_end_times_df,
+sequenced_bases_vs_time <- plot_ly(all_end_times_df,
                                    x = ~time_1500, y = ~bases_1500, name = "1500",
                                    type = "scatter", mode = "lines") %>%
                             add_trace(x =~time_5000, y = ~bases_5000, name = "5000") %>%
@@ -72,7 +76,7 @@ sequenced_files_vs_time <- plot_ly(all_end_times_df,
                                     xaxis = list(title = "Time (h)"),
                                     yaxis = list(title = "Number of Files Sequenced"))
 
-plotly_IMAGE(sequenced_files_vs_time, format = "png", out_file = "sequenced_files_vs_time.png")
+plotly_IMAGE(sequenced_bases_vs_time, format = "png", out_file = "sequenced_bases_vs_time.png")
 
-options(browser = "false")
-api_create(sequenced_files_vs_time, filename = "sequenced_files_vs_time", sharing = "public")
+#options(browser = "false")
+#api_create(sequenced_bases_vs_time, filename = "sequenced_bases_vs_time", sharing = "public")
