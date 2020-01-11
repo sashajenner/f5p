@@ -52,12 +52,11 @@ for (log_dir in log_paths) {
         file_end_times_df[nrow(file_end_times_df) + 1, ] <- c(end_time, num_bases)
     }
 
-    print(file_end_times_df) # testing
-       
     file_end_times_df[] <- lapply(file_end_times_df, function(x) as.numeric(as.character(x)))
     file_end_times_df <- file_end_times_df[with(file_end_times_df, order(end_time)), ]
-    print(file_end_times_df) # testing
     file_end_times_df["end_time"] <- file_end_times_df["end_time"] / 3600 # Get time in hours (3600s in 1h)
+    file_end_times_df <- within(file_end_times_df, total_bases <- cumsum(num_bases))
+    file_end_times_df["total_bases"] <- file_end_times_df["total_bases"] / (10 ^ 6) # Convert to gigabases
     
     print(file_end_times_df) # testing
 
@@ -65,18 +64,19 @@ for (log_dir in log_paths) {
 }
 
 all_end_times_df <- all_end_times_df[-c(1)]
-colnames(all_end_times_df) <- c("time_1500", "bases_1500", "time_5000", "bases_5000")
+colnames(all_end_times_df) <- c("time_1500", "solo_bases_1500", "tot_bases_1500",
+                                "time_5000", "solo_bases_5000", "tot_bases_5000")
 print(all_end_times_df) # testing
 
 sequenced_bases_vs_time <- plot_ly(all_end_times_df,
-                                   x = ~time_1500, y = ~bases_1500, name = "1500",
+                                   x = ~time_1500, y = ~tot_bases_1500, name = "1500",
                                    type = "scatter", mode = "lines") %>%
-                            add_trace(x =~time_5000, y = ~bases_5000, name = "5000") %>%
-                            layout(title = "Files Sequenced Over Time",
+                            add_trace(x =~time_5000, y = ~tot_bases_5000, name = "5000") %>%
+                            layout(title = "Bases Sequenced Over Time",
                                     xaxis = list(title = "Time (h)"),
-                                    yaxis = list(title = "Number of Files Sequenced"))
+                                    yaxis = list(title = "Gigabases Sequenced"))
 
 plotly_IMAGE(sequenced_bases_vs_time, format = "png", out_file = "sequenced_bases_vs_time.png")
 
-#options(browser = "false")
-#api_create(sequenced_bases_vs_time, filename = "sequenced_bases_vs_time", sharing = "public")
+options(browser = "false")
+api_create(sequenced_bases_vs_time, filename = "sequenced_bases_vs_time", sharing = "public")
