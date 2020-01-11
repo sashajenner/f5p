@@ -27,7 +27,12 @@ LOG=log.txt
 TIME_BETWEEN_BATCHES=10
 NO_BATCHES= # copy all batches
 
-RESUMING=false # set resuming option to false by default
+# set options off by default
+resuming=false
+
+# default timeout of 1 hour
+TIME_FACTOR="hr"
+TIME_INACTIVE=1
 
 ## Handle flags
 while [ ! $# -eq 0 ]; do # while there are arguments
@@ -37,12 +42,55 @@ while [ ! $# -eq 0 ]; do # while there are arguments
             echo $USAGE
             echo 'Flags:
 -h, --help          help message
--r, --resume        resumes from last processing position'
+-r, --resume        resumes from last processing position
+-t, --timeout       exits after a specified time period of no new files
+        -s, --seconds       timeout format in seconds
+        -m, --minutes       "---------------" minutes
+        -hr, --hours        "---------------" hours
+        -a, --automatic     timeout calculated automatically to testing data'
             exit
             ;;
 
         --resume | -r)
-            RESUMING=true
+            resuming=true
+            ;;
+
+        --timeout | -t)
+            TIME_INACTIVE=$3 # time to wait until timeout
+
+            case "$2" in
+                --seconds | -s)
+                    TIME_FACTOR="s" 
+                    shift
+                    ;;
+                --minutes | -m)
+                    TIME_FACTOR="m"
+                    shift
+                    ;;
+                --hours | -hr)
+                    TIME_FACTOR="hr"
+                    shift
+                    ;;
+                --automatic | -a)
+                    TIME_FACTOR="s"
+                    MAX_WAIT=$(bash max_time_between_files.sh $FOLDER)
+                    TIME_INACTIVE=$(python -c "print($MAX_WAIT + 600)") # add buffer of 10 minutes (600s)
+                    shift
+                    ;;
+                *)
+                    echo $USAGE
+                    echo 'Flags:
+-h, --help          help message
+-r, --resume        resumes from last processing position
+-t, --timeout       exits after a specified time period of no new files
+        -s, --seconds       timeout format in seconds
+        -m, --minutes       "---------------" minutes
+        -hr, --hours        "---------------" hours
+        -a, --automatic     timeout calculated automatically to testing data'
+                    exit
+                    ;;
+            esac
+            shift
             ;;
 
     esac
@@ -52,29 +100,31 @@ done
 ###############################################################################
 
 # test before cleaning logs
-while true; do
-    read -p "This will overwrite stats from the previous run. Do you wish to continue? (y/n) " yn
-    case $yn in
-        [Yy]* ) break;;
-        [Nn]* ) exit;;
-        * ) echo "Please answer yes or no.";;
-    esac
-done
+if ! $resuming; then # if not resuming
+    while true; do
+        read -p "This will overwrite stats from the previous run. Do you wish to continue? (y/n) " yn
+        case $yn in
+            [Yy]* ) break;;
+            [Nn]* ) exit;;
+            * ) echo "Please answer yes or no.";;
+        esac
+    done
+fi
 
 # freshly compile files
 make clean && make || exit 1
 
+if ! $resuming; then # if resuming option not set
+    cp /dev/null $LOG # clear log file
+fi
+
 # clean temporary locations on NAS and the worker nodes
 rm -rf /scratch_nas/scratch/*
-ansible all -m shell -a "rm -rf /nanopore/scratch/*" # force for no error if no files exist
+ansible all -m shell -a "rm -rf /nanopore/scratch/*" |& tee -a $LOG # force for no error if no files exist
 
-if $RESUMING; then # if resume option set
-    mv dev*.cfg data/logs # move remaining dev file
-
-else # else remove previous logs
-    test -d data/logs && rm -r data/logs
-    mkdir data/logs || exit 1
-fi
+# clean and empty logs directory
+test -d data/logs && rm -r data/logs
+mkdir data/logs || exit 1
 
 # create folders to copy the results (SAM files, BAM files, logs and methylation calls)
 test -d $FOLDER/sam || mkdir $FOLDER/sam || exit 1
@@ -86,10 +136,7 @@ test -d $FOLDER/methylation || mkdir $FOLDER/methylation || exit 1
 test -d $FAST5FOLDER || exit 1
 
 # copy the pipeline script across the worker nodes
-ansible all -m copy -a "src=$PIPELINE_SCRIPT dest=/nanopore/bin/fast5_pipeline.sh mode=0755" 
-
-# clear log file
-cp /dev/null $LOG
+ansible all -m copy -a "src=$PIPELINE_SCRIPT dest=/nanopore/bin/fast5_pipeline.sh mode=0755" |& tee -a $LOG
 
 # testing
 # execute simulator in the background giving time for monitor to set up
@@ -97,17 +144,15 @@ cp /dev/null $LOG
 
 # monitor the new file creation in fast5 folder and execute realtime f5 pipeline
 # close after 30 minutes of no new file
-if $RESUMING; then
-    ( bash monitor/monitor.sh -t -m 30 -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ |
-    bash monitor/ensure.sh -r |
-    /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg -r 
-    ) 2>&1 | # redirect all stderr to stdout
+if $resuming; then # if resuming option set
+    bash monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
+    bash monitor/ensure.sh -r 2>> $LOG |
+    /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg -r |& # redirect all stderr to stdout
     tee -a $LOG
 else
-    ( bash monitor/monitor.sh -t -m 30 -f $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ |
-    bash monitor/ensure.sh |
-    /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg
-    ) 2>&1 | # redirect all stderr to stdout
+    bash monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
+    bash monitor/ensure.sh 2>> $LOG |
+    /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg |& # redirect all stderr to stdout
     tee -a $LOG
 fi
 
