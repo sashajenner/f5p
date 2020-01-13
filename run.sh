@@ -5,6 +5,28 @@
 ###############################################################################
 
 USAGE="Usage: $0 [options ...]"
+HELP='Flags:
+-f, --format		follows a specified format of fast5 and fastq files
+		--778			<in_dir>
+						|-- fast5/
+							|-- <prefix>.fast5.tar
+						|-- fastq/
+							|-- fastq_*.<prefix>.fastq.gz
+
+		--NA			<in_dir>
+						|-- fast5/
+							|-- <prefix>.fast5
+						|-- fastq/
+							|-- <prefix>/
+								|-- fastq_*_1_[0-3].fastq
+
+-h, --help          help message
+-r, --resume        resumes from last processing position
+-t, --timeout       exits after a specified time period of no new files
+        -s, --seconds       timeout format in seconds
+        -m, --minutes       "---------------" minutes
+        -hr, --hours        "---------------" hours
+        -a, --automatic     timeout calculated automatically to testing data'
 
 ## Some changeable definitions
 
@@ -40,14 +62,7 @@ while [ ! $# -eq 0 ]; do # while there are arguments
 
         --help | -h)
             echo $USAGE
-            echo 'Flags:
--h, --help          help message
--r, --resume        resumes from last processing position
--t, --timeout       exits after a specified time period of no new files
-        -s, --seconds       timeout format in seconds
-        -m, --minutes       "---------------" minutes
-        -hr, --hours        "---------------" hours
-        -a, --automatic     timeout calculated automatically to testing data'
+            echo $HELP
             exit
             ;;
 
@@ -79,14 +94,7 @@ while [ ! $# -eq 0 ]; do # while there are arguments
                     ;;
                 *)
                     echo $USAGE
-                    echo 'Flags:
--h, --help          help message
--r, --resume        resumes from last processing position
--t, --timeout       exits after a specified time period of no new files
-        -s, --seconds       timeout format in seconds
-        -m, --minutes       "---------------" minutes
-        -hr, --hours        "---------------" hours
-        -a, --automatic     timeout calculated automatically to testing data'
+                    echo $HELP
                     exit
                     ;;
             esac
