@@ -21,6 +21,8 @@
 
 // maximum limit for a file path
 #define MAX_PATH_SIZE 4096
+// maximum limit for the flag length
+#define MAX_FLAG_SIZE 4096
 // maximum limit for the number of tar files
 #define MAX_FILES 4096
 // maximum length of an IP address
@@ -61,6 +63,7 @@ typedef struct {
 
     bool eof_signalled;       // the flag for EOF signalled
     bool resuming;            // the flag for processing resuming
+    char* format;             // the format of fast5 and fastq files
 
 } node_global_args_t;
 
@@ -84,6 +87,7 @@ void* node_handler(void* arg) {
     NULL_CHK(report); // check file isn't null
 
     int32_t i; // declaring for loop counter for later
+    char msg[MAX_PATH_SIZE + 1 + MAX_FLAG_SIZE]; // declare message pointer for sending to daemon
 
     while (1) {
         pthread_mutex_lock(&global_mutex); // lock mutex from other threads (todo : try to lock first?)
@@ -176,7 +180,8 @@ void* node_handler(void* arg) {
                 tid + 1, core.ip_list[tid], reprocessing ? "Reassigning" : "Assigning",
                 core.file_list[fidx], fidx + 1 - failed_before_cnt, core.ip_list[tid]);
         
-        send_full_msg(socketfd, core.file_list[fidx], strlen(core.file_list[fidx])); // send filename to thread
+        sprintf(msg, "%s --format %s", core.file_list[fidx], core.format);
+        send_full_msg(socketfd, msg, strlen(msg)); // send filename and format to thread
         // read msg into buffer and receive the buffer's expected length
         int received = recv_full_msg_try(socketfd, buffer, MAX_PATH_SIZE, RECEIVE_TIME_OUT);
 
@@ -264,15 +269,16 @@ void* node_handler(void* arg) {
                     tid + 1, core.ip_list[tid], reprocessing ? "Reassigning" : "Assigning",
                     core.file_list[fidx], fidx + 1 - failed_before_cnt, core.ip_list[tid]);
 
-            send_full_msg(socketfd, core.file_list[fidx], strlen(core.file_list[fidx])); // send filename to thread
+            sprintf(msg, "%s --format %s", core.file_list[fidx], core.format);
+            send_full_msg(socketfd, msg, strlen(msg)); // send filename and format to thread
             // read msg into buffer and receive the buffer's expected length
             received = recv_full_msg_try(socketfd, buffer, MAX_PATH_SIZE, RECEIVE_TIME_OUT);
         }
 
         buffer[received] = '\0'; // append with null character before printing
         fprintf(stderr, 
-                "[t%d(%s)::INFO] Received message '%s' (%d).\n", // print msg to standard error
-                tid + 1, core.ip_list[tid], buffer, fidx + 1 - failed_before_cnt);
+                "[t%d(%s)::INFO] Received message '%s' at time %f (%d).\n", // print msg to standard error
+                tid + 1, core.ip_list[tid], buffer, realtime() - initial_time, fidx + 1 - failed_before_cnt);
 
         if (strcmp(buffer, "done.") == 0) { // if "done"
             fprintf(report, "%s\n", core.file_list[fidx]); // write filename to report
@@ -334,13 +340,28 @@ int main(int argc, char* argv[]) {
     printf("started\n"); // testing
     fflush(stdout); // will now print everything in the stdout buffer // testing
 
-    if (argc == 3 && 
-        ( strcmp(argv[2],"--resume") || strcmp(argv[2],"-r") )
-        ) { // if there are 2 args and the 2nd is "--resume" or "-r"
+    if (argc == 4 && 
+        ( strcmp(argv[3], "--resume") || strcmp(argv[3], "-r") )
+        ) { // if there are 3 args and the 3rd is "--resume" or "-r"
         core.resuming = true; // set resume option to true
 
-    } else if (argc != 2) { // check there is at least 1 arg
-        ERROR("Not enough arguments. Usage %s <ip_list> [--resume | -r]\n",
+    } else if (argc != 3 ||
+        ! ( strcmp(argv[1], "--778") || strcmp(argv[1], "--NA") )
+        ) { // check there is at least 2 args
+        ERROR("Not enough arguments. Usage %s <format> <ip_list> [--resume | -r]\n"
+               "Acceptable formats:\n"
+                    "\t--778   <in_dir>\n"
+                                "\t\t|-- fast5/\n"
+                                    "\t\t\t|-- <prefix>.fast5.tar\n"
+                                "\t\t|-- fastq/\n"
+                                    "\t\t\t|-- fastq_*.<prefix>.fastq.gz\n\n"
+                                
+                    "\t--NA    <in_dir>\n"
+                                "\t\t|-- fast5/\n"
+                                    "\t\t\t|-- <prefix>.fast5\n"
+                                "\t\t|-- fastq/\n"
+                                    "\t\t\t|-- <prefix>\n"
+                                        "\t\t\t\t|-- fastq_*_[0-9]+_[0-9]+.fastq\n",
                 argv[0]);
         exit(EXIT_FAILURE);
 
@@ -350,13 +371,15 @@ int main(int argc, char* argv[]) {
 
     initial_time = realtime(); // retrieving initial time
 
+    core.format = argv[1]; // set format string
+
 
         // read the list of ip addresses
 
     char** ip_list = (char**) malloc(sizeof(char*) * (MAX_IPS)); // create memory allocation for list of ip's
     MALLOC_CHK(ip_list); // check `ip_list` is not null
 
-    char* ip_list_name = argv[1]; // retrieve filename of ip's
+    char* ip_list_name = argv[2]; // retrieve filename of ip's
     FILE* ip_list_fp = fopen(ip_list_name, "r"); // open file for reading
     NULL_CHK(ip_list_fp); // check file is not null
     int32_t ip_cnt = 0; // define ip counter
