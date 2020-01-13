@@ -26,7 +26,7 @@ HELP='Flags:
 							|-- <prefix>.fast5
 						|-- fastq/
 							|-- <prefix>
-								|-- fastq_*_1_[0-3].fastq
+								|-- fastq_*_+([0-9])_+([0-9]).fastq
 								|-- sequencing_summary.txt (optional - for realistic sim)
 
 -h, --help          help message
@@ -116,7 +116,7 @@ copy_files () {
 		FQ_FILE=$FQ_DIR/fastq_*.$1.fastq.gz
 	elif [ "$FORMAT" = "--NA" ]; then
 		F5_FILE=$F5_DIR/$1.fast5
-		FQ_FILE=$FQ_DIR/$1/fastq_*_1_[0-3].fastq
+		FQ_FILE=$FQ_DIR/$1/fastq_*_+([0-9])_+([0-9]).fastq
 	fi
 
 	# if fast5 file copying fails

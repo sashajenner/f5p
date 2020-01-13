@@ -16,7 +16,7 @@ HELP="Flags:
 							|-- <prefix>.fast5
 						|-- fastq/
 							|-- <prefix>/
-								|-- fastq_*_1_[0-3].fastq
+								|-- fastq_*_+([0-9])_+([0-9]).fastq
                                 |-- sequencing_summary.txt
 							
 -h, --help			help message

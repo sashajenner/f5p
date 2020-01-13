@@ -29,7 +29,7 @@ HELP='Flags:
 							|-- <prefix>.fast5
 						|-- fastq/
 							|-- <prefix>/
-								|-- fastq_*_1_[0-3].fastq
+								|-- fastq_*_+([0-9])_+([0-9]).fastq
                                 |-- sequencing_summary.txt (optional - 
                             for realistic testing or automatic timeout)
 
@@ -196,12 +196,12 @@ ansible all -m copy -a "src=$PIPELINE_SCRIPT dest=/nanopore/bin/fast5_pipeline.s
 if $resuming; then # if resuming option set
     bash monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
     bash monitor/ensure.sh -r -f $FORMAT 2>> $LOG |
-    /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg -r |& # redirect all stderr to stdout
+    /usr/bin/time -v ./f5pl_realtime $FORMAT data/ip_list.cfg -r |& # redirect all stderr to stdout
     tee -a $LOG
 else
     bash monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
     bash monitor/ensure.sh -f $FORMAT 2>> $LOG |
-    /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg |& # redirect all stderr to stdout
+    /usr/bin/time -v ./f5pl_realtime $FORMAT data/ip_list.cfg |& # redirect all stderr to stdout
     tee -a $LOG
 fi
 

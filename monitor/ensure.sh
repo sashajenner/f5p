@@ -16,7 +16,7 @@ HELP="Flags:
 							|-- <prefix>.fast5
 						|-- fastq/
 							|-- <prefix>/
-								|-- fastq_*_1_[0-3].fastq
+								|-- fastq_*_+([0-9])_+([0-9]).fastq
 
 -h, --help          help message
 -r, --resume        check if dev files already contain any of the filenames"
@@ -178,12 +178,13 @@ elif [ "$FORMAT" = "--NA" ]; then
 
             fi
 
-            fastq_filename=$grandparent_dir/fastq/$prefix/fastq_*_1_[0-3].fastq
+            fastq_filename_regex=$grandparent_dir/fastq/$prefix/fastq_.*_[0-9]+_[0-9]+\\.fastq
+            fastq_filename_glob=$grandparent_dir/fastq/$prefix/fastq_*_+([0-9])_+([0-9]).fastq
             
-            # the all 4 fastq file exists
-            if [ "$(${file_list[@]} | grep -wq $fastq_filename | wc -l)" = "4" ]; then
+            # all fastq file exists
+            if [ "$(${file_list[@]} | grep -wqE $fastq_filename_regex | wc -l)" = "" ]; then
                 echo $filename
-                file_list=( "${file_list[@]/$fastq_filename}" ) # remove all fastq filenames from array
+                file_list=( "${file_list[@]/$fastq_filename_glob}" ) # remove all fastq filenames from array
 
             else # else append the filename to the list
                 file_list+=( $filename )

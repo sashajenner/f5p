@@ -22,7 +22,7 @@ HELP="Flags:
 							|-- <prefix>.fast5
 						|-- fastq/
 							|-- <prefix>/
-								|-- fastq_*_1_[0-3].fastq
+								|-- fastq_*_[0-9]+_[0-9]+.fastq
                                 
 -h, --help          help message"
 
@@ -132,7 +132,7 @@ elif [ "$FORMAT" = "--NA" ]; then
     F5_PREFIX=${F5_FILENAME%.*}
 
     # derive the locations of input and output files
-    FQ_FILEPATHS=$PARENT_DIR/fastq/$F5_PREFIX/fastq_*_1_[0-3].fastq
+    FQ_FILEPATHS=$PARENT_DIR/fastq/$F5_PREFIX/fastq_*.fastq
     SAM_DIR=$PARENT_DIR/sam
     BAM_DIR=$PARENT_DIR/bam
     METH_DIR=$PARENT_DIR/methylation
@@ -151,7 +151,7 @@ elif [ "$FORMAT" = "--NA" ]; then
     mkdir -p $F5_DIR_LOCAL # make local fast5 directory and create parent directories if needed
     cp $F5_FILEPATH $F5_DIR_LOCAL # copy fast5 file into local fast5 directory
 
-    # (todo: concatenate FQ_FILEPATHS to single FQ_LOCAL)
+    cat $FQ_FILEPATHS > FQ_LOCAL
 
 fi
 
