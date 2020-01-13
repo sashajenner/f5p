@@ -2,6 +2,15 @@
 # @author: Hasindu Gamaarachchi (hasindu@unsw.edu.au)
 # @coauthor: Sasha Jenner (jenner.sasha@gmail.com)
 
+: '
+realtime: 
+    screen run.sh -t -a -f --778
+pause/play normal:
+    <clear monitor dir>
+    screen run.sh -f --778
+    screen run.sh -r -f --778
+'
+
 ###############################################################################
 
 USAGE="Usage: $0 [options ...]"
@@ -12,6 +21,8 @@ HELP='Flags:
 							|-- <prefix>.fast5.tar
 						|-- fastq/
 							|-- fastq_*.<prefix>.fastq.gz
+                        |-- logs/ (optional - for realistic testing or automatic timeout)
+							|-- sequencing_summary.<prefix>.txt.gz
 
 		--NA			<in_dir>
 						|-- fast5/
@@ -19,6 +30,8 @@ HELP='Flags:
 						|-- fastq/
 							|-- <prefix>/
 								|-- fastq_*_1_[0-3].fastq
+                                |-- sequencing_summary.txt (optional - 
+                            for realistic testing or automatic timeout)
 
 -h, --help          help message
 -r, --resume        resumes from last processing position
@@ -56,9 +69,30 @@ resuming=false
 TIME_FACTOR="hr"
 TIME_INACTIVE=1
 
+format_specified=false # assume no format specified
+
+
 ## Handle flags
 while [ ! $# -eq 0 ]; do # while there are arguments
     case "$1" in
+
+        --format | -f)
+            format_specified=true
+            case "$2" in
+                --778)
+                    FORMAT=$2
+                    ;;
+                --NA)
+                    FORMAT=$2
+                    ;;
+                *)
+                    echo "Incorrect or no format specified"
+                    echo $USAGE
+                    echo $HELP
+                    exit
+                    ;;
+            shift
+            ;;
 
         --help | -h)
             echo $USAGE
@@ -105,6 +139,13 @@ while [ ! $# -eq 0 ]; do # while there are arguments
     shift
 done
 
+if ! $format_specified; then
+	echo "No format specified!"
+	echo $USAGE
+	echo $HELP
+	exit 1
+fi
+
 ###############################################################################
 
 # test before cleaning logs
@@ -148,18 +189,18 @@ ansible all -m copy -a "src=$PIPELINE_SCRIPT dest=/nanopore/bin/fast5_pipeline.s
 
 # testing
 # execute simulator in the background giving time for monitor to set up
-(sleep 10; bash testing/simulator.sh -r $FOLDER $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
+(sleep 10; bash testing/simulator.sh -r $FOLDER -f $FORMAT $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
 
 # monitor the new file creation in fast5 folder and execute realtime f5 pipeline
 # close after 30 minutes of no new file
 if $resuming; then # if resuming option set
     bash monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
-    bash monitor/ensure.sh -r 2>> $LOG |
+    bash monitor/ensure.sh -r -f $FORMAT 2>> $LOG |
     /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg -r |& # redirect all stderr to stdout
     tee -a $LOG
 else
     bash monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
-    bash monitor/ensure.sh 2>> $LOG |
+    bash monitor/ensure.sh -f $FORMAT 2>> $LOG |
     /usr/bin/time -v ./f5pl_realtime data/ip_list.cfg |& # redirect all stderr to stdout
     tee -a $LOG
 fi

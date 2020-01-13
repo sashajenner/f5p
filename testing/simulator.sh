@@ -95,7 +95,7 @@ if ! $format_specified; then
 	echo "No format specified!"
 	echo $USAGE
 	echo $HELP
-	exit
+	exit 1
 fi
 
 F5_DIR="$INPUT_DIR"fast5/

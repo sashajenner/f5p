@@ -63,7 +63,7 @@ if ! $format_specified; then # exit if no format specified
 	echo "No format specified!"
 	echo $USAGE
 	echo $HELP
-	exit
+	exit 1
 fi
 
 file_list=() # declare file list
