@@ -4,6 +4,15 @@
 
 USAGE="Usage: $0 [options ...] <monitor_dirs>"
 : ${1?$USAGE} # require 1 parameter else give usage msg
+HELP='Flags:
+-e, --existing      output existing files in monitor director(y/ies)
+-f, --flag          output flag of -1 if exited due to completion
+-h, --help          help message
+-n, --num-files     exits after given number of files
+-t, --timeout       exits after a specified time period of no new files
+        -s, --seconds   timeout format in seconds
+        -m, --minutes   "---------------" minutes
+        -hr, --hours    "---------------" hours'
 
 TEMP_FILE=temp # temporary file
 
@@ -26,15 +35,7 @@ while [ ! $# -eq 0 ]; do # while there are arguments
 
         --help | -h)
             echo $USAGE
-            echo 'Flags:
--e, --existing      output existing files in monitor director(y/ies)
--f, --flag          output flag of -1 if exited due to completion
--h, --help          help message
--n, --num-files     exits after given number of files
--t, --timeout       exits after a specified time period of no new files
-        -s, --seconds   timeout format in seconds
-        -m, --minutes   "---------------" minutes
-        -hr, --hours    "---------------" hours'
+            echo $HELP
             exit
             ;;
 
@@ -61,16 +62,9 @@ while [ ! $# -eq 0 ]; do # while there are arguments
                     shift
                     ;;
                 *)
+                    echo "Incorrect or no timeout format specified"
                     echo $USAGE
-                    echo 'Flags:
--e, --existing      output existing files in monitor director(y/ies)
--f, --flag          output flag of -1 if exited due to completion
--h, --help          help message
--n, --num-files     exits after given number of files
--t, --timeout       exits after a specified time period of no new files
-        -s, --seconds   timeout format in seconds
-        -m, --minutes   "---------------" minutes
-        -hr, --hours    "---------------" hours'
+                    echo $HELP
                     exit
                     ;;
             esac
