@@ -71,7 +71,15 @@ print(all_end_times_df) # testing
 print(all_end_times_df[1, ]) # testing
 
 processing_logs <- c("../logs.txt")
-system(paste0("bash extract_analysis_timestamps.sh ", processing_logs[1]), intern = T)
+processing_times <- system(paste0("bash extract_analysis_timestamps.sh ", processing_logs[1]), intern = T)
+processing_df <- read.csv(text = processing_times, sep = " ", header = F)
+colnames(processing_df) <- c("time_process_1500", "file_order")
+
+print(processing_df) # testing
+processing_df["solo_bases_process_1500"] <- all_end_times_df[processing_df["file_order"],
+                                                             "solo_bases_1500"]
+
+print(processing_df) # testing
 
 sequenced_bases_vs_time <- plot_ly(all_end_times_df,
                                    x = ~time_1500, y = ~tot_bases_1500, name = "1500",
