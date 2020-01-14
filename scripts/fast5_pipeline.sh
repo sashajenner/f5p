@@ -3,26 +3,23 @@
 # @coauthor: Sasha Jenner (jenner.sasha@gmail.com)
 
 ###############################################################################
-USAGE="Usage: $0 [options ...] <filepath>"
-if [ "$#" -ne 1 ]; then # if there isn't one argument
-    echo $USAGE # print usage message
-        exit 1 # quit program
-fi
+USAGE="Usage: $0 -f <format> [options ...] <filepath>"
+: ${3?$USAGE} # require at least 3 args else give usage message
 
-HELP="Flags:
--f, --format		follows a specified format of fast5 and fastq files
-		--778			<in_dir>
-						|-- fast5/
-							|-- <prefix>.fast5.tar
-						|-- fastq/
-							|-- fastq_*.<prefix>.fastq.gz
-
-		--NA			<in_dir>
-						|-- fast5/
-							|-- <prefix>.fast5
-						|-- fastq/
-							|-- <prefix>/
-								|-- fastq_*_[0-9]+_[0-9]+.fastq
+HELP=$"Flags:
+-f, --format        follows a specified format of fast5 and fastq files
+        --778           <in_dir>
+                        |-- fast5/
+                            |-- <prefix>.fast5.tar
+                        |-- fastq/
+                            |-- fastq_*.<prefix>.fastq.gz
+        
+        --NA            <in_dir>
+                        |-- fast5/
+                            |-- <prefix>.fast5
+                        |-- fastq/
+                            |-- <prefix>/
+                                |-- <prefix>.fastq
                                 
 -h, --help          help message"
 
@@ -44,17 +41,21 @@ while [ ! $# -eq 0 ]; do # while there are arguments
 				*)
 					echo "Incorrect or no format specified"
 					echo $USAGE
-					echo $HELP
+					echo "$HELP"
 					exit 1
 					;;
+            esac
 			shift
 			;;
 
         --help | -h)
             echo $USAGE
-            echo $HELP
-            exit
+            echo "$HELP"
+            exit 0
             ;;
+        
+        *)
+            FILE=$1
 
     esac
     shift
@@ -63,7 +64,7 @@ done
 if ! $format_specified; then # exit if no format specified
 	echo "No format specified!"
 	echo $USAGE
-	echo $HELP
+	echo "$HELP"
 	exit 1
 fi
 
@@ -84,11 +85,9 @@ SCRATCH=/nanopore/scratch
 
 if [ "$FORMAT" = "--778" ]; then
 
-    F5_TAR_FILEPATH=$1 # first argument
+    F5_TAR_FILEPATH=$FILE # first argument
     F5_DIR=${F5_TAR_FILEPATH%/*} # strip filename from .fast5.tar filepath
     PARENT_DIR=${F5_DIR%/*} # get folder one heirarchy higher
-
-    exit_status=0 # assume success
 
     # name of the .fast5.tar file (strip the path and get only the name with extension)
     F5_TAR_FILENAME=$(basename $F5_TAR_FILEPATH)
@@ -120,11 +119,9 @@ if [ "$FORMAT" = "--778" ]; then
 
 elif [ "$FORMAT" = "--NA" ]; then
     
-    F5_FILEPATH=$1 # first argument
+    F5_FILEPATH=$FILE # first argument
     F5_DIR=${F5_FILEPATH%/*} # strip filename from .fast5 filepath
     PARENT_DIR=${F5_DIR%/*} # get folder one heirarchy higher
-
-    exit_status=0 # assume success
 
     # name of the .fast5 file (strip the path and get only the name with extension)
     F5_FILENAME=$(basename $F5_FILEPATH)
@@ -132,7 +129,7 @@ elif [ "$FORMAT" = "--NA" ]; then
     F5_PREFIX=${F5_FILENAME%.*}
 
     # derive the locations of input and output files
-    FQ_FILEPATHS=$PARENT_DIR/fastq/$F5_PREFIX/fastq_*.fastq
+    FQ_FILEPATH=$PARENT_DIR/fastq/$F5_PREFIX/$F5_PREFIX.fastq
     SAM_DIR=$PARENT_DIR/sam
     BAM_DIR=$PARENT_DIR/bam
     METH_DIR=$PARENT_DIR/methylation
@@ -151,9 +148,11 @@ elif [ "$FORMAT" = "--NA" ]; then
     mkdir -p $F5_DIR_LOCAL # make local fast5 directory and create parent directories if needed
     cp $F5_FILEPATH $F5_DIR_LOCAL # copy fast5 file into local fast5 directory
 
-    cat $FQ_FILEPATHS > FQ_LOCAL
+    cat $FQ_FILEPATH > $FQ_LOCAL
 
 fi
+
+exit_status=0 # assume success
 
 # index
 /usr/bin/time -v $METHCALL index -d $F5_DIR_LOCAL $FQ_LOCAL 2> $LOG_LOCAL || (exit_status=1; echo "index failed")
@@ -166,7 +165,7 @@ fi
 /usr/bin/time -v $SAMTOOLS index $BAM_LOCAL 2>> $LOG_LOCAL || (exit_status=1; echo "samtools index failed")
 
 # methylation
-/usr/bin/time -v $METHCALL call-methylation -t 4 -r  $FQ_LOCAL -g $REF_FA -b $BAM_LOCAL -K 256 > $METH_LOCAL  2>> $LOG_LOCAL || (exit_status=1; echo "methylation failed")
+/usr/bin/time -v $METHCALL call-methylation -t 4 -r $FQ_LOCAL -g $REF_FA -b $BAM_LOCAL -K 256 > $METH_LOCAL  2>> $LOG_LOCAL || (exit_status=1; echo "methylation failed")
 
 # copy results to the correct place and create directories first if they do not exist
 mkdir -p $METH_DIR && cp $METH_LOCAL "$_"

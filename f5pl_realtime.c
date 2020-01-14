@@ -180,7 +180,7 @@ void* node_handler(void* arg) {
                 tid + 1, core.ip_list[tid], reprocessing ? "Reassigning" : "Assigning",
                 core.file_list[fidx], fidx + 1 - failed_before_cnt, core.ip_list[tid]);
         
-        sprintf(msg, "%s --format %s", core.file_list[fidx], core.format);
+        sprintf(msg, "--format %s %s", core.format, core.file_list[fidx]);
         send_full_msg(socketfd, msg, strlen(msg)); // send filename and format to thread
         // read msg into buffer and receive the buffer's expected length
         int received = recv_full_msg_try(socketfd, buffer, MAX_PATH_SIZE, RECEIVE_TIME_OUT);
@@ -269,7 +269,7 @@ void* node_handler(void* arg) {
                     tid + 1, core.ip_list[tid], reprocessing ? "Reassigning" : "Assigning",
                     core.file_list[fidx], fidx + 1 - failed_before_cnt, core.ip_list[tid]);
 
-            sprintf(msg, "%s --format %s", core.file_list[fidx], core.format);
+            sprintf(msg, "--format %s %s", core.format, core.file_list[fidx]);
             send_full_msg(socketfd, msg, strlen(msg)); // send filename and format to thread
             // read msg into buffer and receive the buffer's expected length
             received = recv_full_msg_try(socketfd, buffer, MAX_PATH_SIZE, RECEIVE_TIME_OUT);
@@ -277,7 +277,7 @@ void* node_handler(void* arg) {
 
         buffer[received] = '\0'; // append with null character before printing
         fprintf(stderr, 
-                "[t%d(%s)::INFO] Received message '%s' at time %f (%d).\n", // print msg to standard error
+                "[t%d(%s)::INFO] Received message '%s' at time %f sec (%d).\n", // print msg to standard error
                 tid + 1, core.ip_list[tid], buffer, realtime() - initial_time, fidx + 1 - failed_before_cnt);
 
         if (strcmp(buffer, "done.") == 0) { // if "done"
@@ -361,7 +361,7 @@ int main(int argc, char* argv[]) {
                                     "\t\t\t|-- <prefix>.fast5\n"
                                 "\t\t|-- fastq/\n"
                                     "\t\t\t|-- <prefix>\n"
-                                        "\t\t\t\t|-- fastq_*_[0-9]+_[0-9]+.fastq\n",
+                                        "\t\t\t\t|-- <prefix>.fastq\n",
                 argv[0]);
         exit(EXIT_FAILURE);
 

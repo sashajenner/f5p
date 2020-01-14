@@ -9,29 +9,30 @@ $1 - directory for files to be taken
 $2 - directory for files to be placed
 '
 
-USAGE="Usage: $0 [options ...] <in_dir> <out_dir>"
+USAGE="Usage: $0 -f <format> [options ...] <in_dir> <out_dir>"
 : ${2?$USAGE} # require 2 parameters else give error msg
-HELP='Flags:
--f, --format		follows a specified format of fast5 and fastq files
-		--778			<in_dir>
-						|-- fast5/
-							|-- <prefix>.fast5.tar
-						|-- fastq/
-							|-- fastq_*.<prefix>.fastq.gz
-						|-- logs/ (optional - for realistic sim)
-							|-- sequencing_summary.<prefix>.txt.gz
+HELP=$'Flags:
+-f, --format        follows a specified format of fast5 and fastq files
+        --778           <in_dir>
+                        |-- fast5/
+                            |-- <prefix>.fast5.tar
+                        |-- fastq/
+                            |-- fastq_*.<prefix>.fastq.gz
+                        |-- logs/ (optional - for realistic sim)
+                            |-- sequencing_summary.<prefix>.txt.gz
+        
+        --NA            <in_dir>
+                        |-- fast5/
+                            |-- <prefix>.fast5
+                        |-- fastq/
+                            |-- <prefix>/
+                                |-- <prefix>.fastq
+                                |-- sequencing_summary.txt (optional - 
+										for realistic sim)
 
-		--NA			<in_dir>
-						|-- fast5/
-							|-- <prefix>.fast5
-						|-- fastq/
-							|-- <prefix>
-								|-- fastq_*_+([0-9])_+([0-9]).fastq
-								|-- sequencing_summary.txt (optional - for realistic sim)
-
--h, --help          help message
--n, --num-batches   copy a given number of batches
--r, --real-sim		realistic simulation given input dir with logs subdir containing sequencing summary txt.gz files
+-h, --help			help message
+-n, --num-batches	copy a given number of batches
+-r, --real-sim		realistic simulation
 -t, --time-between	time to wait in between copying'
 
 NO_BATCHES=-1 # default value of -1 if parameter unset
@@ -55,16 +56,17 @@ while [ ! $# -eq 0 ]; do # while there are arguments
 				*)
 					echo "Incorrect or no format specified"
 					echo $USAGE
-					echo $HELP
-					exit
+					echo "$HELP"
+					exit 1
 					;;
+			esac
 			shift
 			;;
 
         --help | -h)
             echo $USAGE
-            echo $HELP
-            exit
+            echo "$HELP"
+            exit 0
             ;;
 
         --num-batches | -n)
@@ -94,7 +96,7 @@ done
 if ! $format_specified; then
 	echo "No format specified!"
 	echo $USAGE
-	echo $HELP
+	echo "$HELP"
 	exit 1
 fi
 
@@ -116,7 +118,7 @@ copy_files () {
 		FQ_FILE=$FQ_DIR/fastq_*.$1.fastq.gz
 	elif [ "$FORMAT" = "--NA" ]; then
 		F5_FILE=$F5_DIR/$1.fast5
-		FQ_FILE=$FQ_DIR/$1/fastq_*_+([0-9])_+([0-9]).fastq
+		FQ_FILE=$FQ_DIR/$1/$1.fastq
 	fi
 
 	# if fast5 file copying fails
@@ -186,7 +188,7 @@ if [ "$FORMAT" = "--778" ]; then
 
 			filename_path=${file_time_map[$ordered_time]} # extract file from map
 
-			echo "actual time: ${SECONDS}s | file completed: ${ordered_time}s | file: $filename_path" # testing
+			echo "file completed: ${ordered_time}s | file: $filename_path" # testing
 
 			filename_pathless=$(basename $filename_path) # extract the filename without the path
 			filename="${filename_pathless%%.*}" # extract the filename without the extension nor the path
@@ -252,7 +254,7 @@ elif [ "$FORMAT" = "--NA" ]; then
 
 			filename_path=${file_time_map[$ordered_time]} # extract file from map
 
-			echo "actual time: ${SECONDS}s | file completed: ${ordered_time}s | file: $filename_path" # testing
+			echo "file completed: ${ordered_time}s | file: $filename_path" # testing
 
 			filename_pathless=$(basename $filename_path) # extract the filename without the path
 			filename="${filename_pathless%.*}" # extract the filename without the extension nor the path

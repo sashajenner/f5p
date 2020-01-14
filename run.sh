@@ -4,34 +4,35 @@
 
 : '
 realtime: 
-    screen run.sh -t -a -f --778
+    screen bash run.sh -f --778 -t -a
 pause/play normal:
     <clear monitor dir>
-    screen run.sh -f --778
-    screen run.sh -r -f --778
+    screen bash run.sh -f --778
+    screen bash run.sh -f --778 -r
 '
 
 ###############################################################################
 
 USAGE="Usage: $0 [options ...]"
-HELP='Flags:
--f, --format		follows a specified format of fast5 and fastq files
-		--778			<in_dir>
-						|-- fast5/
-							|-- <prefix>.fast5.tar
-						|-- fastq/
-							|-- fastq_*.<prefix>.fastq.gz
-                        |-- logs/ (optional - for realistic testing or automatic timeout)
-							|-- sequencing_summary.<prefix>.txt.gz
-
-		--NA			<in_dir>
-						|-- fast5/
-							|-- <prefix>.fast5
-						|-- fastq/
-							|-- <prefix>/
-								|-- fastq_*_+([0-9])_+([0-9]).fastq
+HELP=$'Flags:
+-f, --format        follows a specified format of fast5 and fastq files
+        --778           <in_dir>
+                        |-- fast5/
+                            |-- <prefix>.fast5.tar
+                        |-- fastq/
+                            |-- fastq_*.<prefix>.fastq.gz
+                        |-- logs/ (optional - for realistic testing
+                                     or automatic timeout)
+                            |-- sequencing_summary.<prefix>.txt.gz
+        
+        --NA            <in_dir>
+                        |-- fast5/
+                            |-- <prefix>.fast5
+                        |-- fastq/
+                            |-- <prefix>/
+                                |-- <prefix>.fastq
                                 |-- sequencing_summary.txt (optional - 
-                            for realistic testing or automatic timeout)
+                                    for realistic testing or automatic timeout)
 
 -h, --help          help message
 -r, --resume        resumes from last processing position
@@ -60,7 +61,7 @@ LOG=log.txt
 
 # testing constants
 TIME_BETWEEN_BATCHES=10
-NO_BATCHES= # copy all batches
+NO_BATCHES=
 
 # set options off by default
 resuming=false
@@ -88,16 +89,17 @@ while [ ! $# -eq 0 ]; do # while there are arguments
                 *)
                     echo "Incorrect or no format specified"
                     echo $USAGE
-                    echo $HELP
-                    exit
+                    echo "$HELP"
+                    exit 1
                     ;;
+            esac
             shift
             ;;
 
         --help | -h)
             echo $USAGE
-            echo $HELP
-            exit
+            echo "$HELP"
+            exit 0
             ;;
 
         --resume | -r)
@@ -122,13 +124,22 @@ while [ ! $# -eq 0 ]; do # while there are arguments
                     ;;
                 --automatic | -a)
                     TIME_FACTOR="s"
-                    MAX_WAIT=$(bash max_time_between_files.sh $FOLDER)
+
+                    if ! $format_specified; then
+                        echo "No format specified before automatic timeout option"
+                        echo $USAGE
+                        echo "$HELP"
+                        exit 1
+                    else
+                        MAX_WAIT=$(bash max_time_between_files.sh -f $FORMAT $FOLDER)
+                    fi
+
                     TIME_INACTIVE=$(python -c "print($MAX_WAIT + 600)") # add buffer of 10 minutes (600s)
                     shift
                     ;;
                 *)
                     echo $USAGE
-                    echo $HELP
+                    echo "$HELP"
                     exit
                     ;;
             esac
@@ -142,7 +153,7 @@ done
 if ! $format_specified; then
 	echo "No format specified!"
 	echo $USAGE
-	echo $HELP
+	echo "$HELP"
 	exit 1
 fi
 
@@ -189,7 +200,7 @@ ansible all -m copy -a "src=$PIPELINE_SCRIPT dest=/nanopore/bin/fast5_pipeline.s
 
 # testing
 # execute simulator in the background giving time for monitor to set up
-(sleep 10; bash testing/simulator.sh -r $FOLDER -f $FORMAT $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
+(sleep 10; bash testing/simulator.sh -f $FORMAT -r $FOLDER $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
 
 # monitor the new file creation in fast5 folder and execute realtime f5 pipeline
 # close after 30 minutes of no new file

@@ -2,21 +2,21 @@
 # @author: Sasha Jenner (jenner.sasha@gmail.com)
 ### Ensures output of fast5 tar file has a corresponding fastq file
 
-USAGE="Usage: monitor.sh [options ...] <fast5_dir> <fastq_dir> | $0" # piped with monitor.sh script
-HELP="Flags:
--f, --format		follows a specified format of fast5 and fastq files
-		--778			<in_dir>
-						|-- fast5/
-							|-- <prefix>.fast5.tar
-						|-- fastq/
-							|-- fastq_*.<prefix>.fastq.gz
-
-		--NA			<in_dir>
-						|-- fast5/
-							|-- <prefix>.fast5
-						|-- fastq/
-							|-- <prefix>/
-								|-- fastq_*_+([0-9])_+([0-9]).fastq
+USAGE="Usage: monitor.sh -f <format> [options ...] <fast5_dir> <fastq_dir> | $0" # piped with monitor.sh script
+HELP=$"Flags:
+-f, --format        follows a specified format of fast5 and fastq files
+        --778           <in_dir>
+                        |-- fast5/
+                            |-- <prefix>.fast5.tar
+                        |-- fastq/
+                            |-- fastq_*.<prefix>.fastq.gz
+        
+        --NA            <in_dir>
+                        |-- fast5/
+                            |-- <prefix>.fast5
+                        |-- fastq/
+                            |-- <prefix>/
+                                |-- <prefix>.fastq
 
 -h, --help          help message
 -r, --resume        check if dev files already contain any of the filenames"
@@ -40,15 +40,16 @@ while [ ! $# -eq 0 ]; do # while there are arguments
 				*)
 					echo "Incorrect or no format specified"
 					echo $USAGE
-					echo $HELP
-					exit
+					echo "$HELP"
+					exit 1
 					;;
+            esac
 			shift
 			;;
 
         --help | -h)
             echo $USAGE
-            echo $HELP
+            echo "$HELP"
             exit
             ;;
 
@@ -62,7 +63,7 @@ done
 if ! $format_specified; then # exit if no format specified
 	echo "No format specified!"
 	echo $USAGE
-	echo $HELP
+	echo "$HELP"
 	exit 1
 fi
 
@@ -90,10 +91,10 @@ if [ "$FORMAT" = "--778" ]; then
         temp_prefix=${pathless%.*} # remove one extension
         prefix=${temp_prefix%.*} # extract the filename without the path or extension (remove 2nd extension)
 
-        if echo $filename | grep -q .fast5.tar; then # if it is a fast5 file
+        if echo $filename | grep -q \\.fast5\\.tar; then # if it is a fast5 file
 
             if $RESUME; then # if resume option set
-                grep -q $prefix dev*.cfg # check if filename exists in config files
+                grep -q /$prefix\\.fast5\\.tar$ dev*.cfg # check if filename exists in config files
                 
                 if [ $? -eq "0" ]; then # if the file has been processed
                     ((i_old ++))
@@ -107,21 +108,21 @@ if [ "$FORMAT" = "--778" ]; then
 
             fi
 
-            fastq_filename=$grandparent_dir/fastq/fastq_*.$prefix.fastq.gz
+            fastq_filename_regex=$grandparent_dir/fastq/fastq_.*\\.$prefix\\.fastq\\.gz
+            fastq_filename_glob=$grandparent_dir/fastq/fastq_*.$prefix.fastq.gz
             
-            if echo ${file_list[@]} | grep -wq $fastq_filename; then # the fastq file exists
+            if echo ${file_list[@]} | grep -wq $fastq_filename_regex; then # the fastq file exists
                 echo $filename
-                file_list=( "${file_list[@]/$fastq_filename}" ) # remove fastq filename from array
+                file_list=( "${file_list[@]/$fastq_filename_glob}" ) # remove fastq filename from array
 
             else # else append the filename to the list
                 file_list+=( $filename )
             fi
 
-        elif echo $filename | grep -q .fastq.gz; then # if it a fastq file
-            fast5_filename=$grandparent_dir/fast5/${prefix##*.}.fast5.tar
+        elif echo $filename | grep -q \\.fastq\\.gz; then # if it a fastq file
 
             if $RESUME; then # if resume option set
-                grep -q ${prefix##*.} dev*.cfg # check if filename exists in config files
+                grep -q /${prefix##*.}\\.fast5\\.tar$ dev*.cfg # check if filename exists in config files
                 
                 if [ $? -eq "0" ]; then # if the file has been processed
                     ((i_old ++))
@@ -134,10 +135,13 @@ if [ "$FORMAT" = "--778" ]; then
                 fi
 
             fi
+
+            fast5_filename_regex=$grandparent_dir/fast5/${prefix##*.}\\.fast5\\.tar
+            fast5_filename_glob=$grandparent_dir/fast5/${prefix##*.}.fast5.tar
             
-            if echo ${file_list[@]} | grep -wq $fast5_filename; then # the fast5 file exists
-                echo $fast5_filename
-                file_list=( "${file_list[@]/$fast5_filename}" ) # remove fast5 filename from array
+            if echo ${file_list[@]} | grep -wq $fast5_filename_regex; then # the fast5 file exists
+                echo $fast5_filename_glob
+                file_list=( "${file_list[@]/$fast5_filename_glob}" ) # remove fast5 filename from array
             
             else # else append the filename to the list
                 file_list+=( $filename )
@@ -158,13 +162,13 @@ elif [ "$FORMAT" = "--NA" ]; then
         parent_dir=${filename%/*} # strip filename from .fast5 filepath
         grandparent_dir=${parent_dir%/*} # strip parent directory from filepath
 
-        if echo $filename | grep -q .fast5; then # if it is a fast5 file
+        if echo $filename | grep -q \\.fast5; then # if it is a fast5 file
 
             pathless=$(basename $filename) # strip path
             prefix=${pathless%.*} # remove extension
 
             if $RESUME; then # if resume option set
-                grep -q /$prefix.fast5$ dev*.cfg # check if filename exists in config files
+                grep -q /$prefix\\.fast5$ dev*.cfg # check if filename exists in config files
                 
                 if [ $? -eq "0" ]; then # if the file has been processed
                     ((i_old ++))
@@ -178,11 +182,11 @@ elif [ "$FORMAT" = "--NA" ]; then
 
             fi
 
-            fastq_filename_regex=$grandparent_dir/fastq/$prefix/fastq_.*_[0-9]+_[0-9]+\\.fastq
-            fastq_filename_glob=$grandparent_dir/fastq/$prefix/fastq_*_+([0-9])_+([0-9]).fastq
+            fastq_filename_regex=$grandparent_dir/fastq/$prefix/$prefix\\.fastq
+            fastq_filename_glob=$grandparent_dir/fastq/$prefix/$prefix.fastq
             
             # all fastq file exists
-            if [ "$(${file_list[@]} | grep -wqE $fastq_filename_regex | wc -l)" = "" ]; then
+            if echo ${file_list[@]} | grep -wq $fastq_filename_regex; then # the fastq file exists
                 echo $filename
                 file_list=( "${file_list[@]/$fastq_filename_glob}" ) # remove all fastq filenames from array
 
@@ -190,14 +194,12 @@ elif [ "$FORMAT" = "--NA" ]; then
                 file_list+=( $filename )
             fi
 
-        elif echo $filename | grep -q .fastq; then # if it a fastq file
+        elif echo $filename | grep -q \\.fastq; then # if it a fastq file
             greatgrandparent_dir=${grandparent_dir%/*} # strip grandparent directory from filepath
             prefix=$(basename $parent_dir) # strip path from directory
 
-            fast5_filename=$greatgrandparent_dir/fast5/$prefix.fast5
-
             if $RESUME; then # if resume option set
-                grep -q /$prefix/fastq_*_1_[0-3].fastq$ dev*.cfg # check if filename exists in config files
+                grep -q /$prefix/$prefix\\.fastq$ dev*.cfg # check if filename exists in config files
                 
                 if [ $? -eq "0" ]; then # if the file has been processed
                     ((i_old ++))
@@ -211,14 +213,13 @@ elif [ "$FORMAT" = "--NA" ]; then
 
             fi
 
-            fastq_filename=$parent_dir/fastq_*_1_[0-3].fastq
+            fast5_filename_regex=$greatgrandparent_dir/fast5/$prefix\\.fast5
+            fast5_filename_glob=$greatgrandparent_dir/fast5/$prefix.fast5
             
-            if echo ${file_list[@]} | grep -wq $fast5_filename && # the fast5 file exists
-                [ "$(${file_list[@]} | grep -wq $fastq_filename | wc -l)" = "3" ]; then # all other fastq files exist
-                echo $fast5_filename
-                file_list=( "${file_list[@]/$fast5_filename}" ) # remove fast5 filename from array
-                file_list=( "${file_list[@]/$fastq_filename}" ) # remove fastq filenames from array
-            
+            if echo ${file_list[@]} | grep -wq $fast5_filename_regex; then # the fast5 file exists
+                echo $fast5_filename_glob
+                file_list=( "${file_list[@]/$fast5_filename_glob}" ) # remove fast5 filename from array
+
             else # else append the filename to the list
                 file_list+=( $filename )
             fi

@@ -1,22 +1,22 @@
 # Find the max time gap between successive sequenced batches completing
 # $1 - the directory with logs/ and fast5/ directories
 USAGE="Usage: $0 [options ...] <search_dir>"
-HELP="Flags:
--f, --format		follows a specified format of fast5 and fastq files
-		--778			<in_dir>
-						|-- fast5/
-							|-- <prefix>.fast5.tar
-						|-- fastq/
-							|-- fastq_*.<prefix>.fastq.gz
+HELP=$"Flags:
+-f, --format        follows a specified format of fast5 and fastq files
+        --778           <in_dir>
+                        |-- fast5/
+                            |-- <prefix>.fast5.tar
+                        |-- fastq/
+                            |-- fastq_*.<prefix>.fastq.gz
                         |-- logs/
-							|-- sequencing_summary.<prefix>.txt.gz
-
-		--NA			<in_dir>
-						|-- fast5/
-							|-- <prefix>.fast5
-						|-- fastq/
-							|-- <prefix>/
-								|-- fastq_*_+([0-9])_+([0-9]).fastq
+                            |-- sequencing_summary.<prefix>.txt.gz
+        
+        --NA            <in_dir>
+                        |-- fast5/
+                            |-- <prefix>.fast5
+                        |-- fastq/
+                            |-- <prefix>/
+                                |-- <prefix>.fastq
                                 |-- sequencing_summary.txt
 							
 -h, --help			help message
@@ -41,16 +41,17 @@ while [ ! $# -eq 0 ]; do # while there are arguments
                 *)
                     echo "Incorrect or no format specified"
                     echo $USAGE
-                    echo $HELP
-                    exit
+                    echo "$HELP"
+                    exit 1
                     ;;
+			esac
             shift
             ;;
 
         --help | -h)
             echo $USAGE
-            echo $HELP
-            exit
+            echo "$HELP"
+            exit 0
             ;;
 
         --loud | -l)
@@ -68,7 +69,7 @@ done
 if ! $format_specified; then
 	echo "No format specified!"
 	echo $USAGE
-	echo $HELP
+	echo "$HELP"
 	exit 1
 fi
 

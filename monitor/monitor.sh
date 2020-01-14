@@ -3,7 +3,7 @@
 ### Monitor script that outputs absolute file path once it is created in the monitored folder
 
 USAGE="Usage: $0 [options ...] <monitor_dirs>"
-: ${1?$USAGE} # require 1 parameter else give usage msg
+: ${1?$USAGE} # require 1 arg else give usage msg
 HELP='Flags:
 -e, --existing      output existing files in monitor director(y/ies)
 -f, --flag          output flag of -1 if exited due to completion
