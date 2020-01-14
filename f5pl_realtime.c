@@ -277,8 +277,8 @@ void* node_handler(void* arg) {
 
         buffer[received] = '\0'; // append with null character before printing
         fprintf(stderr, 
-                "[t%d(%s)::INFO] Received message '%s' at time %f sec (%d).\n", // print msg to standard error
-                tid + 1, core.ip_list[tid], buffer, realtime() - initial_time, fidx + 1 - failed_before_cnt);
+                "[t%d(%s)::INFO] Received message '%s' at time %f sec | file %s (%d).\n", // print msg to standard error
+                tid + 1, core.ip_list[tid], buffer, realtime() - initial_time, core.file_list[fidx], fidx + 1 - failed_before_cnt);
 
         if (strcmp(buffer, "done.") == 0) { // if "done"
             fprintf(report, "%s\n", core.file_list[fidx]); // write filename to report
