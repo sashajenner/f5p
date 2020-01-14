@@ -56,7 +56,7 @@ for (log_dir in log_paths) {
     file_end_times_df <- file_end_times_df[with(file_end_times_df, order(end_time)), ]
     file_end_times_df["end_time"] <- file_end_times_df["end_time"] / 3600 # Get time in hours (3600s in 1h)
     file_end_times_df <- within(file_end_times_df, total_bases <- cumsum(num_bases))
-    file_end_times_df["total_bases"] <- file_end_times_df["total_bases"] / (10 ^ 6) # Convert to gigabases
+    file_end_times_df["total_bases"] <- file_end_times_df["total_bases"] / (10 ^ 9) # Convert to gigabases
     
     print(file_end_times_df) # testing
 
@@ -76,7 +76,17 @@ sequenced_bases_vs_time <- plot_ly(all_end_times_df,
                                     xaxis = list(title = "Time (h)"),
                                     yaxis = list(title = "Gigabases Sequenced"))
 
+sequenced_files_vs_time <- plot_ly(all_end_times_df,
+                                   x = ~time_1500, name = "1500",
+                                   type = "scatter", mode = "lines") %>%
+                            add_trace(x =~time_5000, name = "5000") %>%
+                            layout(title = "Files Sequenced Over Time",
+                                    xaxis = list(title = "Time (h)"),
+                                    yaxis = list(title = "Number of Files Sequenced"))
+
 plotly_IMAGE(sequenced_bases_vs_time, format = "png", out_file = "sequenced_bases_vs_time.png")
+plotly_IMAGE(sequenced_files_vs_time, format = "png", out_file = "sequenced_files_vs_time.png")
 
 options(browser = "false")
 api_create(sequenced_bases_vs_time, filename = "sequenced_bases_vs_time", sharing = "public")
+api_create(sequenced_files_vs_time, filename = "sequenced_files_vs_time", sharing = "public")
