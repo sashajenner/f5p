@@ -74,8 +74,7 @@ sequenced_bases_vs_time <- plot_ly(all_end_times_df,
                             add_trace(x =~time_5000, y = ~tot_bases_5000, name = "5000") %>%
                             layout(title = "Bases Sequenced Over Time",
                                     xaxis = list(title = "Time (h)"),
-                                    yaxis = list(title = "Gigabases Sequenced",
-                                                 showline = T))
+                                    yaxis = list(title = "Gigabases Sequenced"))
 
 sequenced_files_vs_time <- plot_ly(all_end_times_df,
                                    x = ~time_1500, name = "1500",
@@ -83,8 +82,7 @@ sequenced_files_vs_time <- plot_ly(all_end_times_df,
                             add_trace(x =~time_5000, name = "5000") %>%
                             layout(title = "Files Sequenced Over Time",
                                     xaxis = list(title = "Time (h)"),
-                                    yaxis = list(title = "Number of Files Sequenced",
-                                                 showline = T))
+                                    yaxis = list(title = "Number of Files Sequenced"))
 
 plotly_IMAGE(sequenced_bases_vs_time, format = "png", out_file = "sequenced_bases_vs_time.png")
 plotly_IMAGE(sequenced_files_vs_time, format = "png", out_file = "sequenced_files_vs_time.png")
