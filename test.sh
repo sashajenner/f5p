@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # testing constants
 NO_BATCHES=2
 TIME_BETWEEN_BATCHES=1
