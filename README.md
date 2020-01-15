@@ -1,6 +1,6 @@
-# f5p
+# realf5p
 
-Lightweight job scheduler and daemon for nanopore data processing on a mini-cluster
+Lightweight job scheduler and daemon for realtime nanopore data processing on a mini-cluster
 
 
 ## pre-requisites
@@ -9,19 +9,19 @@ Lightweight job scheduler and daemon for nanopore data processing on a mini-clus
 - One of the devices will act as the *head node* to issue commands to other *worker nodes*.
 - A shared network mounted storage for storing data.
 - SSH key based access from *head node* to *worker nodes*.
-- Optionally you may configure [ansible](https://docs.ansible.com/ansible/latest/index.html) to automate configuration tasks.
+- Optionally you may configure [ansible](https://docs.ansible.com/ansible/latest/index.html) to automate configuration tasks to all worker nodes.
 
 ## getting started
 
 ### Building and initial configuration
 
-1. First build the scheduling daemon (*f5pd*) and client (*f5pl*)
+1. First build the scheduling daemon (*f5pd*) and client (*f5pl_realtime*)
 
 ```sh
 make
 ```
 
-2. Scheduling client (*f5pl*) is destined for the *head node*. Copy the scheduling daemon (*f5pd*) to all *worker nodes*. If you have configured ansible, you adapt the following command.
+2. Scheduling client (*f5pl_realtime*) is destined for the *head node*. Copy the scheduling daemon (*f5pd*) to all *worker nodes*. If you have configured ansible, you can adapt the following command.
 
 ```sh
 ansible all -m copy -a "src=./f5pd dest=/nanopore/bin/f5pd mode=0755"
@@ -36,21 +36,13 @@ ansible all -m copy -a "src=./f5pd dest=/nanopore/bin/f5pd mode=0755"
 ### Running for a dataset
 
 1. Modify the shell script [scripts/fast5_pipeline.sh](https://github.com/hasindu2008/f5_pipeline/blob/master/scripts/fast5_pipeline.sh) for your use-case. This script is to be called on *worker nodes* by (*f5pd*), each time a data unit is assigned. The example script:
-  - takes a location of a tar file on the network mount (which contains a batch of *fast5* files) as the argument;
-  - deduce the location of *fastq* file on the network mount associated to the tar file;
-  - copy the tar file and *fastq* file to the local storage;
-  - runs a methylation-calling pipeline that uses the tools *minimap2*, *samtools* and *nanopolish*; and,
-  - copy the results back to the network mount.
+  - takes a location ofduce the locaton of *fastq* fie on the network mount*fastq* file to the local storage
+  - runs a methylation-calling pipeline that uses the tools *minimap2*, *samtools* and *nanopolish* copy the results back to the network mount
 
   Note that this scripts should exit with a non zero status if any thing went wrong. After modifying the script, copy it to the *worker nodes* to the location `/nanopore/bin/fast5_pipeline.sh`
-
-
-2. On the *head node* create a file containing the list of tar files (each tar file contains a fast5 batch), one tar file per line. An example is in [data/file_list.cfg](https://github.com/hasindu2008/f5_pipeline/blob/master/data/file_list.cfg).
-
-3. Launch the *f5pl* with the IP list and the tar file list you previously created as the arguments.
-
+  
 ```sh
-./f5pl data/ip_list.cfg data/file_list.cfg
+./f5pl_realtime data/ip_list.cfg
 ```
 
-  You may adapt the script [scripts/run.sh](https://github.com/hasindu2008/f5_pipeline/blob/master/scripts/run.sh) which performs a run discussed above.
+  You may adapt the script [scripts/run.sh](https://github.com/sashajenner/realf5p/blob/master/run.sh)
