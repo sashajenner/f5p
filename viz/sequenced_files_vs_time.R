@@ -150,8 +150,10 @@ sequenced_bases_vs_time <- plot_ly(all_end_times_df,
 sequenced_files_vs_time <- plot_ly(all_end_times_df,
                                    x = ~time_1500, name = "1500",
                                    type = "scatter", mode = "lines") %>%
-                            add_trace(x =~time_5000, name = "5000") %>%
-                            add_trace(x =~time_NA, name = "NA") %>%
+                            add_trace(x = ~processing_df["time_process_1500"], 
+                                      name = "processing 5000") %>%
+                            add_trace(x = ~time_5000, name = "5000") %>%
+                            add_trace(x = ~time_NA, name = "NA") %>%
                             layout(title = "Files Sequenced Over Time",
                                     xaxis = list(title = "Time (h)"),
                                     yaxis = list(title = "Number of Files Sequenced"))
