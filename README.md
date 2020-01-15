@@ -35,7 +35,7 @@ ansible all -m copy -a "src=./f5pd dest=/nanopore/bin/f5pd mode=0755"
 
 ### Running for a dataset
 
-1. Modify the shell script [scripts/fast5_pipeline.sh](https://github.com/hasindu2008/f5_pipeline/blob/master/scripts/fast5_pipeline.sh) for your use-case. This script is to be called on *worker nodes* by (*f5pd*), each time a data unit is assigned. The example script:
+1. Modify the shell script [scripts/fast5_pipeline.sh](https://github.com/sashajenner/realf5p/blob/master/scripts/fast5_pipeline.sh) for your use-case. This script is to be called on *worker nodes* by (*f5pd*), each time a data unit is assigned. The example script:
   - takes a location ofduce the locaton of *fastq* fie on the network mount*fastq* file to the local storage
   - runs a methylation-calling pipeline that uses the tools *minimap2*, *samtools* and *nanopolish* copy the results back to the network mount
 
