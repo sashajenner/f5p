@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Find the max time gap between successive sequenced batches completing
 # $1 - the directory with logs/ and fast5/ directories
 USAGE="Usage: $0 [options ...] <search_dir>"
