@@ -68,14 +68,36 @@ colnames(all_end_times_df) <- c("time_1500", "solo_bases_1500", "tot_bases_1500"
                                 "time_5000", "solo_bases_5000", "tot_bases_5000")
 print(all_end_times_df) # testing
 
+
+
+
+
+seq_sum_files_NA <- list.files(path = "../../realf5p_data/NA/",
+                               full.names = T,
+                               recursive = T)
+
+for (file in seq_sum_files_NA) {
+    
+}
+
+
+
+
+
+
+
 processing_logs <- c("../logs.txt")
 processing_times <- system(paste0("bash extract_analysis_timestamps.sh ", processing_logs[1]), intern = T)
 processing_df <- read.csv(text = processing_times, sep = " ", header = F)
 colnames(processing_df) <- c("time_process_1500", "file_order")
 
 print(processing_df) # testing
-processing_df["solo_bases_process_1500"] <- all_end_times_df[processing_df["file_order"],
-                                                             "solo_bases_1500"]
+
+row = 1
+for (file_no in processing_df["file_order"]) {
+    processing_df[row, "solo_bases_process_1500"] <- all_end_times_df[file_no, "solo_bases_1500"]
+    row = row + 1
+}
 
 print(processing_df) # testing
 
