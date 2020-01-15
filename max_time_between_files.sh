@@ -74,12 +74,12 @@ if ! $format_specified; then
 fi
 
 
+declare -A file_time_map # declare an associative array to hold the file with corresponding completion time
+
 if [ "$FORMAT" = "--778" ]; then
 
 	F5_DIR="$SEARCH_DIR"fast5/
 	LOGS_DIR="$SEARCH_DIR"logs/ # extract logs directory when sequencing summary files are contained
-
-	declare -A file_time_map # declare an associative array to hold the file with corresponding completion time
 
 	for filename_path in $F5_DIR/*.fast5.tar; do # files with tar extension in the fast5 directory
 
@@ -91,12 +91,26 @@ if [ "$FORMAT" = "--778" ]; then
 		# cat the sequencing summary txt.gz file to awk
 		# which prints the highest start_time + duration (i.e. the completion time of that file)
 		end_time=$(zcat $seq_summary_file 2>/dev/null | awk '
-			BEGIN { FS="\t"; final_time=0 } # set the file separator to tabs
-											# define final time to 0
+			BEGIN { 
+				FS="\t" # set the file separator to tabs
+				# define variables
+				final_time=0
+			}
 			
-			{
-				if ($5 + $6 > final_time) { # if the start-time + duration is greater than the current final time
-					final_time = $5 + $6 # update the final time
+			NR==1 {
+				for (i = 1; i <= NF; i ++) {
+					if ($i == "start_time") {
+						start_time_field = i
+					
+					} else if ($i == "duration") {
+						duration_field = i
+					}
+				}
+			}
+			
+			NR > 1 {
+				if ($start_time_field + $duration_field > final_time) { # if the start-time + duration is greater than the current final time
+					final_time = $start_time_field + $duration_field # update the final time
 				}
 			} 
 			
@@ -110,8 +124,6 @@ elif [ "$FORMAT" = "--NA" ]; then
 
 	F5_DIR="$SEARCH_DIR"fast5/
 
-	declare -A file_time_map # declare an associative array to hold the file with corresponding completion time
-
 	for filename_path in $F5_DIR/*.fast5; do # files with tar extension in the fast5 directory
 
 		filename_pathless=$(basename $filename_path) # extract the filename without the path
@@ -122,12 +134,26 @@ elif [ "$FORMAT" = "--NA" ]; then
 		# cat the sequencing summary txt file to awk
 		# which prints the highest start_time + duration (i.e. the completion time of that file)
 		end_time=$(cat $seq_summary_file 2>/dev/null | awk '
-			BEGIN { FS="\t"; final_time=0 } # set the file separator to tabs
-											# define final time to 0
+			BEGIN { 
+				FS="\t" # set the file separator to tabs
+				# define variables
+				final_time=0
+			}
 			
-			{
-				if ($5 + $6 > final_time) { # if the start-time + duration is greater than the current final time
-					final_time = $5 + $6 # update the final time
+			NR==1 {
+				for (i = 1; i <= NF; i ++) {
+					if ($i == "start_time") {
+						start_time_field = i
+					
+					} else if ($i == "duration") {
+						duration_field = i
+					}
+				}
+			}
+			
+			NR > 1 {
+				if ($start_time_field + $duration_field > final_time) { # if the start-time + duration is greater than the current final time
+					final_time = $start_time_field + $duration_field # update the final time
 				}
 			} 
 			
@@ -138,19 +164,22 @@ elif [ "$FORMAT" = "--NA" ]; then
 	
 fi
 
+
 max_wait_time=0
 first_iter=true
-for ordered_time in $(
-    for time in "${file_time_map[@]}"; do # for each time in the keys of the associative array
-        echo $time # output the time
-    done |
-    sort -g # sort the output in ascending generic numerical order (including floating point numbers)
-    )
+for ordered_file in $(
+	for filename in "${!file_time_map[@]}"; do # for each time in the keys of the associative array
+		echo "$filename,${file_time_map["$filename"]}" # output the time
+	done |
+	sort -g -t "," -k 2,2 | # sort the output in ascending generic numerical order (including floating point numbers)
+	cut -d "," -f 1
+	)
 do
-    filename_path=${file_time_map[$ordered_time]} # extract file from map
+
+	ordered_time=${file_time_map["$ordered_file"]}
 
     if $loud; then
-        echo "file completed: ${ordered_time}s | file: $filename_path" # testing
+        echo "file completed: ${ordered_time}s | file: $ordered_file"
     fi
 
     if $first_iter; then
