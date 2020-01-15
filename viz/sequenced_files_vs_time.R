@@ -11,57 +11,57 @@ all_end_times_df <- data.frame() # declare empty dataframe
 log_paths = c("../../realf5p_data/1500/logs",
           "../../realf5p_data/5000/logs")
 
-#for (log_dir in log_paths) {
-    # seq_sum_files <- list.files(path = log_dir,
-    #                             pattern = "s*.txt$",
-    #                             full.names = T,
-    #                             recursive = F)
+for (log_dir in log_paths) {
+    seq_sum_files <- list.files(path = log_dir,
+                                pattern = "s*.txt$",
+                                full.names = T,
+                                recursive = F)
     
-    # file_end_times_df <- data.frame(matrix(ncol = 2, nrow = 0)) # declare empty dataframe
-    # colnames(file_end_times_df) <- c("end_time", "num_bases")
+    file_end_times_df <- data.frame(matrix(ncol = 2, nrow = 0)) # declare empty dataframe
+    colnames(file_end_times_df) <- c("end_time", "num_bases")
 
-    # for (seq_file in seq_sum_files) {
-    #     seq_sum_df <- read.table(seq_file,
-    #                              sep = "\t",
-    #                              header = T)
+    for (seq_file in seq_sum_files) {
+        seq_sum_df <- read.table(seq_file,
+                                 sep = "\t",
+                                 header = T)
 
-    #     end_time <- 0
-    #     for (row in 1:nrow(seq_sum_df)) {
-    #         start_time <- seq_sum_df[row, "start_time"]
-    #         duration <- seq_sum_df[row, "duration"]
+        end_time <- 0
+        for (row in 1:nrow(seq_sum_df)) {
+            start_time <- seq_sum_df[row, "start_time"]
+            duration <- seq_sum_df[row, "duration"]
 
-    #         if (start_time + duration > end_time) {
-    #             end_time <- start_time + duration
-    #         }
-#         }
+            if (start_time + duration > end_time) {
+                end_time <- start_time + duration
+            }
+        }
 
-#         seq_sum_file_path <- seq_file
-#         seq_sum_file_pathless <- system(paste0("basename ", seq_sum_file_path), intern = T)
-#         file_id <- 
-#             system(paste0("file_pathless='", seq_sum_file_pathless, "';",
-#                           "file_extless=${file_pathless%.*};",
-#                           "temp=${file_extless##*.};",
-#                           "echo $temp"), intern = T)
-#         fastq_file <- paste0("fastq_*.", file_id, ".fastq.gz")
-#         num_bases <- 
-#             system(paste0("zcat ", log_dir, "/../fastq/", fastq_file, " |",
-#                           "awk 'BEGIN {sum = 0}",
-#                           "{ if(NR % 4 == 2) {sum = sum + length($0);} }",
-#                           "END {print sum}'"), intern = T)
+        seq_sum_file_path <- seq_file
+        seq_sum_file_pathless <- system(paste0("basename ", seq_sum_file_path), intern = T)
+        file_id <- 
+            system(paste0("file_pathless='", seq_sum_file_pathless, "';",
+                          "file_extless=${file_pathless%.*};",
+                          "temp=${file_extless##*.};",
+                          "echo $temp"), intern = T)
+        fastq_file <- paste0("fastq_*.", file_id, ".fastq.gz")
+        num_bases <- 
+            system(paste0("zcat ", log_dir, "/../fastq/", fastq_file, " |",
+                          "awk 'BEGIN {sum = 0}",
+                          "{ if(NR % 4 == 2) {sum = sum + length($0);} }",
+                          "END {print sum}'"), intern = T)
 
-#         file_end_times_df[nrow(file_end_times_df) + 1, ] <- c(end_time, num_bases)
-#     }
+        file_end_times_df[nrow(file_end_times_df) + 1, ] <- c(end_time, num_bases)
+    }
 
-#     file_end_times_df[] <- lapply(file_end_times_df, function(x) as.numeric(as.character(x)))
-#     file_end_times_df <- file_end_times_df[with(file_end_times_df, order(end_time)), ]
-#     file_end_times_df["end_time"] <- file_end_times_df["end_time"] / 3600 # Get time in hours (3600s in 1h)
-#     file_end_times_df <- within(file_end_times_df, total_bases <- cumsum(num_bases))
-#     file_end_times_df["total_bases"] <- file_end_times_df["total_bases"] / (10 ^ 9) # Convert to gigabases
+    file_end_times_df[] <- lapply(file_end_times_df, function(x) as.numeric(as.character(x)))
+    file_end_times_df <- file_end_times_df[with(file_end_times_df, order(end_time)), ]
+    file_end_times_df["end_time"] <- file_end_times_df["end_time"] / 3600 # Get time in hours (3600s in 1h)
+    file_end_times_df <- within(file_end_times_df, total_bases <- cumsum(num_bases))
+    file_end_times_df["total_bases"] <- file_end_times_df["total_bases"] / (10 ^ 9) # Convert to gigabases
     
-#     print(file_end_times_df) # testing
+    print(file_end_times_df) # testing
 
-#     all_end_times_df <- cbind.fill(all_end_times_df, file_end_times_df, fill = NA)
-# }
+    all_end_times_df <- cbind.fill(all_end_times_df, file_end_times_df, fill = NA)
+}
 
 
 
@@ -108,7 +108,7 @@ all_end_times_df <- cbind.fill(all_end_times_df, file_end_times_df, fill = NA)
 all_end_times_df <- all_end_times_df[-c(1)]
 colnames(all_end_times_df) <- c("time_1500", "solo_bases_1500", "tot_bases_1500",
                                 "time_5000", "solo_bases_5000", "tot_bases_5000",
-                                "time_NA", "solo_bases_NA", "tot_bases_NA"))
+                                "time_NA", "solo_bases_NA", "tot_bases_NA")
 print(all_end_times_df) # testing
 
 
@@ -116,7 +116,7 @@ print(all_end_times_df) # testing
 
 
 # processing dataset
-processing_logs <- c("../logs.txt") # (todo: change to legitimate location later)
+processing_logs <- c("../log.txt") # (todo: change to legitimate location later)
 processing_times <- system(paste0("bash extract_analysis_timestamps.sh ", processing_logs[1]), intern = T)
 processing_df <- read.csv(text = processing_times, sep = " ", header = F)
 colnames(processing_df) <- c("time_process_1500", "file_order")
