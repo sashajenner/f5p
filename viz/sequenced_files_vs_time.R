@@ -63,10 +63,6 @@ for (log_dir in log_paths) {
     all_end_times_df <- cbind.fill(all_end_times_df, file_end_times_df, fill = NA)
 }
 
-all_end_times_df <- all_end_times_df[-c(1)]
-colnames(all_end_times_df) <- c("time_1500", "solo_bases_1500", "tot_bases_1500",
-                                "time_5000", "solo_bases_5000", "tot_bases_5000")
-print(all_end_times_df) # testing
 
 
 
@@ -94,15 +90,32 @@ for (seq_dir in seq_sum_dir_NA) {
     }
 
     dir_number <- system(paste0("basename ", seq_dir), intern = T)
-    num_bases <- system(paste0("bash get_bases.sh ", dir_number), intern = T)
+    num_bases <- system(paste0("bash get_bases.sh ", dir_number, " NA_file_bases.csv"), intern = T)
 
     file_end_times_df[nrow(file_end_times_df) + 1, ] <- c(end_time, num_bases)
 }
 
+file_end_times_df[] <- lapply(file_end_times_df, function(x) as.numeric(as.character(x)))
+file_end_times_df <- file_end_times_df[with(file_end_times_df, order(end_time)), ]
+file_end_times_df["end_time"] <- file_end_times_df["end_time"] / 3600 # Get time in hours (3600s in 1h)
+file_end_times_df <- within(file_end_times_df, total_bases <- cumsum(num_bases))
+file_end_times_df["total_bases"] <- file_end_times_df["total_bases"] / (10 ^ 9) # Convert to gigabases
+
+print(file_end_times_df) # testing
+
+all_end_times_df <- cbind.fill(all_end_times_df, file_end_times_df, fill = NA)
+
+all_end_times_df <- all_end_times_df[-c(1)]
+colnames(all_end_times_df) <- c("time_1500", "solo_bases_1500", "tot_bases_1500",
+                                "time_5000", "solo_bases_5000", "tot_bases_5000",
+                                "time_NA", "solo_bases_NA", "tot_bases_NA"))
+print(all_end_times_df) # testing
 
 
 
-processing_logs <- c("../logs.txt")
+
+# processing dataset
+processing_logs <- c("../logs.txt") # (todo: change to legitimate location later)
 processing_times <- system(paste0("bash extract_analysis_timestamps.sh ", processing_logs[1]), intern = T)
 processing_df <- read.csv(text = processing_times, sep = " ", header = F)
 colnames(processing_df) <- c("time_process_1500", "file_order")
@@ -117,10 +130,18 @@ for (file_no in processing_df["file_order"]) {
 
 print(processing_df) # testing
 
+
+
+
+
 sequenced_bases_vs_time <- plot_ly(all_end_times_df,
                                    x = ~time_1500, y = ~tot_bases_1500, name = "1500",
                                    type = "scatter", mode = "lines") %>%
-                            add_trace(x =~time_5000, y = ~tot_bases_5000, name = "5000") %>%
+                            add_trace(x = ~processing_df["time_process_1500"], 
+                                      y = ~processing_df["tot_bases_process_5000"], 
+                                      name = "processing 5000") %>%
+                            add_trace(x = ~time_5000, y = ~tot_bases_5000, name = "5000") %>%
+                            add_trace(x = ~time_NA, y = ~tot_bases_NA, name = "NA") %>%
                             layout(title = "Bases Sequenced Over Time",
                                     xaxis = list(title = "Time (h)"),
                                     yaxis = list(title = "Gigabases Sequenced"))
@@ -129,6 +150,7 @@ sequenced_files_vs_time <- plot_ly(all_end_times_df,
                                    x = ~time_1500, name = "1500",
                                    type = "scatter", mode = "lines") %>%
                             add_trace(x =~time_5000, name = "5000") %>%
+                            add_trace(x =~time_NA, name = "NA") %>%
                             layout(title = "Files Sequenced Over Time",
                                     xaxis = list(title = "Time (h)"),
                                     yaxis = list(title = "Number of Files Sequenced"))
