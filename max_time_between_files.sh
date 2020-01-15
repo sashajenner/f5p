@@ -90,7 +90,7 @@ if [ "$FORMAT" = "--778" ]; then
 		seq_summary_file=$LOGS_DIR/sequencing_summary."$filename".txt.gz
 		# cat the sequencing summary txt.gz file to awk
 		# which prints the highest start_time + duration (i.e. the completion time of that file)
-		end_time=$(zcat $seq_summary_file | awk '
+		end_time=$(zcat $seq_summary_file 2>/dev/null | awk '
 			BEGIN { FS="\t"; final_time=0 } # set the file separator to tabs
 											# define final time to 0
 			
@@ -102,41 +102,9 @@ if [ "$FORMAT" = "--778" ]; then
 			
 			END { printf final_time }') # end by printing the final time
 		
-		file_time_map["$end_time"]=$filename_path # set a key, value combination of the end time and file
+		file_time_map["$filename_path"]=$end_time # set a key, value combination of the end time and file
 	done
 
-	max_wait_time=0
-	first_iter=true
-	for ordered_time in $(
-		for time in "${!file_time_map[@]}"; do # for each time in the keys of the associative array
-			echo $time # output the time
-		done |
-		sort -g # sort the output in ascending generic numerical order (including floating point numbers)
-		)
-	do
-		filename_path=${file_time_map[$ordered_time]} # extract file from map
-
-		if $loud; then
-			echo "file completed: ${ordered_time}s | file: $filename_path" # testing
-		fi
-
-		if $first_iter; then
-			first_iter=false
-		else
-			diff=$(python -c "print($ordered_time - $prev_ordered_time)")
-			if (( $(echo "$diff > $max_wait_time" | bc -l) )); then
-				max_wait_time=$(python -c "print($ordered_time - $prev_ordered_time)")
-			fi
-		fi
-
-		prev_ordered_time=$ordered_time
-	done
-
-	if $loud; then
-		echo "Max wait is" $(python -c "print($max_wait_time / 60)") "mins"
-	else
-		python -c "print($max_wait_time)"
-	fi
 
 elif [ "$FORMAT" = "--NA" ]; then
 
@@ -153,7 +121,7 @@ elif [ "$FORMAT" = "--NA" ]; then
 		seq_summary_file=$SEARCH_DIR/fastq/$filename/sequencing_summary.txt
 		# cat the sequencing summary txt file to awk
 		# which prints the highest start_time + duration (i.e. the completion time of that file)
-		end_time=$(cat $seq_summary_file | awk '
+		end_time=$(cat $seq_summary_file 2>/dev/null | awk '
 			BEGIN { FS="\t"; final_time=0 } # set the file separator to tabs
 											# define final time to 0
 			
@@ -164,7 +132,41 @@ elif [ "$FORMAT" = "--NA" ]; then
 			} 
 			
 			END { printf final_time }') # end by printing the final time
-		
-		file_time_map["$end_time"]=$filename_path # set a key, value combination of the end time and file
+        
+		file_time_map["$filename_path"]=$end_time # set a key, value combination of the end time and file
 	done
+	
+fi
+
+max_wait_time=0
+first_iter=true
+for ordered_time in $(
+    for time in "${file_time_map[@]}"; do # for each time in the keys of the associative array
+        echo $time # output the time
+    done |
+    sort -g # sort the output in ascending generic numerical order (including floating point numbers)
+    )
+do
+    filename_path=${file_time_map[$ordered_time]} # extract file from map
+
+    if $loud; then
+        echo "file completed: ${ordered_time}s | file: $filename_path" # testing
+    fi
+
+    if $first_iter; then
+        first_iter=false
+    else
+        diff=$(python -c "print($ordered_time - $prev_ordered_time)")
+        if (( $(echo "$diff > $max_wait_time" | bc -l) )); then
+            max_wait_time=$(python -c "print($ordered_time - $prev_ordered_time)")
+        fi
+    fi
+
+    prev_ordered_time=$ordered_time
+done
+
+if $loud; then
+    echo "Max wait is" $(python -c "print($max_wait_time / 60)") "mins"
+else
+    echo $max_wait_time
 fi
