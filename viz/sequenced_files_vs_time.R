@@ -20,22 +20,22 @@ for (log_dir in log_paths) {
     file_end_times_df <- data.frame(matrix(ncol = 2, nrow = 0)) # declare empty dataframe
     colnames(file_end_times_df) <- c("end_time", "num_bases")
 
-    for (i in 1:length(seq_sum_files)) {
-        seq_sum_df <- read.table(seq_sum_files[i],
+    for (seq_file in seq_sum_files) {
+        seq_sum_df <- read.table(seq_file,
                                  sep = "\t",
                                  header = T)
 
         end_time <- 0
         for (row in 1:nrow(seq_sum_df)) {
-            start_time <- seq_sum_df[row, 5]
-            duration <- seq_sum_df[row, 6]
+            start_time <- seq_sum_df[row, "start_time"]
+            duration <- seq_sum_df[row, "duration"]
 
             if (start_time + duration > end_time) {
                 end_time <- start_time + duration
             }
         }
 
-        seq_sum_file_path <- seq_sum_files[i]
+        seq_sum_file_path <- seq_file
         seq_sum_file_pathless <- system(paste0("basename ", seq_sum_file_path), intern = T)
         file_id <- 
             system(paste0("file_pathless='", seq_sum_file_pathless, "';",
@@ -70,18 +70,34 @@ print(all_end_times_df) # testing
 
 
 
+# NA dataset
+seq_sum_dirs_NA <- list.dir(path = "../../realf5p_data/NA/",
+                            full.names = T,
+                            recursive = F)
 
+file_end_times_df <- data.frame(matrix(ncol = 2, nrow = 0)) # declare empty dataframe
+colnames(file_end_times_df) <- c("end_time", "num_bases")
 
-seq_sum_files_NA <- list.files(path = "../../realf5p_data/NA/",
-                               full.names = T,
-                               recursive = T)
+for (seq_dir in seq_sum_dir_NA) {
+    seq_sum_df <- read.table(paste0(seq_dir, "/sequencing_summary.txt"),
+                             sep = "\t",
+                             header = T)
 
-for (file in seq_sum_files_NA) {
-    
+    end_time <- 0
+    for (row in 1:nrow(seq_sum_df)) {
+        start_time <- seq_sum_df[row, "start_time"]
+        duration <- seq_sum_df[row, "duration"]
+
+        if (start_time + duration > end_time) {
+            end_time <- start_time + duration
+        }
+    }
+
+    dir_number <- system(paste0("basename ", seq_dir), intern = T)
+    num_bases <- system(paste0("bash get_bases.sh ", dir_number), intern = T)
+
+    file_end_times_df[nrow(file_end_times_df) + 1, ] <- c(end_time, num_bases)
 }
-
-
-
 
 
 
