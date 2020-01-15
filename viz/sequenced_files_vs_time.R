@@ -68,8 +68,6 @@ colnames(all_end_times_df) <- c("time_1500", "solo_bases_1500", "tot_bases_1500"
                                 "time_5000", "solo_bases_5000", "tot_bases_5000")
 print(all_end_times_df) # testing
 
-print(all_end_times_df[1, ]) # testing
-
 processing_logs <- c("../logs.txt")
 processing_times <- system(paste0("bash extract_analysis_timestamps.sh ", processing_logs[1]), intern = T)
 processing_df <- read.csv(text = processing_times, sep = " ", header = F)
