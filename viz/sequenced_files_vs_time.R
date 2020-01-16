@@ -123,10 +123,11 @@ colnames(processing_df) <- c("time_process_1500", "file_order")
 
 print(processing_df) # testing
 
-row = 1
-for (file_no in processing_df["file_order"]) {
+row <- 1
+while (row <= nrow(processing_df)) {
+    file_no <- processing_df[row, "file_order"]
     processing_df[row, "solo_bases_process_1500"] <- all_end_times_df[file_no, "solo_bases_1500"]
-    row = row + 1
+    row <- row + 1
 }
 
 print(processing_df) # testing
