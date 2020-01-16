@@ -129,7 +129,7 @@ i=0 # define file counter
 
         fi
 
-    done < <(inotifywait -m ${monitor_dirs[@]} -e close_write -e moved_to) # pass output to while loop
+    done < <(inotifywait -r -m ${monitor_dirs[@]} -e close_write -e moved_to) # pass output to while loop
 ) & # push to the background
 
 if $timeout; then # if timeout option set

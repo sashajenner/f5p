@@ -100,8 +100,8 @@ if ! $format_specified; then
 	exit 1
 fi
 
-F5_DIR="$INPUT_DIR"fast5/
-FQ_DIR="$INPUT_DIR"fastq/
+F5_DIR="$INPUT_DIR"/fast5/
+FQ_DIR="$INPUT_DIR"/fastq/
 
 RED="\033[0;31m"
 GREEN="\033[34m"
@@ -116,25 +116,42 @@ copy_files () {
 	if [ "$FORMAT" = "--778" ]; then
 		F5_FILE=$F5_DIR/$1.fast5.tar
 		FQ_FILE=$FQ_DIR/fastq_*.$1.fastq.gz
+	
+		# if fast5 file copying fails
+		if [ "$(mkdir -p $OUTPUT_DIR/fast5 && cp $F5_FILE "$_")" == 0 ]; then
+			echo -e $RED"- fast5: failed copy $i"$NORMAL
+		else
+			echo -e $GREEN"+ fast5: finished copy $i"$NORMAL
+		fi
+
+		echo -e $GREEN"fastq: copying $i"$NORMAL
+
+		# if fastq file copying fails
+		if [ "$(mkdir -p $OUTPUT_DIR/fastq && cp $FQ_FILE "$_")" == 0 ]; then
+			echo -e $RED"- fastq: failed copy $i"$NORMAL
+		else
+			echo -e $GREEN"+ fastq: finished copy $i"$NORMAL
+		fi	
+	
 	elif [ "$FORMAT" = "--NA" ]; then
 		F5_FILE=$F5_DIR/$1.fast5
 		FQ_FILE=$FQ_DIR/$1/$1.fastq
-	fi
 
-	# if fast5 file copying fails
-	if [ "$(mkdir -p $OUTPUT_DIR/fast5 && cp $F5_FILE "$_")" == 0 ]; then
-		echo -e $RED"- fast5: failed copy $i"$NORMAL
-	else
-		echo -e $GREEN"+ fast5: finished copy $i"$NORMAL
-	fi
+		# if fast5 file copying fails
+		if [ "$(mkdir -p $OUTPUT_DIR/fast5 && cp $F5_FILE "$_")" == 0 ]; then
+			echo -e $RED"- fast5: failed copy $i"$NORMAL
+		else
+			echo -e $GREEN"+ fast5: finished copy $i"$NORMAL
+		fi
 
-	echo -e $GREEN"fastq: copying $i"$NORMAL
+		echo -e $GREEN"fastq: copying $i"$NORMAL
 
-	# if fastq file copying fails
-	if [ "$(mkdir -p $OUTPUT_DIR/fastq && cp $FQ_FILE "$_")" == 0 ]; then
-		echo -e $RED"- fastq: failed copy $i"$NORMAL
-	else
-		echo -e $GREEN"+ fastq: finished copy $i"$NORMAL
+		# if fastq file copying fails
+		if [ "$(mkdir -p $OUTPUT_DIR/fastq/$1 && cp $FQ_FILE "$_")" == 0 ]; then
+			echo -e $RED"- fastq: failed copy $i"$NORMAL
+		else
+			echo -e $GREEN"+ fastq: finished copy $i"$NORMAL
+		fi
 	fi
 
 	if [ $i -eq $NO_BATCHES ]; then
@@ -158,7 +175,7 @@ if [ "$FORMAT" = "--778" ]; then
 			seq_summary_file=$LOGS_DIR/sequencing_summary."$filename".txt.gz
 			# cat the sequencing summary txt.gz file to awk
 			# which prints the highest start_time + duration (i.e. the completion time of that file)
-			end_time=$(zcat $seq_summary_file | awk '
+			end_time=$(zcat $seq_summary_file 2>/dev/null | awk '
 				BEGIN { FS="\t"; final_time=0 } # set the file separator to tabs
 												# define final time to 0
 				
@@ -169,6 +186,10 @@ if [ "$FORMAT" = "--778" ]; then
 				} 
 				
 				END { printf final_time }') # end by printing the final time
+
+			if [ "$(zcat $seq_summary_file 2>/dev/null)" = "" ]; then # if sequencing summary file is empty
+				continue
+			fi
 			
 			file_time_map["$end_time"]=$filename_path # set a key, value combination of the end time and file
 		done
@@ -224,7 +245,7 @@ elif [ "$FORMAT" = "--NA" ]; then
 			seq_summary_file=$FQ_DIR/$filename/sequencing_summary.txt
 			# cat the sequencing summary txt file to awk
 			# which prints the highest start_time + duration (i.e. the completion time of that file)
-			end_time=$(cat $seq_summary_file | awk '
+			end_time=$(cat $seq_summary_file 2>/dev/null | awk '
 				BEGIN { FS="\t"; final_time=0 } # set the file separator to tabs
 												# define final time to 0
 				
@@ -235,6 +256,10 @@ elif [ "$FORMAT" = "--NA" ]; then
 				} 
 				
 				END { printf final_time }') # end by printing the final time
+
+			if [ "$(cat $seq_summary_file 2>/dev/null)" = "" ]; then # if sequencing summary file is empty
+				continue
+			fi
 			
 			file_time_map["$end_time"]=$filename_path # set a key, value combination of the end time and file
 		done

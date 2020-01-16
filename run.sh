@@ -57,7 +57,7 @@
 #%
 #%    simulate options
 #%        --n [number_of_batches]                   Stop simulating after a certain number of batches
-#%        --r                                       Simulate realistically given sequencing summary files
+#%        --real                                    Simulate realistically given sequencing summary files
 #%        --t [time_between_batches]                Simulate batches with a certain time between them  
 #%            default 0s                            
 #%
@@ -66,7 +66,7 @@
 #%        ${SCRIPT_NAME} -f [format] -m [directory]
 #%        ${SCRIPT_NAME} -f [format] -m [directory] -r
 #%    realtime simulation
-#%        ${SCRIPT_NAME} -f [format] -m [directory] -8 [directory] --r -t -a
+#%        ${SCRIPT_NAME} -f [format] -m [directory] -8 [directory] --real -t -a
 #%
 #================================================================
 #- IMPLEMENTATION
@@ -105,6 +105,10 @@ real_sim=false
 # Default timeout of 1 hour
 TIME_FACTOR="hr"
 TIME_INACTIVE=1
+
+# Simulate variables
+NO_BATCHES=-1 # Default to copy all batches
+TIME_BETWEEN_BATCHES=0 # Default no time between copying batches
 
 # Assume necessary options not set
 format_specified=false
@@ -174,24 +178,12 @@ while [ ! $# -eq 0 ]; do # while there are arguments
                     shift
                     ;;
 
-                --r)
-                    if ["$TIME_BETWEEN_BATCHES" = ""]; then
-                        real_sim=true
-                    else
-                        echo "--t and --r options cannot be set together"
-                        usage
-                        exit 1
-                    fi
+                --real)
+                    real_sim=true
                     ;;
                     
                 --t)
-                    if ! $real_sim; then
-                        TIME_BETWEEN_BATCHES=$4
-                    else
-                        echo "--t and --r options cannot be set together"
-                        usage
-                        exit 1
-                    fi
+                    TIME_BETWEEN_BATCHES=$4
                     shift
                     ;;
             esac
@@ -224,8 +216,14 @@ while [ ! $# -eq 0 ]; do # while there are arguments
                         echo "No format specified before automatic timeout option"
                         usage
                         exit 1
+                    
+                    elif ! $simulate; then
+                        echo "No simulation directory specified before automatic timeout option"
+                        usage
+                        exit 1
+
                     else
-                        MAX_WAIT=$(bash max_time_between_files.sh -f $FORMAT $FOLDER)
+                        MAX_WAIT=$(bash max_time_between_files.sh -f $FORMAT $SIMULATE_FOLDER)
                     fi
 
                     TIME_INACTIVE=$(python -c "print($MAX_WAIT + 600)") # add buffer of 10 minutes (600s)
@@ -297,9 +295,9 @@ if $simulate; then # If the simulation option is on
 
     # execute simulator in the background giving time for monitor to set up
     if $real_sim; then
-        (sleep 10; bash testing/simulator.sh -f $FORMAT -r -n $NO_BATCHES $FOLDER $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
+        (sleep 10; bash testing/simulator.sh -f $FORMAT -r -n $NO_BATCHES $SIMULATE_FOLDER $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
     else
-        (sleep 10; bash testing/simulator.sh -f $FORMAT -n $NO_BATCHES -t $TIME_BETWEEN_BATCHES $FOLDER $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
+        (sleep 10; bash testing/simulator.sh -f $FORMAT -n $NO_BATCHES -t $TIME_BETWEEN_BATCHES $SIMULATE_FOLDER $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
     fi
 
 fi
