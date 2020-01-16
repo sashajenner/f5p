@@ -30,13 +30,16 @@ while [ ! $# -eq 0 ]; do # while there are arguments
 
         --format | -f)
 			format_specified=true
+
 			case "$2" in
 				--778)
 					FORMAT=$2
 					;;
+
 				--NA)
 					FORMAT=$2
 					;;
+
 				*)
 					echo "Incorrect or no format specified"
 					echo $USAGE
