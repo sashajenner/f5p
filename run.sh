@@ -10,10 +10,10 @@
 #%    and the expected file format.
 #%
 #% OPTIONS
-#%    -f [format], --format [format]            Follows a specified format of fast5 and fastq files
+#%    -f [format], --format [format]                Follows a specified format of fast5 and fastq files
 #%                                          
-#%    Available formats
-#%        --778           [directory]           Old format that's not too bad
+#%    available formats
+#%        --778           [directory]               Old format that's not too bad
 #%                        |-- fast5/
 #%                            |-- <prefix>.fast5.tar
 #%                        |-- fastq/
@@ -22,7 +22,7 @@
 #%                                     or automatic timeout)
 #%                            |-- sequencing_summary.<prefix>.txt.gz
 #%        
-#%        --NA            [directory]           Newer format with terrible folders
+#%        --NA            [directory]               Newer format with terrible folders
 #%                        |-- fast5/
 #%                            |-- <prefix>.fast5
 #%                        |-- fastq/
@@ -31,29 +31,42 @@
 #%                                |-- sequencing_summary.txt (optional - 
 #%                                    for realistic testing or automatic timeout)
 #%                                                             
-#%    -h, --help                                Print help message
-#%    -m [directory], --monitor [directory]     Monitor a specific directory
-#%    -r, --resume                              Resumes from last processing position
+#%    -h, --help                                    Print help message
+#%    -i, --info                                    Print script information
+#%    -l [filename], --log [filename]               Specify log filename for logs
+#%        default log.txt                           
+#%
+#%    -m [directory], --monitor [directory]         Monitor a specific directory
+#%    -r, --resume                                  Resumes from last processing position
+#%    -s, --script                                  Custom script for processing files on the cluster
+#%        default scripts/fast5_pipeline.sh             - Default script which calls minimap, f5c & samtools
+#%
 #%    -t [timeout_format] [time],               
-#%    --timeout [timeout_format] [time]         Exits after a specified time period of no new files
+#%    --timeout [timeout_format] [time]             Exits after a specified time period of no new files
+#%        default -t -hr 1                              - Default timeout of 1 hour
 #%
-#%    Timeout formats
-#%        -s [time], --seconds [time]           Timeout format in seconds
-#%        -m [time], --minutes [time]           "---------------" minutes
-#%        -hr [time], --hours  [time]           "---------------" hours
-#%        -a, --automatic                       Timeout calculated automatically to testing data
+#%    timeout formats
+#%        -s [time], --seconds [time]               Timeout format in seconds
+#%        -m [time], --minutes [time]               "---------------" minutes
+#%        -hr [time], --hours  [time]               "---------------" hours
+#%        -a, --automatic                           Timeout calculated automatically to testing data
 #%
-#%    Default
-#%        -t -hr 1                              Default timeout of 1 hour after no new files detected
 #%
-#%    -v, --version                             Print script information
+#%    -8 [directory] [simulate_options],
+#%    --simul8 [directory] [simulate_options]       Simulate sequenced files for testing (or fun!)
+#%
+#%    simulate options
+#%        --n [number_of_batches]                   Stop simulating after a certain number of batches
+#%        --r                                       Simulate realistically given sequencing summary files
+#%        --t [time_between_batches]                Simulate batches with a certain time between them  
+#%            default 0s                            
 #%
 #% EXAMPLES
-#%    Play and resume
+#%    play and resume
 #%        ${SCRIPT_NAME} -f [format] -m [directory]
 #%        ${SCRIPT_NAME} -f [format] -m [directory] -r
-#%    Realtime simulation
-#%        ${SCRIPT_NAME} -f [format] -m [directory] -t -a
+#%    realtime simulation
+#%        ${SCRIPT_NAME} -f [format] -m [directory] -8 [directory] --r -t -a
 #%
 #================================================================
 #- IMPLEMENTATION
@@ -66,74 +79,36 @@
 # END_OF_HEADER
 #================================================================
 
-#!/bin/bash
-# date            :20111101
-# usage		      :
-# notes           :
-# @author: Hasindu Gamaarachchi 
-# @coauthor: Sasha Jenner 
+    #== Necessary variables ==#
+SCRIPT_HEADSIZE=$(head -200 ${0} |grep -n "^# END_OF_HEADER" | cut -f1 -d:)d
+SCRIPT_NAME="$(basename ${0})"
+
+    #== Usage functions ==#
+usage() { printf "Usage: "; head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#+" | sed -e "s/^#+[ ]*//g" -e "s/\${SCRIPT_NAME}/${SCRIPT_NAME}/g"; }
+usagefull() { head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#[%+-]" | sed -e "s/^#[%+-]//g" -e "s/\${SCRIPT_NAME}/${SCRIPT_NAME}/g"; }
+scriptinfo() { head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#-" | sed -e "s/^#-//g" -e "s/\${SCRIPT_NAME}/${SCRIPT_NAME}/g"; }
 
 
-USAGE="USAGE: $0 -f [format] [options ...]"
-HELP=$'OPTIONS:
--f [format], --format [format] follows a specified format of fast5 and fastq files
 
-        --778           <in_dir>
-                        |-- fast5/
-                            |-- <prefix>.fast5.tar
-                        |-- fastq/
-                            |-- fastq_*.<prefix>.fastq.gz
-                        |-- logs/ (optional - for realistic testing
-                                     or automatic timeout)
-                            |-- sequencing_summary.<prefix>.txt.gz
-        
-        --NA            <in_dir>
-                        |-- fast5/
-                            |-- <prefix>.fast5
-                        |-- fastq/
-                            |-- <prefix>/
-                                |-- <prefix>.fastq
-                                |-- sequencing_summary.txt (optional - 
-                                    for realistic testing or automatic timeout)
+    #== Default variables==#
 
--h, --help          help message
--r, --resume        resumes from last processing position
--t, --timeout       exits after a specified time period of no new files
-        -s, --seconds       timeout format in seconds
-        -m, --minutes       "---------------" minutes
-        -hr, --hours        "---------------" hours
-        -a, --automatic     timeout calculated automatically to testing data'
-
-## Some changeable definitions
-
-# folder containing test dataset
-FOLDER=/mnt/778/778-1500ng/778-1500ng_albacore-2.1.3/
-
-# folder containing the fast5 tar files
-FAST5FOLDER=$FOLDER/fast5
-
-# parent directory with fast5 and fastq subdirectories which is monitored for new files
-MONITOR_PARENT_DIR=/mnt/simulator_out
-
-# the script to be copied and run on worker nodes
+# Default script to be copied and run on the worker nodes
 PIPELINE_SCRIPT="scripts/fast5_pipeline.sh"
 
-# log file
-LOG=log.txt
+LOG=log.txt # Default log file
 
-# testing constants
-TIME_BETWEEN_BATCHES=10
-NO_BATCHES=
-
-# set options off by default
+# Set options off by default
 resuming=false
+simulate=false
+real_sim=false
 
-# default timeout of 1 hour
+# Default timeout of 1 hour
 TIME_FACTOR="hr"
 TIME_INACTIVE=1
 
-format_specified=false # assume no format specified
-
+# Assume necessary options not set
+format_specified=false
+monitor_dir_specified=false
 
 ## Handle flags
 while [ ! $# -eq 0 ]; do # while there are arguments
@@ -150,8 +125,7 @@ while [ ! $# -eq 0 ]; do # while there are arguments
                     ;;
                 *)
                     echo "Incorrect or no format specified"
-                    echo $USAGE
-                    echo "$HELP"
+                    usagefull
                     exit 1
                     ;;
             esac
@@ -159,13 +133,69 @@ while [ ! $# -eq 0 ]; do # while there are arguments
             ;;
 
         --help | -h)
-            echo $USAGE
-            echo "$HELP"
+            usagefull
             exit 0
+            ;;
+
+        --info | -i)
+            scriptinfo
+            exit 0
+            ;;
+
+        --log | -l)
+            LOG=$2
+            shift
+            ;;
+
+        --monitor | -m)
+            # Parent directory with fast5 and fastq subdirectories 
+            # which is monitored for new files
+            MONITOR_PARENT_DIR=$2
+            monitor_dir_specified=true
+            shift
             ;;
 
         --resume | -r)
             resuming=true
+            ;;
+
+        --script | -s)
+            PIPELINE_SCRIPT=$2
+            shift
+            ;;
+
+        --simul8 | -8)
+            simulate=true
+            SIMULATE_FOLDER=$2 # Folder containing dataset to simulate sequencing
+
+            case "$3" in
+                --n)
+                    NO_BATCHES=$4
+                    shift
+                    ;;
+
+                --r)
+                    if ["$TIME_BETWEEN_BATCHES" = ""]; then
+                        real_sim=true
+                    else
+                        echo "--t and --r options cannot be set together"
+                        usage
+                        exit 1
+                    fi
+                    ;;
+                    
+                --t)
+                    if ! $real_sim; then
+                        TIME_BETWEEN_BATCHES=$4
+                    else
+                        echo "--t and --r options cannot be set together"
+                        usage
+                        exit 1
+                    fi
+                    shift
+                    ;;
+            esac
+            shift
             ;;
 
         --timeout | -t)
@@ -176,21 +206,23 @@ while [ ! $# -eq 0 ]; do # while there are arguments
                     TIME_FACTOR="s" 
                     shift
                     ;;
+
                 --minutes | -m)
                     TIME_FACTOR="m"
                     shift
                     ;;
+
                 --hours | -hr)
                     TIME_FACTOR="hr"
                     shift
                     ;;
+
                 --automatic | -a)
                     TIME_FACTOR="s"
 
                     if ! $format_specified; then
                         echo "No format specified before automatic timeout option"
-                        echo $USAGE
-                        echo "$HELP"
+                        usage
                         exit 1
                     else
                         MAX_WAIT=$(bash max_time_between_files.sh -f $FORMAT $FOLDER)
@@ -199,10 +231,11 @@ while [ ! $# -eq 0 ]; do # while there are arguments
                     TIME_INACTIVE=$(python -c "print($MAX_WAIT + 600)") # add buffer of 10 minutes (600s)
                     shift
                     ;;
+
                 *)
-                    echo $USAGE
-                    echo "$HELP"
-                    exit
+                    echo "Bad timeout option"
+                    usagefull
+                    exit 1
                     ;;
             esac
             shift
@@ -212,32 +245,32 @@ while [ ! $# -eq 0 ]; do # while there are arguments
     shift
 done
 
-if ! $format_specified; then
-	echo "No format specified!"
-	echo $USAGE
-	echo "$HELP"
+# If either format or monitor option not set
+if ! ($format_specified && $monitor_dir_specified); then
+    if ! $format_specified; then echo "No format specified!"; fi
+    if ! $monitor_dir_specified; then echo "No monitor directory specified!"; fi
+	usage
 	exit 1
 fi
 
-###############################################################################
+
+
+
 
 # test before cleaning logs
 if ! $resuming; then # if not resuming
     while true; do
         read -p "This will overwrite stats from the previous run. Do you wish to continue? (y/n) " yn
         case $yn in
-            [Yy]* ) break;;
-            [Nn]* ) exit;;
+            [Yy]* )
+                make clean && make || exit 1 # Freshly compile files
+                cp /dev/null $LOG # Clear log file
+                break
+                ;;
+            [Nn]* ) exit 0;;
             * ) echo "Please answer yes or no.";;
         esac
     done
-fi
-
-# freshly compile files
-make clean && make || exit 1
-
-if ! $resuming; then # if resuming option not set
-    cp /dev/null $LOG # clear log file
 fi
 
 # clean temporary locations on NAS and the worker nodes
@@ -246,52 +279,61 @@ ansible all -m shell -a "rm -rf /nanopore/scratch/*" |& tee -a $LOG # force for 
 
 # clean and empty logs directory
 test -d data/logs && rm -r data/logs
-mkdir data/logs || exit 1
+mkdir -p data/logs || exit 1
 
-# create folders to copy the results (SAM files, BAM files, logs and methylation calls)
-test -d $FOLDER/sam || mkdir $FOLDER/sam || exit 1
-test -d $FOLDER/bam || mkdir $FOLDER/bam || exit 1
-test -d $FOLDER/log2 || mkdir $FOLDER/log2 || exit 1
-test -d $FOLDER/methylation || mkdir $FOLDER/methylation || exit 1
-
-# check  the existence of the folder containing tar files
-test -d $FAST5FOLDER || exit 1
+# Create folders to copy the results (SAM files, BAM files, logs and methylation calls)
+test -d $MONITOR_PARENT_DIR/sam || mkdir $MONITOR_PARENT_DIR/sam || exit 1
+test -d $MONITOR_PARENT_DIR/bam || mkdir $MONITOR_PARENT_DIR/bam || exit 1
+test -d $MONITOR_PARENT_DIR/log2 || mkdir $MONITOR_PARENT_DIR/log2 || exit 1
+test -d $MONITOR_PARENT_DIR/methylation || mkdir $MONITOR_PARENT_DIR/methylation || exit 1
 
 # copy the pipeline script across the worker nodes
 ansible all -m copy -a "src=$PIPELINE_SCRIPT dest=/nanopore/bin/fast5_pipeline.sh mode=0755" |& tee -a $LOG
 
-# testing
-# execute simulator in the background giving time for monitor to set up
-(sleep 10; bash testing/simulator.sh -f $FORMAT -r $FOLDER $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
+if $simulate; then # If the simulation option is on
 
-# monitor the new file creation in fast5 folder and execute realtime f5 pipeline
-# close after 30 minutes of no new file
+    # Check the existence of the simulation folder
+    test -d $FAST5FOLDER || exit 1
+
+    # execute simulator in the background giving time for monitor to set up
+    if $real_sim; then
+        (sleep 10; bash testing/simulator.sh -f $FORMAT -r -n $NO_BATCHES $FOLDER $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
+    else
+        (sleep 10; bash testing/simulator.sh -f $FORMAT -n $NO_BATCHES -t $TIME_BETWEEN_BATCHES $FOLDER $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
+    fi
+
+fi
+
+# Monitor the new file creation in fast5 folder and execute realtime f5 pipeline script
+# Close after timeout met
 if $resuming; then # if resuming option set
     bash monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
     bash monitor/ensure.sh -r -f $FORMAT 2>> $LOG |
-    /usr/bin/time -v ./f5pl_realtime $FORMAT data/ip_list.cfg -r |& # redirect all stderr to stdout
+    /usr/bin/time -v ./f5pl_realtime $FORMAT data/ip_list.cfg -r |& # Redirect all stderr to stdout
     tee -a $LOG
 else
     bash monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
     bash monitor/ensure.sh -f $FORMAT 2>> $LOG |
-    /usr/bin/time -v ./f5pl_realtime $FORMAT data/ip_list.cfg |& # redirect all stderr to stdout
+    /usr/bin/time -v ./f5pl_realtime $FORMAT data/ip_list.cfg |& # Redirect all stderr to stdout
     tee -a $LOG
 fi
 
 # (todo : kill any background processes?)
 
-mv *.cfg data/logs # move all config files
+mv *.cfg data/logs # Move all config files
 
-# handle the logs
+# Handle the logs
 ansible all -m shell -a "cd /nanopore/scratch && tar zcvf logs.tgz *.log"
-# copies log files from each node locally
-gather.sh /nanopore/scratch/logs.tgz data/logs/log tgz #https://github.com/hasindu2008/nanopore-cluster/blob/master/system/gather.sh
 
-# move + copy files to logs folder
+# Copy log files from each node locally
+# https://github.com/hasindu2008/nanopore-cluster/blob/master/system/gather.sh
+gather.sh /nanopore/scratch/logs.tgz data/logs/log tgz
+
+# Move + copy files to logs folder
 cp $LOG data/logs/ # copy log file
 cp $0 data/logs/ # copy current script
 cp $PIPELINE_SCRIPT data/logs/ # copy pipeline script
 
 bash scripts/failed_device_logs.sh # get the logs of the datasets which the pipeline crashed
 
-cp -r data $FOLDER/f5pmaster # copy entire data folder to local f5pmaster folder
+#cp -r data $FOLDER/f5pmaster # copy entire data folder to local f5pmaster folder (todo: ?)
