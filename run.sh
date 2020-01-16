@@ -1,21 +1,83 @@
 #!/bin/bash
-# @author: Hasindu Gamaarachchi (hasindu@unsw.edu.au)
-# @coauthor: Sasha Jenner (jenner.sasha@gmail.com)
+#================================================================
+# HEADER
+#================================================================
+#% SYNOPSIS
+#+    ${SCRIPT_NAME} -f [format] -m [directory] [options ...]
+#%
+#% DESCRIPTION
+#%    Runs realtime sequenced genome analysis given input directory
+#%    and the expected file format.
+#%
+#% OPTIONS
+#%    -f [format], --format [format]            Follows a specified format of fast5 and fastq files
+#%                                          
+#%    Available formats
+#%        --778           [directory]           Old format that's not too bad
+#%                        |-- fast5/
+#%                            |-- <prefix>.fast5.tar
+#%                        |-- fastq/
+#%                            |-- fastq_*.<prefix>.fastq.gz
+#%                        |-- logs/ (optional - for realistic testing
+#%                                     or automatic timeout)
+#%                            |-- sequencing_summary.<prefix>.txt.gz
+#%        
+#%        --NA            [directory]           Newer format with terrible folders
+#%                        |-- fast5/
+#%                            |-- <prefix>.fast5
+#%                        |-- fastq/
+#%                            |-- <prefix>/
+#%                                |-- <prefix>.fastq
+#%                                |-- sequencing_summary.txt (optional - 
+#%                                    for realistic testing or automatic timeout)
+#%                                                             
+#%    -h, --help                                Print help message
+#%    -m [directory], --monitor [directory]     Monitor a specific directory
+#%    -r, --resume                              Resumes from last processing position
+#%    -t [timeout_format] [time],               
+#%    --timeout [timeout_format] [time]         Exits after a specified time period of no new files
+#%
+#%    Timeout formats
+#%        -s [time], --seconds [time]           Timeout format in seconds
+#%        -m [time], --minutes [time]           "---------------" minutes
+#%        -hr [time], --hours  [time]           "---------------" hours
+#%        -a, --automatic                       Timeout calculated automatically to testing data
+#%
+#%    Default
+#%        -t -hr 1                              Default timeout of 1 hour after no new files detected
+#%
+#%    -v, --version                             Print script information
+#%
+#% EXAMPLES
+#%    Play and resume
+#%        ${SCRIPT_NAME} -f [format] -m [directory]
+#%        ${SCRIPT_NAME} -f [format] -m [directory] -r
+#%    Realtime simulation
+#%        ${SCRIPT_NAME} -f [format] -m [directory] -t -a
+#%
+#================================================================
+#- IMPLEMENTATION
+#-    authors         Hasindu GAMAARACHCHI (hasindu@unsw.edu.au),
+#-                    Sasha JENNER (jenner.sasha@gmail.com)
+#-    copyright       Copyright (c) ... (todo)
+#-    license         ... (todo)
+#-
+#================================================================
+# END_OF_HEADER
+#================================================================
 
-: '
-realtime: 
-    screen bash run.sh -f --778 -t -a
-pause/play normal:
-    <clear monitor dir>
-    screen bash run.sh -f --778
-    screen bash run.sh -f --778 -r
-'
+#!/bin/bash
+# date            :20111101
+# usage		      :
+# notes           :
+# @author: Hasindu Gamaarachchi 
+# @coauthor: Sasha Jenner 
 
-###############################################################################
 
-USAGE="Usage: $0 [options ...]"
-HELP=$'Flags:
--f, --format        follows a specified format of fast5 and fastq files
+USAGE="USAGE: $0 -f [format] [options ...]"
+HELP=$'OPTIONS:
+-f [format], --format [format] follows a specified format of fast5 and fastq files
+
         --778           <in_dir>
                         |-- fast5/
                             |-- <prefix>.fast5.tar
