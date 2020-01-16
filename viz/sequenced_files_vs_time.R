@@ -105,11 +105,9 @@ print(file_end_times_df) # testing
 
 all_end_times_df <- cbind.fill(all_end_times_df, file_end_times_df, fill = NA)
 
-all_end_times_df <- all_end_times_df[-c(1)]
 colnames(all_end_times_df) <- c("time_1500", "solo_bases_1500", "tot_bases_1500",
                                 "time_5000", "solo_bases_5000", "tot_bases_5000",
                                 "time_NA", "solo_bases_NA", "tot_bases_NA")
-print(all_end_times_df) # testing
 
 
 
@@ -130,7 +128,23 @@ while (row <= nrow(processing_df)) {
     row <- row + 1
 }
 
+# Create column "tot_bases_process_5000" that is a cumulative sum of the individual bases,
+# then convert to gigabases
+processing_df <- within(processing_df, tot_bases_process_1500 <- cumsum(solo_bases_process_1500))
+processing_df["tot_bases_process_1500"] <- processing_df["tot_bases_process_1500"] / (10 ^ 9)
+
 print(processing_df) # testing
+
+all_end_times_df <- cbind.fill(all_end_times_df, processing_df, fill = NA)
+
+print(all_end_times_df) # testing
+
+all_end_times_df <- all_end_times_df[-c(1)]
+colnames(all_end_times_df) <- c("time_1500", "solo_bases_1500", "tot_bases_1500",
+                                "time_5000", "solo_bases_5000", "tot_bases_5000",
+                                "time_NA", "solo_bases_NA", "tot_bases_NA",
+                                "time_process_1500", "solo_bases_process_1500", "tot_bases_process_1500")
+print(all_end_times_df) # testing
 
 
 
@@ -139,9 +153,7 @@ print(processing_df) # testing
 sequenced_bases_vs_time <- plot_ly(all_end_times_df,
                                    x = ~time_1500, y = ~tot_bases_1500, name = "1500",
                                    type = "scatter", mode = "lines") %>%
-                            add_trace(x = ~processing_df["time_process_1500"], 
-                                      y = ~processing_df["tot_bases_process_5000"], 
-                                      name = "processing 5000") %>%
+                            add_trace(x = ~time_process_1500, y = ~tot_bases_process_1500, name = "processing 1500") %>%
                             add_trace(x = ~time_5000, y = ~tot_bases_5000, name = "5000") %>%
                             add_trace(x = ~time_NA, y = ~tot_bases_NA, name = "NA") %>%
                             layout(title = "Bases Sequenced Over Time",
@@ -151,8 +163,7 @@ sequenced_bases_vs_time <- plot_ly(all_end_times_df,
 sequenced_files_vs_time <- plot_ly(all_end_times_df,
                                    x = ~time_1500, name = "1500",
                                    type = "scatter", mode = "lines") %>%
-                            add_trace(x = ~processing_df["time_process_1500"], 
-                                      name = "processing 5000") %>%
+                            add_trace(x = ~time_process_1500, name = "processing 1500") %>%
                             add_trace(x = ~time_5000, name = "5000") %>%
                             add_trace(x = ~time_NA, name = "NA") %>%
                             layout(title = "Files Sequenced Over Time",
@@ -162,6 +173,6 @@ sequenced_files_vs_time <- plot_ly(all_end_times_df,
 plotly_IMAGE(sequenced_bases_vs_time, format = "png", out_file = "sequenced_bases_vs_time.png")
 plotly_IMAGE(sequenced_files_vs_time, format = "png", out_file = "sequenced_files_vs_time.png")
 
-#options(browser = "false")
-#api_create(sequenced_bases_vs_time, filename = "sequenced_bases_vs_time", sharing = "public")
-#api_create(sequenced_files_vs_time, filename = "sequenced_files_vs_time", sharing = "public")
+options(browser = "false")
+api_create(sequenced_bases_vs_time, filename = "sequenced_bases_vs_time", sharing = "public")
+api_create(sequenced_files_vs_time, filename = "sequenced_files_vs_time", sharing = "public")
