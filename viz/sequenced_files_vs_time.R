@@ -131,7 +131,7 @@ while (row <= nrow(processing_df)) {
 # Create column "tot_bases_process_5000" that is a cumulative sum of the individual bases,
 # then convert to gigabases
 processing_df <- within(processing_df, tot_bases_process_1500 <- cumsum(solo_bases_process_1500))
-processing_df["tot_bases_process_1500"] <- processing_df["tot_bases_process_1500"] / (10 ^ 9)
+processing_df["tot_bases_process_1500"] <- processing_df["tot_bases_process_1500"]
 
 print(processing_df) # testing
 
@@ -143,7 +143,7 @@ all_end_times_df <- all_end_times_df[-c(1)]
 colnames(all_end_times_df) <- c("time_1500", "solo_bases_1500", "tot_bases_1500",
                                 "time_5000", "solo_bases_5000", "tot_bases_5000",
                                 "time_NA", "solo_bases_NA", "tot_bases_NA",
-                                "time_process_1500", "solo_bases_process_1500", "tot_bases_process_1500")
+                                "time_process_1500", "process_file_order_1500", "solo_bases_process_1500", "tot_bases_process_1500")
 print(all_end_times_df) # testing
 
 
