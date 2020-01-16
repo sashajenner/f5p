@@ -820,3 +820,10 @@ fastq: copying 70
 [t3(10.40.18.3)::INFO] Connecting to 10.40.18.3
 [t3(10.40.18.3)::INFO] Assigning /mnt/simulator_out/fast5/744971-63.fast5.tar (70) to 10.40.18.3
 [t3(10.40.18.3)::INFO] Received message 'done.' at time 142903.579687 sec (70).
+^[[34mfast5: copying 71^[[0;39m
+^[[34m+ fast5: finished copy 71^[[0;39m
+^[[34mfastq: copying 71^[[0;39m
+^[[34m+ fastq: finished copy 71^[[0;39m
+[t8(10.40.18.8)::INFO] Connecting to 10.40.18.8
+[t8(10.40.18.8)::INFO] Assigning /mnt/simulator_out/fast5/744971-64.fast5.tar (71) to 10.40.18.8
+[t8(10.40.18.8)::INFO] Received message 'done.' at time 173131.041980 sec (71).
