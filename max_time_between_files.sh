@@ -166,8 +166,10 @@ elif [ "$FORMAT" = "--NA" ]; then
 	
 fi
 
+file_time_map["initial"]=0
 
-max_wait_time=0
+
+max_wait_time=0 # Minimum wait time
 first_iter=true
 for ordered_file in $(
 	for filename in "${!file_time_map[@]}"; do # for each time in the keys of the associative array
@@ -181,7 +183,7 @@ do
 	ordered_time=${file_time_map["$ordered_file"]}
 
     if $loud; then
-        echo "file completed: ${ordered_time}s | file: $ordered_file"
+        echo "time completed: ${ordered_time}s | file: $ordered_file"
     fi
 
     if $first_iter; then

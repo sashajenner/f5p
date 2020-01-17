@@ -15,19 +15,19 @@
 #%    available formats
 #%        --778           [directory]               Old format that's not too bad
 #%                        |-- fast5/
-#%                            |-- <prefix>.fast5.tar
+#%                            |-- [prefix].fast5.tar
 #%                        |-- fastq/
-#%                            |-- fastq_*.<prefix>.fastq.gz
+#%                            |-- fastq_*.[prefix].fastq.gz
 #%                        |-- logs/ (optional - for realistic testing
 #%                                     or automatic timeout)
-#%                            |-- sequencing_summary.<prefix>.txt.gz
+#%                            |-- sequencing_summary.[prefix].txt.gz
 #%        
 #%        --NA            [directory]               Newer format with terrible folders
 #%                        |-- fast5/
-#%                            |-- <prefix>.fast5
+#%                            |-- [prefix].fast5
 #%                        |-- fastq/
-#%                            |-- <prefix>/
-#%                                |-- <prefix>.fastq
+#%                            |-- [prefix]/
+#%                                |-- [prefix].fastq
 #%                                |-- sequencing_summary.txt (optional - 
 #%                                    for realistic testing or automatic timeout)
 #%                                                             
