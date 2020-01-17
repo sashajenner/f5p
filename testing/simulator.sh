@@ -176,16 +176,30 @@ if [ "$FORMAT" = "--778" ]; then
 			# cat the sequencing summary txt.gz file to awk
 			# which prints the highest start_time + duration (i.e. the completion time of that file)
 			end_time=$(zcat $seq_summary_file 2>/dev/null | awk '
-				BEGIN { FS="\t"; final_time=0 } # set the file separator to tabs
-												# define final time to 0
-				
-				{
-					if ($5 + $6 > final_time) { # if the start-time + duration is greater than the current final time
-						final_time = $5 + $6 # update the final time
+			BEGIN { 
+				FS="\t" # set the file separator to tabs
+				# define variables
+				final_time=0
+			}
+			
+			NR==1 {
+				for (i = 1; i <= NF; i ++) {
+					if ($i == "start_time") {
+						start_time_field = i
+					
+					} else if ($i == "duration") {
+						duration_field = i
 					}
-				} 
-				
-				END { printf final_time }') # end by printing the final time
+				}
+			}
+			
+			NR > 1 {
+				if ($start_time_field + $duration_field > final_time) { # if the start-time + duration is greater than the current final time
+					final_time = $start_time_field + $duration_field # update the final time
+				}
+			} 
+			
+			END { printf final_time }') # end by printing the final time
 
 			if [ "$(zcat $seq_summary_file 2>/dev/null)" = "" ]; then # if sequencing summary file is empty
 				continue
@@ -245,17 +259,32 @@ elif [ "$FORMAT" = "--NA" ]; then
 			seq_summary_file=$FQ_DIR/$filename/sequencing_summary.txt
 			# cat the sequencing summary txt file to awk
 			# which prints the highest start_time + duration (i.e. the completion time of that file)
+			
 			end_time=$(cat $seq_summary_file 2>/dev/null | awk '
-				BEGIN { FS="\t"; final_time=0 } # set the file separator to tabs
-												# define final time to 0
-				
-				{
-					if ($5 + $6 > final_time) { # if the start-time + duration is greater than the current final time
-						final_time = $5 + $6 # update the final time
+			BEGIN { 
+				FS="\t" # set the file separator to tabs
+				# define variables
+				final_time=0
+			}
+			
+			NR==1 {
+				for (i = 1; i <= NF; i ++) {
+					if ($i == "start_time") {
+						start_time_field = i
+					
+					} else if ($i == "duration") {
+						duration_field = i
 					}
-				} 
-				
-				END { printf final_time }') # end by printing the final time
+				}
+			}
+			
+			NR > 1 {
+				if ($start_time_field + $duration_field > final_time) { # if the start-time + duration is greater than the current final time
+					final_time = $start_time_field + $duration_field # update the final time
+				}
+			} 
+			
+			END { printf final_time }') # end by printing the final time
 
 			if [ "$(cat $seq_summary_file 2>/dev/null)" = "" ]; then # if sequencing summary file is empty
 				continue
