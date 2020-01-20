@@ -157,13 +157,13 @@ print(all_end_times_df) # testing
 sequenced_bases_vs_time <- plot_ly(all_end_times_df,
                                    x = ~time_process_1500, y = ~tot_bases_process_1500, name = "processing 1500",
                                    type = "scatter", mode = "lines", 
-                                   line = list(color = "rgba(0, 0, 0, 1)", dash = "dots")) %>%
+                                   line = list(color = "rgba(0, 0, 0, 1)", dash = "dot")) %>%
                             add_trace(x = ~time_1500, y = ~tot_bases_1500, name = "1500", 
                                       line = list(color = "rgba(245, 5, 5, 0.7)", dash = "solid")) %>%
                             add_trace(x = ~time_5000, y = ~tot_bases_5000, name = "5000",
                                       line = list(color = "rgba(19, 230, 0, 0.7)", dash = "solid")) %>%
                             add_trace(x = ~time_NA, y = ~tot_bases_NA, name = "NA",
-                                      line = list(color = "rgba(31, 0, 230, 0.7)", dash = "solid")) %>%
+                                      line = list(color = "rgba(0, 145, 230, 0.7)", dash = "solid")) %>%
                             layout(title = "Bases Sequenced Over Time",
                                     xaxis = list(title = "Time (h)"),
                                     yaxis = list(title = "Gigabases Sequenced"))
@@ -171,13 +171,13 @@ sequenced_bases_vs_time <- plot_ly(all_end_times_df,
 sequenced_files_vs_time <- plot_ly(all_end_times_df,
                                    x = ~time_process_1500, name = "processing 1500",
                                    type = "scatter", mode = "lines",
-                                   line = list(color = "rgba(0, 0, 0, 1)", dash = "dots")) %>%
+                                   line = list(color = "rgba(0, 0, 0, 1)", dash = "dot")) %>%
                             add_trace(x = ~time_1500, name = "1500",
                                       line = list(color = "rgba(245, 5, 5, 0.7)", dash = "solid")) %>%
                             add_trace(x = ~time_5000, name = "5000",
                                       line = list(color = "rgba(19, 230, 0, 0.7)", dash = "solid")) %>%
                             add_trace(x = ~time_NA, name = "NA",
-                                      line = list(color = "rgba(31, 0, 230, 0.7)", dash = "solid")) %>%
+                                      line = list(color = "rgba(0, 145, 230, 0.7)", dash = "solid")) %>%
                             layout(title = "Files Sequenced Over Time",
                                     xaxis = list(title = "Time (h)"),
                                     yaxis = list(title = "Number of Files Sequenced"))
