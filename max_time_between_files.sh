@@ -1,28 +1,63 @@
 #!/bin/bash
+#================================================================
+# HEADER
+#================================================================
+#% SYNOPSIS
+#+    ${SCRIPT_NAME} [options ...] [directory]
+#%
+#% DESCRIPTION
+#%    Find the max time gap between successive sequenced batches completing.
+#%	  Prints max time in seconds by default if loud option not set.
+#%
+#% OPTIONS
+#%    -f [format], --format [format]                Follows a specified format of fast5 and fastq files
+#%                                          
+#%    available formats
+#%        --778           [directory]               Old format that's not too bad
+#%                        |-- fast5/
+#%                            |-- [prefix].fast5.tar
+#%                        |-- fastq/
+#%                            |-- fastq_*.[prefix].fastq.gz
+#%					      |-- logs/ (optional - for realistic sim)
+#%                            |-- sequencing_summary.<prefix>.txt.gz
+#%        
+#%        --NA            [directory]               Newer format with terrible folders
+#%                        |-- fast5/
+#%                            |-- [prefix].fast5
+#%                        |-- fastq/
+#%                            |-- [prefix]/
+#%                                |-- [prefix].fastq
+#%								  |-- sequencing_summary.txt (optional - 
+#%								  		for realistic sim)
+#%
+#%    -h, --help                                    Print help message
+#%    -i, --info                                    Print script information
+#%	  -l, --loud									Print more verbose
+#%
+#================================================================
+#- IMPLEMENTATION
+#-    authors         Sasha JENNER (jenner.sasha@gmail.com)
+#-    copyright       Copyright (c) ... (todo)
+#-    license         ... (todo)
+#-
+#================================================================
+# END_OF_HEADER
+#================================================================
 
-# Find the max time gap between successive sequenced batches completing
-# $1 - the directory with logs/ and fast5/ directories
-USAGE="Usage: $0 [options ...] <search_dir>"
-HELP=$"Flags:
--f, --format        follows a specified format of fast5 and fastq files
-        --778           <in_dir>
-                        |-- fast5/
-                            |-- <prefix>.fast5.tar
-                        |-- fastq/
-                            |-- fastq_*.<prefix>.fastq.gz
-                        |-- logs/
-                            |-- sequencing_summary.<prefix>.txt.gz
-        
-        --NA            <in_dir>
-                        |-- fast5/
-                            |-- <prefix>.fast5
-                        |-- fastq/
-                            |-- <prefix>/
-                                |-- <prefix>.fastq
-                                |-- sequencing_summary.txt
-							
--h, --help			help message
--l, --loud			more helpful output"
+    #== Necessary variables ==#
+SCRIPT_HEADSIZE=$(head -200 ${0} | grep -n "^# END_OF_HEADER" | cut -f1 -d:)
+SCRIPT_NAME="$(basename ${0})"
+
+    #== Usage functions ==#
+usage() { printf "Usage: "; head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#+" | sed -e "s/^#+[ ]*//g" -e "s/\${SCRIPT_NAME}/${SCRIPT_NAME}/g"; }
+usagefull() { head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#[%+-]" | sed -e "s/^#[%+-]//g" -e "s/\${SCRIPT_NAME}/${SCRIPT_NAME}/g"; }
+scriptinfo() { head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#-" | sed -e "s/^#-//g" -e "s/\${SCRIPT_NAME}/${SCRIPT_NAME}/g"; }
+
+: ${1?$(usage)} # Require 1 arg else give usage message
+
+
+
+    #== Default variables ==#
 
 loud=false # default option off
 format_specified=false # assume no format specified
@@ -33,13 +68,16 @@ while [ ! $# -eq 0 ]; do # while there are arguments
 
 		--format | -f)
             format_specified=true
+
             case "$2" in
                 --778)
                     FORMAT=$2
                     ;;
+
                 --NA)
                     FORMAT=$2
                     ;;
+
                 *)
                     echo "Incorrect or no format specified"
                     echo $USAGE
@@ -53,6 +91,11 @@ while [ ! $# -eq 0 ]; do # while there are arguments
         --help | -h)
             echo $USAGE
             echo "$HELP"
+            exit 0
+            ;;
+		
+        --info | -i)
+            scriptinfo
             exit 0
             ;;
 
@@ -75,6 +118,9 @@ if ! $format_specified; then
 	exit 1
 fi
 
+
+
+	#== Begin ==#
 
 declare -A file_time_map # declare an associative array to hold the file with corresponding completion time
 

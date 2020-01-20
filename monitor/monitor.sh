@@ -132,6 +132,8 @@ done
 
 
 
+    #== Begin ==#
+
 if $existing; then # If existing files option set
 # Output the absolute path of all existing fast5 and fastq files 
     find ${monitor_dirs[@]} | grep '\\.fast5\|\\.fastq'

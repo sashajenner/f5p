@@ -86,6 +86,11 @@ while [ ! $# -eq 0 ]; do # While there are arguments
             exit 0
             ;;
 
+        --info | -i)
+            scriptinfo
+            exit 0
+            ;;
+
         --resume | -r)
             RESUME=true
 
