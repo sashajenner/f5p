@@ -30,6 +30,12 @@
 #%                                |-- [prefix].fastq
 #%                                |-- sequencing_summary.txt (optional - 
 #%                                    for realistic testing or automatic timeout)
+#%
+#%        --eg            [directory]               Logs not available
+#%                        |-- fast5/
+#%                            |-- [prefix].fast5
+#%                        |-- fastq/
+#%                            |-- fastq_[prefix].fastq
 #%                                                             
 #%    -h, --help                                    Print help message
 #%    -i, --info                                    Print script information
@@ -90,7 +96,7 @@ scriptinfo() { head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#-" | sed -e "s/^#-
 
 
 
-    #== Default variables==#
+    #== Default variables ==#
 
 # Default script to be copied and run on the worker nodes
 PIPELINE_SCRIPT="scripts/fast5_pipeline.sh"
@@ -120,13 +126,20 @@ while [ ! $# -eq 0 ]; do # while there are arguments
 
         --format | -f)
             format_specified=true
+
             case "$2" in
                 --778)
                     FORMAT=$2
                     ;;
+
                 --NA)
                     FORMAT=$2
                     ;;
+
+                --eg)
+                    FORMAT=$2
+                    ;;
+
                 *)
                     echo "Incorrect or no format specified"
                     usagefull
@@ -222,6 +235,11 @@ while [ ! $# -eq 0 ]; do # while there are arguments
                         usage
                         exit 1
 
+                    elif [ "$FORMAT" = "--eg" ]; then
+                        echo "No logs available for eg format"
+                        usagefull
+                        exit 1
+
                     else
                         MAX_WAIT=$(bash max_time_between_files.sh -f $FORMAT $SIMULATE_FOLDER)
                     fi
@@ -251,31 +269,45 @@ if ! ($format_specified && $monitor_dir_specified); then
 	exit 1
 fi
 
+# If eg format and real simulation set simultaneously
+if [ "$FORMAT" = "--eg" ] && real_sim; then
+    echo "Real simulation not available for eg format"
+    usagefull
+    exit 1
+fi
 
 
 
+    #== Begin Run ==#
 
-# test before cleaning logs
-if ! $resuming; then # if not resuming
+# Warn before cleaning logs
+if ! $resuming; then # If not resuming
     while true; do
-        read -p "This will overwrite stats from the previous run. Do you wish to continue? (y/n) " yn
-        case $yn in
+        read -p "This will overwrite stats from the previous run. Do you wish to continue? (y/n) " response
+        
+        case $response in
             [Yy]* )
-                make clean && make || exit 1 # Freshly compile files
-                cp /dev/null $LOG # Clear log file
+                make clean && make || exit 1 # Freshly compile necessary programs
+                cp /dev/null $LOG # Empty log file
                 break
                 ;;
-            [Nn]* ) exit 0;;
-            * ) echo "Please answer yes or no.";;
+
+            [Nn]* )
+                exit 0
+                ;;
+
+            * ) 
+                echo "Please answer yes or no."
+                ;;
         esac
     done
 fi
 
-# clean temporary locations on NAS and the worker nodes
+# Clean temporary locations on the NAS and the worker nodes
 rm -rf /scratch_nas/scratch/*
-ansible all -m shell -a "rm -rf /nanopore/scratch/*" |& tee -a $LOG # force for no error if no files exist
+ansible all -m shell -a "rm -rf /nanopore/scratch/*" |& tee -a $LOG # Force option for no error if no files exist
 
-# clean and empty logs directory
+# Clean and empty local logs directory
 test -d data/logs && rm -r data/logs
 mkdir -p data/logs || exit 1
 
@@ -285,7 +317,7 @@ test -d $MONITOR_PARENT_DIR/bam || mkdir $MONITOR_PARENT_DIR/bam || exit 1
 test -d $MONITOR_PARENT_DIR/log2 || mkdir $MONITOR_PARENT_DIR/log2 || exit 1
 test -d $MONITOR_PARENT_DIR/methylation || mkdir $MONITOR_PARENT_DIR/methylation || exit 1
 
-# copy the pipeline script across the worker nodes
+# Copy the pipeline script to all worker nodes
 ansible all -m copy -a "src=$PIPELINE_SCRIPT dest=/nanopore/bin/fast5_pipeline.sh mode=0755" |& tee -a $LOG
 
 if $simulate; then # If the simulation option is on
@@ -293,7 +325,7 @@ if $simulate; then # If the simulation option is on
     # Check the existence of the simulation folder
     test -d $FAST5FOLDER || exit 1
 
-    # execute simulator in the background giving time for monitor to set up
+    # Execute simulator in the background giving time for monitor to set up
     if $real_sim; then
         (sleep 10; bash testing/simulator.sh -f $FORMAT -r -n $NO_BATCHES $SIMULATE_FOLDER $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
     else
@@ -302,9 +334,9 @@ if $simulate; then # If the simulation option is on
 
 fi
 
-# Monitor the new file creation in fast5 folder and execute realtime f5 pipeline script
+# Monitor the new file creation in fast5 folder and execute realtime f5-pipeline script
 # Close after timeout met
-if $resuming; then # if resuming option set
+if $resuming; then # If resuming option set
     bash monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
     bash monitor/ensure.sh -r -f $FORMAT 2>> $LOG |
     /usr/bin/time -v ./f5pl_realtime $FORMAT data/ip_list.cfg -r |& # Redirect all stderr to stdout
@@ -316,22 +348,20 @@ else
     tee -a $LOG
 fi
 
-# (todo : kill any background processes?)
-
 mv *.cfg data/logs # Move all config files
 
-# Handle the logs
+# Tar the logs
 ansible all -m shell -a "cd /nanopore/scratch && tar zcvf logs.tgz *.log"
 
 # Copy log files from each node locally
 # https://github.com/hasindu2008/nanopore-cluster/blob/master/system/gather.sh
 gather.sh /nanopore/scratch/logs.tgz data/logs/log tgz
 
-# Move + copy files to logs folder
-cp $LOG data/logs/ # copy log file
-cp $0 data/logs/ # copy current script
-cp $PIPELINE_SCRIPT data/logs/ # copy pipeline script
+# Copy files to logs folder
+cp $LOG data/logs/ # Copy log file
+cp $0 data/logs/ # Copy current script
+cp $PIPELINE_SCRIPT data/logs/ # Copy pipeline script
 
-bash scripts/failed_device_logs.sh # get the logs of the datasets which the pipeline crashed
+bash scripts/failed_device_logs.sh # Get the logs of the files where the pipeline crashed
 
-#cp -r data $FOLDER/f5pmaster # copy entire data folder to local f5pmaster folder (todo: ?)
+cp -r data $FOLDER/f5pmaster # Copy entire data folder to local f5pmaster folder

@@ -1,62 +1,96 @@
 #!/bin/bash
-# @author: Sasha Jenner (jenner.sasha@gmail.com)
+#================================================================
+# HEADER
+#================================================================
+#% SYNOPSIS
+#+    ${SCRIPT_NAME} -f [format] [options ...] [in_dir] [out_dir]
+#%
+#% DESCRIPTION
+#%    Simulator of sequenced fast5 and fastq files
+#%    into specified directory.
+#%
+#% OPTIONS
+#%    -f [format], --format [format]                Follows a specified format of fast5 and fastq files
+#%                                          
+#%    available formats
+#%        --778           [directory]               Old format that's not too bad
+#%                        |-- fast5/
+#%                            |-- [prefix].fast5.tar
+#%                        |-- fastq/
+#%                            |-- fastq_*.[prefix].fastq.gz
+#%					      |-- logs/ (optional - for realistic sim)
+#%                            |-- sequencing_summary.<prefix>.txt.gz
+#%        
+#%        --NA            [directory]               Newer format with terrible folders
+#%                        |-- fast5/
+#%                            |-- [prefix].fast5
+#%                        |-- fastq/
+#%                            |-- [prefix]/
+#%                                |-- [prefix].fastq
+#%								  |-- sequencing_summary.txt (optional - 
+#%								  		for realistic sim)
+#%                                                             
+#%    -h, --help                                    Print help message
+#%    -i, --info                                    Print script information
+#%	  -n [num], --num-batches [num]					Copy a given number of batches
+#%    -r, --real-sim								Realistic simulation
+#%	  -t [time], --time-between [time]				Time to wait in between copying
+#%
+#% EXAMPLES
+#%    normal simulation with 30s between batches
+#%        ${SCRIPT_NAME} -f [format] -t 30s [in_dir] [out_dir]
+#%    realtime simulation
+#%        ${SCRIPT_NAME} -f [format] -r [in_dir] [out_dir]
+#%
+#================================================================
+#- IMPLEMENTATION
+#-    authors         Sasha JENNER (jenner.sasha@gmail.com)
+#-    copyright       Copyright (c) ... (todo)
+#-    license         ... (todo)
+#-
+#================================================================
+# END_OF_HEADER
+#================================================================
 
-### Simulator of sequenced fast5 and fastq files into the NAS at intervals
+	#== Necessary variables ==#
+SCRIPT_HEADSIZE=$(head -200 ${0} | grep -n "^# END_OF_HEADER" | cut -f1 -d:)
+SCRIPT_NAME="$(basename ${0})"
 
-: '
-User parameters
-$1 - directory for files to be taken
-$2 - directory for files to be placed
-'
+    #== Usage functions ==#
+usage() { printf "Usage: "; head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#+" | sed -e "s/^#+[ ]*//g" -e "s/\${SCRIPT_NAME}/${SCRIPT_NAME}/g"; }
+usagefull() { head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#[%+-]" | sed -e "s/^#[%+-]//g" -e "s/\${SCRIPT_NAME}/${SCRIPT_NAME}/g"; }
+scriptinfo() { head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#-" | sed -e "s/^#-//g" -e "s/\${SCRIPT_NAME}/${SCRIPT_NAME}/g"; }
 
-USAGE="Usage: $0 -f <format> [options ...] <in_dir> <out_dir>"
-: ${2?$USAGE} # require 2 parameters else give error msg
-HELP=$'Flags:
--f, --format        follows a specified format of fast5 and fastq files
-        --778           <in_dir>
-                        |-- fast5/
-                            |-- <prefix>.fast5.tar
-                        |-- fastq/
-                            |-- fastq_*.<prefix>.fastq.gz
-                        |-- logs/ (optional - for realistic sim)
-                            |-- sequencing_summary.<prefix>.txt.gz
-        
-        --NA            <in_dir>
-                        |-- fast5/
-                            |-- <prefix>.fast5
-                        |-- fastq/
-                            |-- <prefix>/
-                                |-- <prefix>.fastq
-                                |-- sequencing_summary.txt (optional - 
-										for realistic sim)
+: ${3?$(usage)} # Require 3 args else give usage message
 
--h, --help			help message
--n, --num-batches	copy a given number of batches
--r, --real-sim		realistic simulation
--t, --time-between	time to wait in between copying'
 
-NO_BATCHES=-1 # default value of -1 if parameter unset
+
+    #== Default variables ==#
+
+NO_BATCHES=-1 # Default value of -1 if parameter unset
 TIME=0s # 0s between copying by default
-REAL_SIM=false # no real simulation by default
-format_specified=false # assume no format specified
+REAL_SIM=false # No real simulation by default
+format_specified=false # Assume no format specified
 
 ## Handle flags
-while [ ! $# -eq 0 ]; do # while there are arguments
+while [ ! $# -eq 0 ]; do # While there are arguments
     case "$1" in
 
 		--format | -f)
 			format_specified=true
+
 			case "$2" in
 				--778)
 					FORMAT=$2
 					;;
+
 				--NA)
 					FORMAT=$2
 					;;
+
 				*)
 					echo "Incorrect or no format specified"
-					echo $USAGE
-					echo "$HELP"
+					usagefull
 					exit 1
 					;;
 			esac
@@ -64,8 +98,12 @@ while [ ! $# -eq 0 ]; do # while there are arguments
 			;;
 
         --help | -h)
-            echo $USAGE
-            echo "$HELP"
+            usagefull
+            exit 0
+            ;;
+
+		--info | -i)
+            scriptinfo
             exit 0
             ;;
 
@@ -95,41 +133,47 @@ done
 
 if ! $format_specified; then
 	echo "No format specified!"
-	echo $USAGE
-	echo "$HELP"
+	usagefull
 	exit 1
 fi
+
+
+
+    #== Begin ==#
 
 F5_DIR="$INPUT_DIR"/fast5/
 FQ_DIR="$INPUT_DIR"/fastq/
 
+# Colour codes for printing
 RED="\033[0;31m"
 GREEN="\033[34m"
 NORMAL="\033[0;39m"
-i=0 # initialise a file counter
 
-## Copy the corresponding fast5 and fastq to the output directory
+i=0 # Initialise a file counter
+
+## Function for copying the corresponding fast5 and fastq files to the output directory
 copy_files () {
-	echo -e $GREEN"fast5: copying $i"$NORMAL # set font colour to green and then back to normal
+	echo -e $GREEN"fast5: copying $i"$NORMAL # Set font colour to green and then back to normal
 
-	# identifying fast5 and fastq file paths
+	# Identifying fast5 and fastq file paths
+
 	if [ "$FORMAT" = "--778" ]; then
 		F5_FILE=$F5_DIR/$1.fast5.tar
 		FQ_FILE=$FQ_DIR/fastq_*.$1.fastq.gz
 	
-		# if fast5 file copying fails
-		if [ "$(mkdir -p $OUTPUT_DIR/fast5 && cp $F5_FILE "$_")" == 0 ]; then
+		# If fast5 file copying fails
+		if [ "$(mkdir -p $OUTPUT_DIR/fast5 && cp $F5_FILE "$_")" = 0 ]; then
 			echo -e $RED"- fast5: failed copy $i"$NORMAL
-		else
+		else # Else copying worked
 			echo -e $GREEN"+ fast5: finished copy $i"$NORMAL
 		fi
 
 		echo -e $GREEN"fastq: copying $i"$NORMAL
 
-		# if fastq file copying fails
-		if [ "$(mkdir -p $OUTPUT_DIR/fastq && cp $FQ_FILE "$_")" == 0 ]; then
+		# If fastq file copying fails
+		if [ "$(mkdir -p $OUTPUT_DIR/fastq && cp $FQ_FILE "$_")" = 0 ]; then
 			echo -e $RED"- fastq: failed copy $i"$NORMAL
-		else
+		else # Else copying worked
 			echo -e $GREEN"+ fastq: finished copy $i"$NORMAL
 		fi	
 	
@@ -137,48 +181,51 @@ copy_files () {
 		F5_FILE=$F5_DIR/$1.fast5
 		FQ_FILE=$FQ_DIR/$1/$1.fastq
 
-		# if fast5 file copying fails
+		# If fast5 file copying fails
 		if [ "$(mkdir -p $OUTPUT_DIR/fast5 && cp $F5_FILE "$_")" == 0 ]; then
 			echo -e $RED"- fast5: failed copy $i"$NORMAL
-		else
+		else # Else copying worked
 			echo -e $GREEN"+ fast5: finished copy $i"$NORMAL
 		fi
 
 		echo -e $GREEN"fastq: copying $i"$NORMAL
 
-		# if fastq file copying fails
+		# If fastq file copying fails
 		if [ "$(mkdir -p $OUTPUT_DIR/fastq/$1 && cp $FQ_FILE "$_")" == 0 ]; then
 			echo -e $RED"- fastq: failed copy $i"$NORMAL
-		else
+		else # Else copying worked
 			echo -e $GREEN"+ fastq: finished copy $i"$NORMAL
 		fi
 	fi
 
-	if [ $i -eq $NO_BATCHES ]; then
-		break
+	if [ $i -eq $NO_BATCHES ]; then # If the number of batches copied equals constant
+		exit 0 # Exit program
 	fi
 }
 
 if [ "$FORMAT" = "--778" ]; then
 
-	if $REAL_SIM; then # if the realistic simulation option is set
+	if $REAL_SIM; then # If the realistic simulation option is set
 
-		LOGS_DIR="$INPUT_DIR"logs/ # extract logs directory when sequencing summary files are contained
-		declare -A file_time_map # declare an associative array to hold the file with corresponding completion time
+		LOGS_DIR="$INPUT_DIR"logs/ # Extract logs directory when sequencing summary files are contained
+		# Declare an associative array to hold the file with corresponding completion time
+		declare -A file_time_map
 
-		for filename_path in $F5_DIR/*.fast5.tar; do # files with tar extension in the fast5 directory
+		# Iterate through files with tar extension in the fast5 directory
+		for filename_path in $F5_DIR/*.fast5.tar; do
 
-			filename_pathless=$(basename $filename_path) # extract the filename without the path
-			filename="${filename_pathless%%.*}" # extract the filename without the extension nor the path
+			filename_pathless=$(basename $filename_path) # Extract the filename without the path
+			filename="${filename_pathless%%.*}" # Extract the filename without the extension nor the path
 
-			# extract corresponding sequencing summary filename
+			# Extract corresponding sequencing summary filename
 			seq_summary_file=$LOGS_DIR/sequencing_summary."$filename".txt.gz
-			# cat the sequencing summary txt.gz file to awk
+			
+			# Cat the sequencing summary txt.gz file to awk
 			# which prints the highest start_time + duration (i.e. the completion time of that file)
 			end_time=$(zcat $seq_summary_file 2>/dev/null | awk '
 			BEGIN { 
-				FS="\t" # set the file separator to tabs
-				# define variables
+				FS="\t" # Set the file separator to tabs
+				# Define variables
 				final_time=0
 			}
 			
@@ -194,76 +241,78 @@ if [ "$FORMAT" = "--778" ]; then
 			}
 			
 			NR > 1 {
-				if ($start_time_field + $duration_field > final_time) { # if the start-time + duration is greater than the current final time
-					final_time = $start_time_field + $duration_field # update the final time
+				if ($start_time_field + $duration_field > final_time) { # If the start-time + duration is greater than the current final time
+					final_time = $start_time_field + $duration_field # Update the final time
 				}
 			} 
 			
-			END { printf final_time }') # end by printing the final time
+			END { printf final_time }') # End by printing the final time
 
-			if [ "$(zcat $seq_summary_file 2>/dev/null)" = "" ]; then # if sequencing summary file is empty
-				continue
+			if [ "$(zcat $seq_summary_file 2>/dev/null)" = "" ]; then # If sequencing summary file is empty
+				continue # Continue to next file
 			fi
 			
-			file_time_map["$end_time"]=$filename_path # set a key, value combination of the end time and file
+			file_time_map["$end_time"]=$filename_path # Set a key, value combination of the end time and file
 		done
 
-		SECONDS=0 # restart the timer
+		SECONDS=0 # Restart the timer
 		for ordered_time in $(
-			for time in "${!file_time_map[@]}"; do # for each time in the keys of the associative array
-				echo $time # output the time
+			for time in "${!file_time_map[@]}"; do # For each time in the keys of the associative array
+				echo $time # Output the time
 			done |
-			sort -g # sort the output in ascending generic numerical order (including floating point numbers)
+			sort -g # Sort the output in ascending generic numerical order (including floating point numbers)
 			)
 		do
-			while (( $(echo "$SECONDS < $ordered_time" | bc -l) )) # while the file's has not been 'completed'
+			while (( $(echo "$SECONDS < $ordered_time" | bc -l) )) # While the file's has not been 'completed'
 			do
-				: # do nothing
+				: # Do nothing
 			done
 
-			filename_path=${file_time_map[$ordered_time]} # extract file from map
+			filename_path=${file_time_map[$ordered_time]} # Extract file from map
 
-			echo "file completed: ${ordered_time}s | file: $filename_path" # testing
+			echo "file completed: ${ordered_time}s | file: $filename_path"
 
-			filename_pathless=$(basename $filename_path) # extract the filename without the path
-			filename="${filename_pathless%%.*}" # extract the filename without the extension nor the path
+			filename_pathless=$(basename $filename_path) # Extract the filename without the path
+			filename="${filename_pathless%%.*}" # Extract the filename without the extension nor the path
 			
-			((i++)) # increment the counter
-			copy_files $filename # copy fast5 and fastq files into output directory
+			((i++)) # Increment the file counter
+			copy_files $filename # Copy fast5 and fastq files into output directory
 		done
 
-	else ## Iterate through the files normally
-		for filename_path in $F5_DIR/*.fast5.tar; do # files with tar extension in the fast5 directory
-			((i++)) # increment the counter
+	else ## Else iterate through the files normally
+		for filename_path in $F5_DIR/*.fast5.tar; do
+			((i++)) # Increment the counter
 			
-			filename_pathless=$(basename $filename_path) # extract the filename without the path
-			filename="${filename_pathless%%.*}" # extract the filename without the extension nor the path
+			filename_pathless=$(basename $filename_path) # Extract the filename without the path
+			filename="${filename_pathless%%.*}" # Extract the filename without the extension nor the path
 
-			copy_files $filename # copy fast5 and fastq files into output directory
-			sleep $TIME # pause for a given time
+			copy_files $filename # Copy fast5 and fastq files into output directory
+			sleep $TIME # Pause for a given time
 		done
 	fi
 
 elif [ "$FORMAT" = "--NA" ]; then
 
-	if $REAL_SIM; then # if the realistic simulation option is set
+	if $REAL_SIM; then # If the realistic simulation option is set
 
-		declare -A file_time_map # declare an associative array to hold the file with corresponding completion time
+		# Declare an associative array to hold the file with corresponding completion time
+		declare -A file_time_map
 
-		for filename_path in $F5_DIR/*.fast5; do # files with tar extension in the fast5 directory
+		# Iterate through files with .fast5 extension in the fast5 directory
+		for filename_path in $F5_DIR/*.fast5; do
 
-			filename_pathless=$(basename $filename_path) # extract the filename without the path
-			filename="${filename_pathless%.*}" # extract the filename without the extension nor the path
+			filename_pathless=$(basename $filename_path) # Extract the filename without the path
+			filename="${filename_pathless%.*}" # Extract the filename without the extension nor the path
 
-			# extract corresponding sequencing summary filename
+			# Extract corresponding sequencing summary filename
 			seq_summary_file=$FQ_DIR/$filename/sequencing_summary.txt
-			# cat the sequencing summary txt file to awk
+
+			# Cat the sequencing summary txt file to awk
 			# which prints the highest start_time + duration (i.e. the completion time of that file)
-			
 			end_time=$(cat $seq_summary_file 2>/dev/null | awk '
 			BEGIN { 
 				FS="\t" # set the file separator to tabs
-				# define variables
+				# Define variables
 				final_time=0
 			}
 			
@@ -279,53 +328,53 @@ elif [ "$FORMAT" = "--NA" ]; then
 			}
 			
 			NR > 1 {
-				if ($start_time_field + $duration_field > final_time) { # if the start-time + duration is greater than the current final time
-					final_time = $start_time_field + $duration_field # update the final time
+				if ($start_time_field + $duration_field > final_time) { # If the start-time + duration is greater than the current final time
+					final_time = $start_time_field + $duration_field # Update the final time
 				}
 			} 
 			
-			END { printf final_time }') # end by printing the final time
+			END { printf final_time }') # End by printing the final time
 
-			if [ "$(cat $seq_summary_file 2>/dev/null)" = "" ]; then # if sequencing summary file is empty
-				continue
+			if [ "$(cat $seq_summary_file 2>/dev/null)" = "" ]; then # If sequencing summary file is empty
+				continue # Continue to next file
 			fi
 			
-			file_time_map["$end_time"]=$filename_path # set a key, value combination of the end time and file
+			file_time_map["$end_time"]=$filename_path # Set a key, value combination of the end time and file
 		done
 
-		SECONDS=0 # restart the timer
+		SECONDS=0 # Restart the timer
 		for ordered_time in $(
-			for time in "${!file_time_map[@]}"; do # for each time in the keys of the associative array
-				echo $time # output the time
+			for time in "${!file_time_map[@]}"; do # For each time in the keys of the associative array
+				echo $time # Output the time
 			done |
-			sort -g # sort the output in ascending generic numerical order (including floating point numbers)
+			sort -g # Sort the output in ascending generic numerical order (including floating point numbers)
 			)
 		do
-			while (( $(echo "$SECONDS < $ordered_time" | bc -l) )) # while the file's has not been 'completed'
+			while (( $(echo "$SECONDS < $ordered_time" | bc -l) )) # While the file's has not been 'completed'
 			do
-				: # do nothing
+				: # Do nothing
 			done
 
-			filename_path=${file_time_map[$ordered_time]} # extract file from map
+			filename_path=${file_time_map[$ordered_time]} # Extract file from map
 
-			echo "file completed: ${ordered_time}s | file: $filename_path" # testing
+			echo "file completed: ${ordered_time}s | file: $filename_path"
 
-			filename_pathless=$(basename $filename_path) # extract the filename without the path
-			filename="${filename_pathless%.*}" # extract the filename without the extension nor the path
+			filename_pathless=$(basename $filename_path) # Extract the filename without the path
+			filename="${filename_pathless%.*}" # Extract the filename without the extension nor the path
 			
-			((i++)) # increment the counter
-			copy_files $filename # copy fast5 and fastq files into output directory
+			((i++)) # Increment the counter
+			copy_files $filename # Copy fast5 and fastq files into output directory
 		done
 
-	else ## Iterate through the files normally
-		for filename_path in $F5_DIR/*.fast5; do # files with tar extension in the fast5 directory
-			((i++)) # increment the counter
+	else ## Else iterate through the files normally
+		for filename_path in $F5_DIR/*.fast5; do
+			((i++)) # Increment the counter
 			
-			filename_pathless=$(basename $filename_path) # extract the filename without the path
-			filename="${filename_pathless%.*}" # extract the filename without the extension nor the path
+			filename_pathless=$(basename $filename_path) # Extract the filename without the path
+			filename="${filename_pathless%.*}" # Extract the filename without the extension nor the path
 
-			copy_files $filename # copy fast5 and fastq files into output directory
-			sleep $TIME # pause for a given time
+			copy_files $filename # Copy fast5 and fastq files into output directory
+			sleep $TIME # Pause for a given time
 		done
 	fi
 
