@@ -1,6 +1,6 @@
 #!/bin/bash
 
-USAGE="Usage: $0 <input_dir> <save_file>"
+USAGE="Usage: $0 [input_dir] [save_file]"
 : ${2?$USAGE} # if not 2 arguments, print usage message and exit
 
 INPUT_DIR=$1

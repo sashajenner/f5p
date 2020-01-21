@@ -10,6 +10,7 @@
 #%    and the expected file format.
 #%
 #% OPTIONS
+#%    -a, --avail                                   Output available formats
 #%    -f [format], --format [format]                Follows a specified format of fast5 and fastq files
 #%                                          
 #%    available formats
@@ -123,6 +124,11 @@ monitor_dir_specified=false
 ## Handle flags
 while [ ! $# -eq 0 ]; do # while there are arguments
     case "$1" in
+
+        --avail | -a)
+            echo -e "--778\n--NA"
+            exit 0
+            ;;
 
         --format | -f)
             format_specified=true
