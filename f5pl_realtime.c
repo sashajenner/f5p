@@ -346,22 +346,28 @@ int main(int argc, char* argv[]) {
         core.resuming = true; // set resume option to true
 
     } else if (argc != 3 ||
-        ! ( strcmp(argv[1], "--778") || strcmp(argv[1], "--NA") )
+        ! ( strcmp(argv[1], "--778") || strcmp(argv[1], "--NA") || strcmp(argv[1], "--zebra") )
         ) { // check there is at least 2 args
         ERROR("Not enough arguments. Usage %s <format> <ip_list> [--resume | -r]\n"
                "Acceptable formats:\n"
-                    "\t--778   <in_dir>\n"
+                    "\t--778   [in_dir]\n"
                                 "\t\t|-- fast5/\n"
-                                    "\t\t\t|-- <prefix>.fast5.tar\n"
+                                    "\t\t\t|-- [prefix].fast5.tar\n"
                                 "\t\t|-- fastq/\n"
-                                    "\t\t\t|-- fastq_*.<prefix>.fastq.gz\n\n"
+                                    "\t\t\t|-- fastq_*.[prefix].fastq.gz\n\n"
                                 
-                    "\t--NA    <in_dir>\n"
+                    "\t--NA    [in_dir]\n"
                                 "\t\t|-- fast5/\n"
-                                    "\t\t\t|-- <prefix>.fast5\n"
+                                    "\t\t\t|-- [prefix].fast5\n"
                                 "\t\t|-- fastq/\n"
-                                    "\t\t\t|-- <prefix>\n"
-                                        "\t\t\t\t|-- <prefix>.fastq\n",
+                                    "\t\t\t|-- [prefix]\n"
+                                        "\t\t\t\t|-- [prefix].fastq\n"
+                    
+                    "\t--zebra  [in_dir]\n"
+                                "\t\t|-- fast5/\n"
+                                    "\t\t\t|-- [prefix].fast5\n"
+                                "\t\t|-- fastq/\n"
+                                    "\t\t\t|-- [prefix].fastq\n",
                 argv[0]);
         exit(EXIT_FAILURE);
 
