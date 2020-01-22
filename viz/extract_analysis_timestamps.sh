@@ -6,7 +6,7 @@ USAGE="Usage: $0 <log>"
 LOG_FILE=$1
 
 grep "Received message 'done.'" $LOG_FILE | 
-cut -d " " -f 7,9 | 
+cut -d " " -f 7,12 | 
 sort -g -t " " -k 1,1 |
 tr -d '()' |
 sed 's/.$//'
