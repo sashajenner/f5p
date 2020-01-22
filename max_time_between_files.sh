@@ -3,7 +3,7 @@
 # HEADER
 #================================================================
 #% SYNOPSIS
-#+    ${SCRIPT_NAME} [options ...] [directory]
+#+    ${SCRIPT_NAME} -f [format] [options ...] [directory]
 #%
 #% DESCRIPTION
 #%    Find the max time gap between successive sequenced batches completing.
@@ -18,7 +18,7 @@
 #%                            |-- [prefix].fast5.tar
 #%                        |-- fastq/
 #%                            |-- fastq_*.[prefix].fastq.gz
-#%					      |-- logs/ (optional - for realistic sim)
+#%                        |-- logs/ (optional - for realistic sim)
 #%                            |-- sequencing_summary.<prefix>.txt.gz
 #%        
 #%        --NA            [directory]               Newer format with terrible folders
@@ -27,12 +27,19 @@
 #%                        |-- fastq/
 #%                            |-- [prefix]/
 #%                                |-- [prefix].fastq
-#%								  |-- sequencing_summary.txt (optional - 
+#%                                |-- sequencing_summary.txt (optional - 
 #%								  		for realistic sim)
+#%
+#%        --zebra         [directory]               Newest format
+#%                        |-- fast5/
+#%                            |-- [prefix].fast5
+#%                        |-- fastq/
+#%                            |-- [prefix].fastq
+#%                        |-- sequencing_summary.txt
 #%
 #%    -h, --help                                    Print help message
 #%    -i, --info                                    Print script information
-#%	  -l, --loud									Print more verbose
+#%    -l, --loud									Print more verbose
 #%
 #================================================================
 #- IMPLEMENTATION
@@ -70,18 +77,13 @@ while [ ! $# -eq 0 ]; do # while there are arguments
             format_specified=true
 
             case "$2" in
-                --778)
-                    FORMAT=$2
-                    ;;
-
-                --NA)
+                --778 | --NA | --zebra)
                     FORMAT=$2
                     ;;
 
                 *)
                     echo "Incorrect or no format specified"
-                    echo $USAGE
-                    echo "$HELP"
+                    usagefull
                     exit 1
                     ;;
 			esac
@@ -89,8 +91,7 @@ while [ ! $# -eq 0 ]; do # while there are arguments
             ;;
 
         --help | -h)
-            echo $USAGE
-            echo "$HELP"
+            usagefull
             exit 0
             ;;
 		
@@ -113,8 +114,7 @@ done
 
 if ! $format_specified; then
 	echo "No format specified!"
-	echo $USAGE
-	echo "$HELP"
+	usagefull
 	exit 1
 fi
 
@@ -184,7 +184,7 @@ elif [ "$FORMAT" = "--NA" ]; then
 		end_time=$(cat $seq_summary_file 2>/dev/null | awk '
 			BEGIN { 
 				FS="\t" # set the file separator to tabs
-				# define variables
+				# Define variables
 				final_time=0
 			}
 			
@@ -200,14 +200,14 @@ elif [ "$FORMAT" = "--NA" ]; then
 			}
 			
 			NR > 1 {
-				if ($start_time_field + $duration_field > final_time) { # if the start-time + duration is greater than the current final time
-					final_time = $start_time_field + $duration_field # update the final time
+				if ($start_time_field + $duration_field > final_time) { # If the start-time + duration is greater than the current final time
+					final_time = $start_time_field + $duration_field # Update the final time
 				}
 			} 
 			
-			END { printf final_time }') # end by printing the final time
+			END { printf final_time }') # End by printing the final time
         
-		file_time_map["$filename_path"]=$end_time # set a key, value combination of the end time and file
+		file_time_map["$filename_path"]=$end_time # Set a key, value combination of the end time and file
 	done
 	
 fi

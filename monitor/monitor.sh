@@ -43,6 +43,7 @@
     #== Necessary variables ==#
 SCRIPT_HEADSIZE=$(head -200 ${0} | grep -n "^# END_OF_HEADER" | cut -f1 -d:)
 SCRIPT_NAME="$(basename ${0})"
+SCRIPT_PATH="$( cd "$(dirname "$0")" ; pwd -P )" # Scripts current path
 
     #== Usage functions ==#
 usage() { printf "Usage: "; head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#+" | sed -e "s/^#+[ ]*//g" -e "s/\${SCRIPT_NAME}/${SCRIPT_NAME}/g"; }
@@ -140,11 +141,11 @@ if $existing; then # If existing files option set
 fi
 
 reset_timer() {
-    echo 0 > $TEMP_FILE # Send flag to reset timer
+    echo 0 > $SCRIPT_PATH/$TEMP_FILE # Send flag to reset timer
 }
 
 exit_safely() { # Function to use on exit
-    rm $TEMP_FILE # Remove the temporary file
+    rm $SCRIPT_PATH/$TEMP_FILE # Remove the temporary file
 
     if $flag; then # If the flag option is enabled
         echo -1
@@ -155,7 +156,7 @@ exit_safely() { # Function to use on exit
     # (todo : kill background while loop?)
 }
 
-touch $TEMP_FILE # Create the temporary file
+touch $SCRIPT_PATH/$TEMP_FILE # Create the temporary file
 
 trap exit_safely EXIT # Catch exit of script with function
 
@@ -173,7 +174,7 @@ i=0 # Initialise file counter
         
         ((i++)) # Increment file counter
         if [ "$NO_FILES" = "$i" ]; then # Exit after specified number of files found
-            echo -1 > $TEMP_FILE # Send flag to main process
+            echo -1 > $SCRIPT_PATH/$TEMP_FILE # Send flag to main process
             
             while : # Pause the script in while loop
             do
@@ -194,13 +195,13 @@ fi
 while $timeout; do
 
     # If 0 flag in temporary file
-    if [ "$(cat $TEMP_FILE)" = "0" ]; then # Reset the timer
+    if [ "$(cat $SCRIPT_PATH/$TEMP_FILE)" = "0" ]; then # Reset the timer
         SECONDS=0
-        echo > $TEMP_FILE # Empty contents of temp file
+        echo > $SCRIPT_PATH/$TEMP_FILE # Empty contents of temp file
     fi
 
     # If there has been no files created in a specified period of time exit program
-    if [ $((SECONDS/TIME_FACTOR)) = "$TIME_INACTIVE" -o "$(cat $TEMP_FILE)" = "-1" ]; then
+    if [ $((SECONDS/TIME_FACTOR)) = "$TIME_INACTIVE" -o "$(cat $SCRIPT_PATH/$TEMP_FILE)" = "-1" ]; then
         exit
     fi
 
@@ -208,7 +209,7 @@ done
 
 while : ; do # While true
     # If -1 flag in temporary file
-    if [ "$(cat $TEMP_FILE)" = "-1" ]; then
+    if [ "$(cat $SCRIPT_PATH/$TEMP_FILE)" = "-1" ]; then
         exit
     fi
 done

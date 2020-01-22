@@ -29,6 +29,13 @@
 #%                                |-- [prefix].fastq
 #%								  |-- sequencing_summary.txt (optional - 
 #%								  		for realistic sim)
+#%
+#%        --zebra         [directory]               Newest format
+#%                        |-- fast5/
+#%                            |-- [prefix].fast5
+#%                        |-- fastq/
+#%                            |-- [prefix].fastq
+#%                        |-- sequencing_summary.txt
 #%                                                             
 #%    -h, --help                                    Print help message
 #%    -i, --info                                    Print script information
@@ -55,6 +62,7 @@
 	#== Necessary variables ==#
 SCRIPT_HEADSIZE=$(head -200 ${0} | grep -n "^# END_OF_HEADER" | cut -f1 -d:)
 SCRIPT_NAME="$(basename ${0})"
+SCRIPT_PATH="$( cd "$(dirname "$0")" ; pwd -P )" # Scripts current path
 
     #== Usage functions ==#
 usage() { printf "Usage: "; head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#+" | sed -e "s/^#+[ ]*//g" -e "s/\${SCRIPT_NAME}/${SCRIPT_NAME}/g"; }
@@ -85,6 +93,10 @@ while [ ! $# -eq 0 ]; do # While there are arguments
 					;;
 
 				--NA)
+					FORMAT=$2
+					;;
+				
+				--zebra)
 					FORMAT=$2
 					;;
 
@@ -196,6 +208,26 @@ copy_files () {
 		else # Else copying worked
 			echo -e $GREEN"+ fastq: finished copy $i"$NORMAL
 		fi
+
+	elif [ "$FORMAT" = "--zebra" ]; then
+		F5_FILE=$F5_DIR/$1.fast5
+		FQ_FILE=$FQ_DIR/$1.fastq
+
+		# If fast5 file copying fails
+		if [ "$(mkdir -p $OUTPUT_DIR/fast5 && cp $F5_FILE "$_")" == 0 ]; then
+			echo -e $RED"- fast5: failed copy $i"$NORMAL
+		else # Else copying worked
+			echo -e $GREEN"+ fast5: finished copy $i"$NORMAL
+		fi
+
+		echo -e $GREEN"fastq: copying $i"$NORMAL
+
+		# If fastq file copying fails
+		if [ "$(mkdir -p $OUTPUT_DIR/fastq && cp $FQ_FILE "$_")" == 0 ]; then
+			echo -e $RED"- fastq: failed copy $i"$NORMAL
+		else # Else copying worked
+			echo -e $GREEN"+ fastq: finished copy $i"$NORMAL
+		fi
 	fi
 
 	if [ $i -eq $NO_BATCHES ]; then # If the number of batches copied equals constant
@@ -219,6 +251,10 @@ if [ "$FORMAT" = "--778" ]; then
 
 			# Extract corresponding sequencing summary filename
 			seq_summary_file=$LOGS_DIR/sequencing_summary."$filename".txt.gz
+
+			if [ "$(zcat $seq_summary_file 2>/dev/null)" = "" ]; then # If sequencing summary file is empty
+				continue # Continue to next file
+			fi
 			
 			# Cat the sequencing summary txt.gz file to awk
 			# which prints the highest start_time + duration (i.e. the completion time of that file)
@@ -247,10 +283,6 @@ if [ "$FORMAT" = "--778" ]; then
 			} 
 			
 			END { printf final_time }') # End by printing the final time
-
-			if [ "$(zcat $seq_summary_file 2>/dev/null)" = "" ]; then # If sequencing summary file is empty
-				continue # Continue to next file
-			fi
 			
 			file_time_map["$end_time"]=$filename_path # Set a key, value combination of the end time and file
 		done
@@ -307,6 +339,10 @@ elif [ "$FORMAT" = "--NA" ]; then
 			# Extract corresponding sequencing summary filename
 			seq_summary_file=$FQ_DIR/$filename/sequencing_summary.txt
 
+			if [ "$(cat $seq_summary_file 2>/dev/null)" = "" ]; then # If sequencing summary file is empty
+				continue # Continue to next file
+			fi
+
 			# Cat the sequencing summary txt file to awk
 			# which prints the highest start_time + duration (i.e. the completion time of that file)
 			end_time=$(cat $seq_summary_file 2>/dev/null | awk '
@@ -334,10 +370,91 @@ elif [ "$FORMAT" = "--NA" ]; then
 			} 
 			
 			END { printf final_time }') # End by printing the final time
+			
+			file_time_map["$end_time"]=$filename_path # Set a key, value combination of the end time and file
+		done
 
-			if [ "$(cat $seq_summary_file 2>/dev/null)" = "" ]; then # If sequencing summary file is empty
-				continue # Continue to next file
-			fi
+		SECONDS=0 # Restart the timer
+		for ordered_time in $(
+			for time in "${!file_time_map[@]}"; do # For each time in the keys of the associative array
+				echo $time # Output the time
+			done |
+			sort -g # Sort the output in ascending generic numerical order (including floating point numbers)
+			)
+		do
+			while (( $(echo "$SECONDS < $ordered_time" | bc -l) )) # While the file's has not been 'completed'
+			do
+				: # Do nothing
+			done
+
+			filename_path=${file_time_map[$ordered_time]} # Extract file from map
+
+			echo "file completed: ${ordered_time}s | file: $filename_path"
+
+			filename_pathless=$(basename $filename_path) # Extract the filename without the path
+			filename="${filename_pathless%.*}" # Extract the filename without the extension nor the path
+			
+			((i++)) # Increment the counter
+			copy_files $filename # Copy fast5 and fastq files into output directory
+		done
+
+	else ## Else iterate through the files normally
+		for filename_path in $F5_DIR/*.fast5; do
+			((i++)) # Increment the counter
+			
+			filename_pathless=$(basename $filename_path) # Extract the filename without the path
+			filename="${filename_pathless%.*}" # Extract the filename without the extension nor the path
+
+			copy_files $filename # Copy fast5 and fastq files into output directory
+			sleep $TIME # Pause for a given time
+		done
+	fi
+
+elif [ "$FORMAT" = "--zebra" ]; then
+
+	if $REAL_SIM; then # If the realistic simulation option is set
+
+		# Declare an associative array to hold the file with corresponding completion time
+		declare -A file_time_map
+
+		# Extract corresponding sequencing summary filename
+		seq_summary_file=$INPUT_DIR/sequencing_summary.txt
+
+		# Iterate through files with .fast5 extension in the fast5 directory
+		for filename_path in $F5_DIR/*.fast5; do
+
+			filename_pathless=$(basename $filename_path) # Extract the filename without the path
+			filename="${filename_pathless%.*}" # Extract the filename without the extension nor the path
+
+			# Cat the sequencing summary txt file to awk
+			# which prints the highest start_time + duration (i.e. the completion time of that file)
+			end_time=$(cat $seq_summary_file 2>/dev/null |
+			grep -E "$filename_pathless\|filename" |
+			awk '
+			BEGIN { 
+				FS="\t" # set the file separator to tabs
+				# Define variables
+				final_time=0
+			}
+			
+			NR==1 {
+				for (i = 1; i <= NF; i ++) {
+					if ($i == "start_time") {
+						start_time_field = i
+					
+					} else if ($i == "duration") {
+						duration_field = i
+					}
+				}
+			}
+			
+			NR > 1 {
+				if ($start_time_field + $duration_field > final_time) { # If the start-time + duration is greater than the current final time
+					final_time = $start_time_field + $duration_field # Update the final time
+				}
+			} 
+			
+			END { printf final_time }') # End by printing the final time
 			
 			file_time_map["$end_time"]=$filename_path # Set a key, value combination of the end time and file
 		done

@@ -20,6 +20,12 @@ HELP=$"Flags:
                         |-- fastq/
                             |-- <prefix>/
                                 |-- <prefix>.fastq
+
+        --zebra         [directory]               Newest format
+                        |-- fast5/
+                            |-- [prefix].fast5
+                        |-- fastq/
+                            |-- [prefix].fastq
                                 
 -h, --help          help message"
 
@@ -31,13 +37,13 @@ while [ ! $# -eq 0 ]; do # while there are arguments
 
         --format | -f)
 			format_specified=true
+
 			case "$2" in
-				--778)
+
+				--778 | --NA | --zebra)
 					FORMAT=$2
 					;;
-				--NA)
-					FORMAT=$2
-					;;
+
 				*)
 					echo "Incorrect or no format specified"
 					echo $USAGE
@@ -56,6 +62,7 @@ while [ ! $# -eq 0 ]; do # while there are arguments
         
         *)
             FILE=$1
+            ;;
 
     esac
     shift
@@ -130,6 +137,39 @@ elif [ "$FORMAT" = "--NA" ]; then
 
     # derive the locations of input and output files
     FQ_FILEPATH=$PARENT_DIR/fastq/$F5_PREFIX/$F5_PREFIX.fastq
+    SAM_DIR=$PARENT_DIR/sam
+    BAM_DIR=$PARENT_DIR/bam
+    METH_DIR=$PARENT_DIR/methylation
+    LOG_DIR=$PARENT_DIR/log2
+
+    # derive the locations of temporary files
+    F5_DIR_LOCAL=$SCRATCH/$F5_PREFIX
+    FQ_LOCAL=$SCRATCH/$F5_PREFIX.fastq
+    SAM_LOCAL=$SCRATCH/$F5_PREFIX.sam
+    BAM_LOCAL=$SCRATCH/$F5_PREFIX.bam
+    METH_LOCAL=$SCRATCH/$F5_PREFIX.tsv
+    LOG_LOCAL=$SCRATCH/$F5_PREFIX.log
+    MINIMAP_LOCAL=$SCRATCH/$F5_PREFIX.minimap
+
+    test -d $F5_DIR_LOCAL && rm -rf $F5_DIR_LOCAL # remove local fast5 directory if it exists
+    mkdir -p $F5_DIR_LOCAL # make local fast5 directory and create parent directories if needed
+    cp $F5_FILEPATH $F5_DIR_LOCAL # copy fast5 file into local fast5 directory
+
+    cat $FQ_FILEPATH > $FQ_LOCAL
+
+elif [ "$FORMAT" = "--zebra" ]; then
+
+    F5_FILEPATH=$FILE # first argument
+    F5_DIR=${F5_FILEPATH%/*} # strip filename from .fast5 filepath
+    PARENT_DIR=${F5_DIR%/*} # get folder one heirarchy higher
+
+    # name of the .fast5 file (strip the path and get only the name with extension)
+    F5_FILENAME=$(basename $F5_FILEPATH)
+    # name of the .fast5 file without the extension
+    F5_PREFIX=${F5_FILENAME%.*}
+
+    # derive the locations of input and output files
+    FQ_FILEPATH=$PARENT_DIR/fastq/$F5_PREFIX.fastq
     SAM_DIR=$PARENT_DIR/sam
     BAM_DIR=$PARENT_DIR/bam
     METH_DIR=$PARENT_DIR/methylation
