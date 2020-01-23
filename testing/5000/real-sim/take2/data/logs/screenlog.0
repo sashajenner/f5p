@@ -1,0 +1,1862 @@
+rm -rf f5pd f5pl f5pl_realtime *.o *.out
+gcc -g -rdynamic -Wall -O2 socket.c f5pd.c error.c -lpthread  -o f5pd
+gcc -g -rdynamic -Wall -O2 socket.c f5pl.c error.c -lpthread  -o f5pl
+gcc -g -rdynamic -Wall -O2 socket.c f5pl_realtime.c error.c -lpthread  -o f5pl_realtime
+10.40.18.6 | SUCCESS | rc=0 >>
+
+10.40.18.12 | SUCCESS | rc=0 >>
+
+10.40.18.5 | SUCCESS | rc=0 >>
+
+10.40.18.7 | SUCCESS | rc=0 >>
+
+10.40.18.9 | SUCCESS | rc=0 >>
+
+10.40.18.4 | SUCCESS | rc=0 >>
+
+10.40.18.10 | SUCCESS | rc=0 >>
+
+10.40.18.15 | SUCCESS | rc=0 >>
+
+10.40.18.3 | SUCCESS | rc=0 >>
+
+10.40.18.13 | SUCCESS | rc=0 >>
+
+10.40.18.14 | SUCCESS | rc=0 >>
+
+10.40.18.2 | SUCCESS | rc=0 >>
+
+10.40.18.16 | SUCCESS | rc=0 >>
+
+10.40.18.8 | SUCCESS | rc=0 >>
+
+10.40.18.11 | SUCCESS | rc=0 >>
+
+10.40.18.1 | SUCCESS | rc=0 >>
+
+10.40.18.1 | SUCCESS => {
+    "changed": false, 
+    "checksum": "6f7415e537608f83225ba37f6c005f302ade5d09", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 6196, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.4 | SUCCESS => {
+    "changed": false, 
+    "checksum": "6f7415e537608f83225ba37f6c005f302ade5d09", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 6196, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.3 | SUCCESS => {
+    "changed": false, 
+    "checksum": "6f7415e537608f83225ba37f6c005f302ade5d09", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 6196, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.10 | SUCCESS => {
+    "changed": false, 
+    "checksum": "6f7415e537608f83225ba37f6c005f302ade5d09", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 6196, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.9 | SUCCESS => {
+    "changed": false, 
+    "checksum": "6f7415e537608f83225ba37f6c005f302ade5d09", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 6196, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.11 | SUCCESS => {
+    "changed": false, 
+    "checksum": "6f7415e537608f83225ba37f6c005f302ade5d09", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 6196, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.5 | SUCCESS => {
+    "changed": false, 
+    "checksum": "6f7415e537608f83225ba37f6c005f302ade5d09", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 6196, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.2 | SUCCESS => {
+    "changed": false, 
+    "checksum": "6f7415e537608f83225ba37f6c005f302ade5d09", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 6196, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.7 | SUCCESS => {
+    "changed": false, 
+    "checksum": "6f7415e537608f83225ba37f6c005f302ade5d09", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 6196, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.8 | SUCCESS => {
+    "changed": false, 
+    "checksum": "6f7415e537608f83225ba37f6c005f302ade5d09", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 6196, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.12 | SUCCESS => {
+    "changed": false, 
+    "checksum": "6f7415e537608f83225ba37f6c005f302ade5d09", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 6196, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.6 | SUCCESS => {
+    "changed": false, 
+    "checksum": "6f7415e537608f83225ba37f6c005f302ade5d09", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 6196, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.14 | SUCCESS => {
+    "changed": false, 
+    "checksum": "6f7415e537608f83225ba37f6c005f302ade5d09", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 6196, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.13 | SUCCESS => {
+    "changed": false, 
+    "checksum": "6f7415e537608f83225ba37f6c005f302ade5d09", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 6196, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.15 | SUCCESS => {
+    "changed": false, 
+    "checksum": "6f7415e537608f83225ba37f6c005f302ade5d09", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 6196, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.16 | SUCCESS => {
+    "changed": false, 
+    "checksum": "6f7415e537608f83225ba37f6c005f302ade5d09", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 6196, 
+    "state": "file", 
+    "uid": 1000
+}
+started
+file completed: 405.166s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744976-1.fast5.tar
+[34mfast5: copying 1[0;39m
+[34m+ fast5: finished copy 1[0;39m
+[34mfastq: copying 1[0;39m
+[34m+ fastq: finished copy 1[0;39m
+creating thread 1
+creating thread 2
+creating thread 3
+[t1(10.40.18.1)::INFO] Connecting to 10.40.18.1
+creating thread 4
+creating thread 5
+creating thread 6
+creating thread 7
+creating thread 8
+creating thread 9
+creating thread 10
+creating thread 11
+creating thread 12
+creating thread 13
+creating thread 14
+creating thread 15
+creating thread 16
+[t1(10.40.18.1)::INFO] Assigning /mnt/simulator_out/fast5/744976-1.fast5.tar (1) to 10.40.18.1
+file completed: 407.436s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744974-1.fast5.tar
+[34mfast5: copying 2[0;39m
+[34m+ fast5: finished copy 2[0;39m
+[34mfastq: copying 2[0;39m
+[34m+ fastq: finished copy 2[0;39m
+file completed: 408.751s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744972-1.fast5.tar
+[34mfast5: copying 3[0;39m
+[t16(10.40.18.16)::INFO] Connecting to 10.40.18.16
+[t16(10.40.18.16)::INFO] Assigning /mnt/simulator_out/fast5/744974-1.fast5.tar (2) to 10.40.18.16
+[34m+ fast5: finished copy 3[0;39m
+[34mfastq: copying 3[0;39m
+[34m+ fastq: finished copy 3[0;39m
+[t8(10.40.18.8)::INFO] Connecting to 10.40.18.8
+[t8(10.40.18.8)::INFO] Assigning /mnt/simulator_out/fast5/744972-1.fast5.tar (3) to 10.40.18.8
+file completed: 464.429s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-1.fast5.tar
+[34mfast5: copying 4[0;39m
+[t1(10.40.18.1)::INFO] Received message 'done.' at time 519.098625 sec | file /mnt/simulator_out/fast5/744976-1.fast5.tar (1).
+[34m+ fast5: finished copy 4[0;39m
+[34mfastq: copying 4[0;39m
+[34m+ fastq: finished copy 4[0;39m
+[t1(10.40.18.1)::INFO] Connecting to 10.40.18.1
+[t1(10.40.18.1)::INFO] Assigning /mnt/simulator_out/fast5/744973-1.fast5.tar (4) to 10.40.18.1
+[t16(10.40.18.16)::INFO] Received message 'done.' at time 624.377088 sec | file /mnt/simulator_out/fast5/744974-1.fast5.tar (2).
+file completed: 893.133s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-96.fast5.tar
+[34mfast5: copying 5[0;39m
+[34m+ fast5: finished copy 5[0;39m
+[34mfastq: copying 5[0;39m
+[34m+ fastq: finished copy 5[0;39m
+[t6(10.40.18.6)::INFO] Connecting to 10.40.18.6
+[t6(10.40.18.6)::INFO] Assigning /mnt/simulator_out/fast5/744973-96.fast5.tar (5) to 10.40.18.6
+[t8(10.40.18.8)::INFO] Received message 'done.' at time 1161.205444 sec | file /mnt/simulator_out/fast5/744972-1.fast5.tar (3).
+file completed: 1290.04s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744975-1.fast5.tar
+[34mfast5: copying 6[0;39m
+[34m+ fast5: finished copy 6[0;39m
+[34mfastq: copying 6[0;39m
+[34m+ fastq: finished copy 6[0;39m
+file completed: 1311.51s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-107.fast5.tar
+[34mfast5: copying 7[0;39m
+[t3(10.40.18.3)::INFO] Connecting to 10.40.18.3
+[t3(10.40.18.3)::INFO] Assigning /mnt/simulator_out/fast5/744975-1.fast5.tar (6) to 10.40.18.3
+[34m+ fast5: finished copy 7[0;39m
+[34mfastq: copying 7[0;39m
+[34m+ fastq: finished copy 7[0;39m
+[t8(10.40.18.8)::INFO] Connecting to 10.40.18.8
+[t8(10.40.18.8)::INFO] Assigning /mnt/simulator_out/fast5/744973-107.fast5.tar (7) to 10.40.18.8
+file completed: 1716.7s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-118.fast5.tar
+[34mfast5: copying 8[0;39m
+[34m+ fast5: finished copy 8[0;39m
+[34mfastq: copying 8[0;39m
+[34m+ fastq: finished copy 8[0;39m
+[t2(10.40.18.2)::INFO] Connecting to 10.40.18.2
+[t2(10.40.18.2)::INFO] Assigning /mnt/simulator_out/fast5/744973-118.fast5.tar (8) to 10.40.18.2
+[t1(10.40.18.1)::INFO] Received message 'done.' at time 1959.554916 sec | file /mnt/simulator_out/fast5/744973-1.fast5.tar (4).
+file completed: 2122.32s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-129.fast5.tar
+[34mfast5: copying 9[0;39m
+[34m+ fast5: finished copy 9[0;39m
+[34mfastq: copying 9[0;39m
+[34m+ fastq: finished copy 9[0;39m
+[t16(10.40.18.16)::INFO] Connecting to 10.40.18.16
+[t16(10.40.18.16)::INFO] Assigning /mnt/simulator_out/fast5/744973-129.fast5.tar (9) to 10.40.18.16
+[t3(10.40.18.3)::INFO] Received message 'done.' at time 2354.585353 sec | file /mnt/simulator_out/fast5/744975-1.fast5.tar (6).
+file completed: 2513.61s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-140.fast5.tar
+[34mfast5: copying 10[0;39m
+[t6(10.40.18.6)::INFO] Received message 'done.' at time 2538.719811 sec | file /mnt/simulator_out/fast5/744973-96.fast5.tar (5).
+[34m+ fast5: finished copy 10[0;39m
+[34mfastq: copying 10[0;39m
+[34m+ fastq: finished copy 10[0;39m
+[t11(10.40.18.11)::INFO] Connecting to 10.40.18.11
+[t11(10.40.18.11)::INFO] Assigning /mnt/simulator_out/fast5/744973-140.fast5.tar (10) to 10.40.18.11
+file completed: 2911.43s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-151.fast5.tar
+[34mfast5: copying 11[0;39m
+[34m+ fast5: finished copy 11[0;39m
+[34mfastq: copying 11[0;39m
+[34m+ fastq: finished copy 11[0;39m
+file completed: 2942.89s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744975-2.fast5.tar
+[34mfast5: copying 12[0;39m
+[t9(10.40.18.9)::INFO] Connecting to 10.40.18.9
+[t9(10.40.18.9)::INFO] Assigning /mnt/simulator_out/fast5/744973-151.fast5.tar (11) to 10.40.18.9
+[t8(10.40.18.8)::INFO] Received message 'done.' at time 3032.815652 sec | file /mnt/simulator_out/fast5/744973-107.fast5.tar (7).
+[34m+ fast5: finished copy 12[0;39m
+[34mfastq: copying 12[0;39m
+[34m+ fastq: finished copy 12[0;39m
+[t3(10.40.18.3)::INFO] Connecting to 10.40.18.3
+[t3(10.40.18.3)::INFO] Assigning /mnt/simulator_out/fast5/744975-2.fast5.tar (12) to 10.40.18.3
+file completed: 3311.26s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-162.fast5.tar
+[34mfast5: copying 13[0;39m
+[t2(10.40.18.2)::INFO] Received message 'done.' at time 3329.752620 sec | file /mnt/simulator_out/fast5/744973-118.fast5.tar (8).
+[34m+ fast5: finished copy 13[0;39m
+[34mfastq: copying 13[0;39m
+[34m+ fastq: finished copy 13[0;39m
+[t15(10.40.18.15)::INFO] Connecting to 10.40.18.15
+[t15(10.40.18.15)::INFO] Assigning /mnt/simulator_out/fast5/744973-162.fast5.tar (13) to 10.40.18.15
+[t16(10.40.18.16)::INFO] Received message 'done.' at time 3702.808892 sec | file /mnt/simulator_out/fast5/744973-129.fast5.tar (9).
+file completed: 3714.41s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-173.fast5.tar
+[34mfast5: copying 14[0;39m
+[34m+ fast5: finished copy 14[0;39m
+[34mfastq: copying 14[0;39m
+[34m+ fastq: finished copy 14[0;39m
+[t13(10.40.18.13)::INFO] Connecting to 10.40.18.13
+[t13(10.40.18.13)::INFO] Assigning /mnt/simulator_out/fast5/744973-173.fast5.tar (14) to 10.40.18.13
+[t11(10.40.18.11)::INFO] Received message 'done.' at time 4000.869563 sec | file /mnt/simulator_out/fast5/744973-140.fast5.tar (10).
+[t3(10.40.18.3)::INFO] Received message 'done.' at time 4118.550905 sec | file /mnt/simulator_out/fast5/744975-2.fast5.tar (12).
+file completed: 4110.31s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-184.fast5.tar
+[34mfast5: copying 15[0;39m
+[34m+ fast5: finished copy 15[0;39m
+[34mfastq: copying 15[0;39m
+[34m+ fastq: finished copy 15[0;39m
+[t5(10.40.18.5)::INFO] Connecting to 10.40.18.5
+[t5(10.40.18.5)::INFO] Assigning /mnt/simulator_out/fast5/744973-184.fast5.tar (15) to 10.40.18.5
+[t9(10.40.18.9)::INFO] Received message 'done.' at time 4410.563751 sec | file /mnt/simulator_out/fast5/744973-151.fast5.tar (11).
+file completed: 4511.15s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-12.fast5.tar
+[34mfast5: copying 16[0;39m
+[34m+ fast5: finished copy 16[0;39m
+[34mfastq: copying 16[0;39m
+[34m+ fastq: finished copy 16[0;39m
+[t16(10.40.18.16)::INFO] Connecting to 10.40.18.16
+[t16(10.40.18.16)::INFO] Assigning /mnt/simulator_out/fast5/744973-12.fast5.tar (16) to 10.40.18.16
+[t15(10.40.18.15)::INFO] Received message 'done.' at time 4766.537871 sec | file /mnt/simulator_out/fast5/744973-162.fast5.tar (13).
+file completed: 4903.52s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-23.fast5.tar
+[34mfast5: copying 17[0;39m
+[34m+ fast5: finished copy 17[0;39m
+[34mfastq: copying 17[0;39m
+[34m+ fastq: finished copy 17[0;39m
+file completed: 4920.64s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744975-3.fast5.tar
+[34mfast5: copying 18[0;39m
+[t15(10.40.18.15)::INFO] Connecting to 10.40.18.15
+[t15(10.40.18.15)::INFO] Assigning /mnt/simulator_out/fast5/744973-23.fast5.tar (17) to 10.40.18.15
+[34m+ fast5: finished copy 18[0;39m
+[34mfastq: copying 18[0;39m
+[34m+ fastq: finished copy 18[0;39m
+[t7(10.40.18.7)::INFO] Connecting to 10.40.18.7
+[t7(10.40.18.7)::INFO] Assigning /mnt/simulator_out/fast5/744975-3.fast5.tar (18) to 10.40.18.7
+[t13(10.40.18.13)::INFO] Received message 'done.' at time 5272.910846 sec | file /mnt/simulator_out/fast5/744973-173.fast5.tar (14).
+file completed: 5303.68s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-34.fast5.tar
+[34mfast5: copying 19[0;39m
+[t7(10.40.18.7)::WARNING][1;33m Device 10.40.18.7 has hung/disconnected. [0m
+[t7(10.40.18.7)::INFO] Connecting to 10.40.18.7
+[t7(10.40.18.7)::INFO] Assigning /mnt/simulator_out/fast5/744975-3.fast5.tar (18) to 10.40.18.7
+[34m+ fast5: finished copy 19[0;39m
+[34mfastq: copying 19[0;39m
+[34m+ fastq: finished copy 19[0;39m
+[t1(10.40.18.1)::INFO] Connecting to 10.40.18.1
+[t1(10.40.18.1)::INFO] Assigning /mnt/simulator_out/fast5/744973-34.fast5.tar (19) to 10.40.18.1
+[t5(10.40.18.5)::INFO] Received message 'done.' at time 5575.670174 sec | file /mnt/simulator_out/fast5/744973-184.fast5.tar (15).
+file completed: 5709.62s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-45.fast5.tar
+[34mfast5: copying 20[0;39m
+[34m+ fast5: finished copy 20[0;39m
+[34mfastq: copying 20[0;39m
+[34m+ fastq: finished copy 20[0;39m
+[t8(10.40.18.8)::INFO] Connecting to 10.40.18.8
+[t8(10.40.18.8)::INFO] Assigning /mnt/simulator_out/fast5/744973-45.fast5.tar (20) to 10.40.18.8
+[t16(10.40.18.16)::INFO] Received message 'done.' at time 5966.188223 sec | file /mnt/simulator_out/fast5/744973-12.fast5.tar (16).
+[t7(10.40.18.7)::WARNING][1;33m Device 10.40.18.7 has hung/disconnected. [0m
+[t7(10.40.18.7)::INFO] Connecting to 10.40.18.7
+[t7(10.40.18.7)::INFO] Assigning /mnt/simulator_out/fast5/744975-3.fast5.tar (18) to 10.40.18.7
+file completed: 6114.89s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-56.fast5.tar
+[34mfast5: copying 21[0;39m
+[34m+ fast5: finished copy 21[0;39m
+[34mfastq: copying 21[0;39m
+[34m+ fastq: finished copy 21[0;39m
+[t3(10.40.18.3)::INFO] Connecting to 10.40.18.3
+[t3(10.40.18.3)::INFO] Assigning /mnt/simulator_out/fast5/744973-56.fast5.tar (21) to 10.40.18.3
+[t15(10.40.18.15)::INFO] Received message 'done.' at time 6408.794437 sec | file /mnt/simulator_out/fast5/744973-23.fast5.tar (17).
+file completed: 6527.07s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-67.fast5.tar
+[34mfast5: copying 22[0;39m
+[34m+ fast5: finished copy 22[0;39m
+[34mfastq: copying 22[0;39m
+[34m+ fastq: finished copy 22[0;39m
+[t9(10.40.18.9)::INFO] Connecting to 10.40.18.9
+[t9(10.40.18.9)::INFO] Assigning /mnt/simulator_out/fast5/744973-67.fast5.tar (22) to 10.40.18.9
+[t1(10.40.18.1)::INFO] Received message 'done.' at time 6711.574404 sec | file /mnt/simulator_out/fast5/744973-34.fast5.tar (19).
+[t7(10.40.18.7)::INFO] Received message 'done.' at time 6895.576730 sec | file /mnt/simulator_out/fast5/744975-3.fast5.tar (18).
+file completed: 6947.41s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-78.fast5.tar
+[34mfast5: copying 23[0;39m
+[34m+ fast5: finished copy 23[0;39m
+[34mfastq: copying 23[0;39m
+[34m+ fastq: finished copy 23[0;39m
+[t2(10.40.18.2)::INFO] Connecting to 10.40.18.2
+[t2(10.40.18.2)::INFO] Assigning /mnt/simulator_out/fast5/744973-78.fast5.tar (23) to 10.40.18.2
+[t8(10.40.18.8)::INFO] Received message 'done.' at time 7226.404914 sec | file /mnt/simulator_out/fast5/744973-45.fast5.tar (20).
+file completed: 7344.68s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-89.fast5.tar
+[34mfast5: copying 24[0;39m
+[34m+ fast5: finished copy 24[0;39m
+[34mfastq: copying 24[0;39m
+[34m+ fastq: finished copy 24[0;39m
+[t7(10.40.18.7)::INFO] Connecting to 10.40.18.7
+[t7(10.40.18.7)::INFO] Assigning /mnt/simulator_out/fast5/744973-89.fast5.tar (24) to 10.40.18.7
+[t3(10.40.18.3)::INFO] Received message 'done.' at time 7591.050146 sec | file /mnt/simulator_out/fast5/744973-56.fast5.tar (21).
+file completed: 7603.68s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744975-4.fast5.tar
+[34mfast5: copying 25[0;39m
+[34m+ fast5: finished copy 25[0;39m
+[34mfastq: copying 25[0;39m
+[34m+ fastq: finished copy 25[0;39m
+[t15(10.40.18.15)::INFO] Connecting to 10.40.18.15
+[t15(10.40.18.15)::INFO] Assigning /mnt/simulator_out/fast5/744975-4.fast5.tar (25) to 10.40.18.15
+file completed: 7731.83s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-94.fast5.tar
+[34mfast5: copying 26[0;39m
+[34m+ fast5: finished copy 26[0;39m
+[34mfastq: copying 26[0;39m
+[34m+ fastq: finished copy 26[0;39m
+[t8(10.40.18.8)::INFO] Connecting to 10.40.18.8
+[t8(10.40.18.8)::INFO] Assigning /mnt/simulator_out/fast5/744973-94.fast5.tar (26) to 10.40.18.8
+[t9(10.40.18.9)::INFO] Received message 'done.' at time 7944.644614 sec | file /mnt/simulator_out/fast5/744973-67.fast5.tar (22).
+file completed: 8121.49s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-95.fast5.tar
+[34mfast5: copying 27[0;39m
+[34m+ fast5: finished copy 27[0;39m
+[34mfastq: copying 27[0;39m
+[34m+ fastq: finished copy 27[0;39m
+[t16(10.40.18.16)::INFO] Connecting to 10.40.18.16
+[t16(10.40.18.16)::INFO] Assigning /mnt/simulator_out/fast5/744973-95.fast5.tar (27) to 10.40.18.16
+[t2(10.40.18.2)::INFO] Received message 'done.' at time 8412.105338 sec | file /mnt/simulator_out/fast5/744973-78.fast5.tar (23).
+[t15(10.40.18.15)::INFO] Received message 'done.' at time 8534.702626 sec | file /mnt/simulator_out/fast5/744975-4.fast5.tar (25).
+file completed: 8525.7s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-97.fast5.tar
+[34mfast5: copying 28[0;39m
+[34m+ fast5: finished copy 28[0;39m
+[34mfastq: copying 28[0;39m
+[34m+ fastq: finished copy 28[0;39m
+[t15(10.40.18.15)::INFO] Connecting to 10.40.18.15
+[t15(10.40.18.15)::INFO] Assigning /mnt/simulator_out/fast5/744973-97.fast5.tar (28) to 10.40.18.15
+[t8(10.40.18.8)::INFO] Received message 'done.' at time 8628.564335 sec | file /mnt/simulator_out/fast5/744973-94.fast5.tar (26).
+[t7(10.40.18.7)::INFO] Received message 'done.' at time 8677.768298 sec | file /mnt/simulator_out/fast5/744973-89.fast5.tar (24).
+file completed: 8927.78s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-98.fast5.tar
+[34mfast5: copying 29[0;39m
+[34m+ fast5: finished copy 29[0;39m
+[34mfastq: copying 29[0;39m
+[34m+ fastq: finished copy 29[0;39m
+[t11(10.40.18.11)::INFO] Connecting to 10.40.18.11
+[t11(10.40.18.11)::INFO] Assigning /mnt/simulator_out/fast5/744973-98.fast5.tar (29) to 10.40.18.11
+file completed: 9335.11s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-99.fast5.tar
+[34mfast5: copying 30[0;39m
+[34m+ fast5: finished copy 30[0;39m
+[34mfastq: copying 30[0;39m
+[34m+ fastq: finished copy 30[0;39m
+[t1(10.40.18.1)::INFO] Connecting to 10.40.18.1
+[t1(10.40.18.1)::INFO] Assigning /mnt/simulator_out/fast5/744973-99.fast5.tar (30) to 10.40.18.1
+[t16(10.40.18.16)::INFO] Received message 'done.' at time 9480.249604 sec | file /mnt/simulator_out/fast5/744973-95.fast5.tar (27).
+file completed: 9738.47s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-100.fast5.tar
+[34mfast5: copying 31[0;39m
+[34m+ fast5: finished copy 31[0;39m
+[34mfastq: copying 31[0;39m
+[34m+ fastq: finished copy 31[0;39m
+[t13(10.40.18.13)::INFO] Connecting to 10.40.18.13
+[t13(10.40.18.13)::INFO] Assigning /mnt/simulator_out/fast5/744973-100.fast5.tar (31) to 10.40.18.13
+[t15(10.40.18.15)::INFO] Received message 'done.' at time 9992.634915 sec | file /mnt/simulator_out/fast5/744973-97.fast5.tar (28).
+file completed: 10162.9s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-101.fast5.tar
+[34mfast5: copying 32[0;39m
+[34m+ fast5: finished copy 32[0;39m
+[34mfastq: copying 32[0;39m
+[34m+ fastq: finished copy 32[0;39m
+[t5(10.40.18.5)::INFO] Connecting to 10.40.18.5
+[t5(10.40.18.5)::INFO] Assigning /mnt/simulator_out/fast5/744973-101.fast5.tar (32) to 10.40.18.5
+[t11(10.40.18.11)::INFO] Received message 'done.' at time 10340.808615 sec | file /mnt/simulator_out/fast5/744973-98.fast5.tar (29).
+file completed: 10599.1s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-102.fast5.tar
+[34mfast5: copying 33[0;39m
+[t1(10.40.18.1)::INFO] Received message 'done.' at time 10669.411034 sec | file /mnt/simulator_out/fast5/744973-99.fast5.tar (30).
+[34m+ fast5: finished copy 33[0;39m
+[34mfastq: copying 33[0;39m
+[34m+ fastq: finished copy 33[0;39m
+[t8(10.40.18.8)::INFO] Connecting to 10.40.18.8
+[t8(10.40.18.8)::INFO] Assigning /mnt/simulator_out/fast5/744973-102.fast5.tar (33) to 10.40.18.8
+file completed: 10705.7s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744975-5.fast5.tar
+[34mfast5: copying 34[0;39m
+[34m+ fast5: finished copy 34[0;39m
+[34mfastq: copying 34[0;39m
+[34m+ fastq: finished copy 34[0;39m
+[t4(10.40.18.4)::INFO] Connecting to 10.40.18.4
+[t4(10.40.18.4)::INFO] Assigning /mnt/simulator_out/fast5/744975-5.fast5.tar (34) to 10.40.18.4
+file completed: 11046.6s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-103.fast5.tar
+[34mfast5: copying 35[0;39m
+[t13(10.40.18.13)::INFO] Received message 'done.' at time 11077.594385 sec | file /mnt/simulator_out/fast5/744973-100.fast5.tar (31).
+[34m+ fast5: finished copy 35[0;39m
+[34mfastq: copying 35[0;39m
+[34m+ fastq: finished copy 35[0;39m
+[t11(10.40.18.11)::INFO] Connecting to 10.40.18.11
+[t11(10.40.18.11)::INFO] Assigning /mnt/simulator_out/fast5/744973-103.fast5.tar (35) to 10.40.18.11
+[t4(10.40.18.4)::INFO] Received message 'done.' at time 11474.463610 sec | file /mnt/simulator_out/fast5/744975-5.fast5.tar (34).
+file completed: 11504.9s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-104.fast5.tar
+[34mfast5: copying 36[0;39m
+[t5(10.40.18.5)::INFO] Received message 'done.' at time 11574.490374 sec | file /mnt/simulator_out/fast5/744973-101.fast5.tar (32).
+[34m+ fast5: finished copy 36[0;39m
+[34mfastq: copying 36[0;39m
+[34m+ fastq: finished copy 36[0;39m
+[t16(10.40.18.16)::INFO] Connecting to 10.40.18.16
+[t16(10.40.18.16)::INFO] Assigning /mnt/simulator_out/fast5/744973-104.fast5.tar (36) to 10.40.18.16
+file completed: 11950.7s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-105.fast5.tar
+[34mfast5: copying 37[0;39m
+[34m+ fast5: finished copy 37[0;39m
+[34mfastq: copying 37[0;39m
+[34m+ fastq: finished copy 37[0;39m
+[t6(10.40.18.6)::INFO] Connecting to 10.40.18.6
+[t6(10.40.18.6)::INFO] Assigning /mnt/simulator_out/fast5/744973-105.fast5.tar (37) to 10.40.18.6
+[t8(10.40.18.8)::INFO] Received message 'done.' at time 12087.243358 sec | file /mnt/simulator_out/fast5/744973-102.fast5.tar (33).
+file completed: 12402.5s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-106.fast5.tar
+[34mfast5: copying 38[0;39m
+[34m+ fast5: finished copy 38[0;39m
+[34mfastq: copying 38[0;39m
+[34m+ fastq: finished copy 38[0;39m
+[t12(10.40.18.12)::INFO] Connecting to 10.40.18.12
+[t12(10.40.18.12)::INFO] Assigning /mnt/simulator_out/fast5/744973-106.fast5.tar (38) to 10.40.18.12
+[t11(10.40.18.11)::INFO] Received message 'done.' at time 12502.569053 sec | file /mnt/simulator_out/fast5/744973-103.fast5.tar (35).
+file completed: 12856.9s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-108.fast5.tar
+[34mfast5: copying 39[0;39m
+[t16(10.40.18.16)::INFO] Received message 'done.' at time 12935.119608 sec | file /mnt/simulator_out/fast5/744973-104.fast5.tar (36).
+[34m+ fast5: finished copy 39[0;39m
+[34mfastq: copying 39[0;39m
+[34m+ fastq: finished copy 39[0;39m
+[t15(10.40.18.15)::INFO] Connecting to 10.40.18.15
+[t15(10.40.18.15)::INFO] Assigning /mnt/simulator_out/fast5/744973-108.fast5.tar (39) to 10.40.18.15
+[t6(10.40.18.6)::INFO] Received message 'done.' at time 13335.903627 sec | file /mnt/simulator_out/fast5/744973-105.fast5.tar (37).
+file completed: 13321.5s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-109.fast5.tar
+[34mfast5: copying 40[0;39m
+[34m+ fast5: finished copy 40[0;39m
+[34mfastq: copying 40[0;39m
+[34m+ fastq: finished copy 40[0;39m
+[t10(10.40.18.10)::INFO] Connecting to 10.40.18.10
+[t10(10.40.18.10)::INFO] Assigning /mnt/simulator_out/fast5/744973-109.fast5.tar (40) to 10.40.18.10
+[t12(10.40.18.12)::INFO] Received message 'done.' at time 13800.842366 sec | file /mnt/simulator_out/fast5/744973-106.fast5.tar (38).
+file completed: 13787.6s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-110.fast5.tar
+[34mfast5: copying 41[0;39m
+[34m+ fast5: finished copy 41[0;39m
+[34mfastq: copying 41[0;39m
+[34m+ fastq: finished copy 41[0;39m
+[t13(10.40.18.13)::INFO] Connecting to 10.40.18.13
+[t13(10.40.18.13)::INFO] Assigning /mnt/simulator_out/fast5/744973-110.fast5.tar (41) to 10.40.18.13
+file completed: 14281.7s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-111.fast5.tar
+[34mfast5: copying 42[0;39m
+[t15(10.40.18.15)::INFO] Received message 'done.' at time 14304.050829 sec | file /mnt/simulator_out/fast5/744973-108.fast5.tar (39).
+[34m+ fast5: finished copy 42[0;39m
+[34mfastq: copying 42[0;39m
+[34m+ fastq: finished copy 42[0;39m
+[t7(10.40.18.7)::INFO] Connecting to 10.40.18.7
+[t7(10.40.18.7)::INFO] Assigning /mnt/simulator_out/fast5/744973-111.fast5.tar (42) to 10.40.18.7
+[t10(10.40.18.10)::INFO] Received message 'done.' at time 14724.598490 sec | file /mnt/simulator_out/fast5/744973-109.fast5.tar (40).
+file completed: 14723.7s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-112.fast5.tar
+[34mfast5: copying 43[0;39m
+[34m+ fast5: finished copy 43[0;39m
+[34mfastq: copying 43[0;39m
+[34m+ fastq: finished copy 43[0;39m
+[t15(10.40.18.15)::INFO] Connecting to 10.40.18.15
+[t15(10.40.18.15)::INFO] Assigning /mnt/simulator_out/fast5/744973-112.fast5.tar (43) to 10.40.18.15
+file completed: 15187.6s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-113.fast5.tar
+[34mfast5: copying 44[0;39m
+[t13(10.40.18.13)::INFO] Received message 'done.' at time 15227.219925 sec | file /mnt/simulator_out/fast5/744973-110.fast5.tar (41).
+[34m+ fast5: finished copy 44[0;39m
+[34mfastq: copying 44[0;39m
+[34m+ fastq: finished copy 44[0;39m
+[t9(10.40.18.9)::INFO] Connecting to 10.40.18.9
+[t9(10.40.18.9)::INFO] Assigning /mnt/simulator_out/fast5/744973-113.fast5.tar (44) to 10.40.18.9
+file completed: 15661.4s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-114.fast5.tar
+[34mfast5: copying 45[0;39m
+[t7(10.40.18.7)::INFO] Received message 'done.' at time 15746.855863 sec | file /mnt/simulator_out/fast5/744973-111.fast5.tar (42).
+[34m+ fast5: finished copy 45[0;39m
+[34mfastq: copying 45[0;39m
+[34m+ fastq: finished copy 45[0;39m
+[t14(10.40.18.14)::INFO] Connecting to 10.40.18.14
+[t14(10.40.18.14)::INFO] Assigning /mnt/simulator_out/fast5/744973-114.fast5.tar (45) to 10.40.18.14
+[t15(10.40.18.15)::INFO] Received message 'done.' at time 16032.629476 sec | file /mnt/simulator_out/fast5/744973-112.fast5.tar (43).
+file completed: 16048.7s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744975-6.fast5.tar
+[34mfast5: copying 46[0;39m
+[34m+ fast5: finished copy 46[0;39m
+[34mfastq: copying 46[0;39m
+[34m+ fastq: finished copy 46[0;39m
+[t8(10.40.18.8)::INFO] Connecting to 10.40.18.8
+[t8(10.40.18.8)::INFO] Assigning /mnt/simulator_out/fast5/744975-6.fast5.tar (46) to 10.40.18.8
+file completed: 16143.4s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-115.fast5.tar
+[34mfast5: copying 47[0;39m
+[34m+ fast5: finished copy 47[0;39m
+[34mfastq: copying 47[0;39m
+[34m+ fastq: finished copy 47[0;39m
+[t10(10.40.18.10)::INFO] Connecting to 10.40.18.10
+[t10(10.40.18.10)::INFO] Assigning /mnt/simulator_out/fast5/744973-115.fast5.tar (47) to 10.40.18.10
+[t8(10.40.18.8)::INFO] Received message 'done.' at time 16625.696407 sec | file /mnt/simulator_out/fast5/744975-6.fast5.tar (46).
+file completed: 16614.2s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-116.fast5.tar
+[34mfast5: copying 48[0;39m
+[t9(10.40.18.9)::INFO] Received message 'done.' at time 16642.301152 sec | file /mnt/simulator_out/fast5/744973-113.fast5.tar (44).
+[34m+ fast5: finished copy 48[0;39m
+[34mfastq: copying 48[0;39m
+[34m+ fastq: finished copy 48[0;39m
+[t6(10.40.18.6)::INFO] Connecting to 10.40.18.6
+[t6(10.40.18.6)::INFO] Assigning /mnt/simulator_out/fast5/744973-116.fast5.tar (48) to 10.40.18.6
+[t14(10.40.18.14)::INFO] Received message 'done.' at time 17042.388448 sec | file /mnt/simulator_out/fast5/744973-114.fast5.tar (45).
+file completed: 17113.1s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-117.fast5.tar
+[34mfast5: copying 49[0;39m
+[34m+ fast5: finished copy 49[0;39m
+[34mfastq: copying 49[0;39m
+[34m+ fastq: finished copy 49[0;39m
+[t8(10.40.18.8)::INFO] Connecting to 10.40.18.8
+[t8(10.40.18.8)::INFO] Assigning /mnt/simulator_out/fast5/744973-117.fast5.tar (49) to 10.40.18.8
+[t10(10.40.18.10)::INFO] Received message 'done.' at time 17548.699174 sec | file /mnt/simulator_out/fast5/744973-115.fast5.tar (47).
+file completed: 17623.5s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-119.fast5.tar
+[34mfast5: copying 50[0;39m
+[34m+ fast5: finished copy 50[0;39m
+[34mfastq: copying 50[0;39m
+[34m+ fastq: finished copy 50[0;39m
+[t7(10.40.18.7)::INFO] Connecting to 10.40.18.7
+[t7(10.40.18.7)::INFO] Assigning /mnt/simulator_out/fast5/744973-119.fast5.tar (50) to 10.40.18.7
+[t8(10.40.18.8)::INFO] Received message 'done.' at time 18080.495277 sec | file /mnt/simulator_out/fast5/744973-117.fast5.tar (49).
+[t6(10.40.18.6)::INFO] Received message 'done.' at time 18138.788926 sec | file /mnt/simulator_out/fast5/744973-116.fast5.tar (48).
+file completed: 18141.4s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-120.fast5.tar
+[34mfast5: copying 51[0;39m
+[34m+ fast5: finished copy 51[0;39m
+[34mfastq: copying 51[0;39m
+[34m+ fastq: finished copy 51[0;39m
+[t4(10.40.18.4)::INFO] Connecting to 10.40.18.4
+[t4(10.40.18.4)::INFO] Assigning /mnt/simulator_out/fast5/744973-120.fast5.tar (51) to 10.40.18.4
+file completed: 18679.2s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-121.fast5.tar
+[34mfast5: copying 52[0;39m
+[34m+ fast5: finished copy 52[0;39m
+[34mfastq: copying 52[0;39m
+[34m+ fastq: finished copy 52[0;39m
+[t11(10.40.18.11)::INFO] Connecting to 10.40.18.11
+[t11(10.40.18.11)::INFO] Assigning /mnt/simulator_out/fast5/744973-121.fast5.tar (52) to 10.40.18.11
+[t7(10.40.18.7)::INFO] Received message 'done.' at time 19000.887951 sec | file /mnt/simulator_out/fast5/744973-119.fast5.tar (50).
+file completed: 19217.8s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-122.fast5.tar
+[34mfast5: copying 53[0;39m
+[34m+ fast5: finished copy 53[0;39m
+[34mfastq: copying 53[0;39m
+[34m+ fastq: finished copy 53[0;39m
+[t1(10.40.18.1)::INFO] Connecting to 10.40.18.1
+[t1(10.40.18.1)::INFO] Assigning /mnt/simulator_out/fast5/744973-122.fast5.tar (53) to 10.40.18.1
+[t4(10.40.18.4)::INFO] Received message 'done.' at time 19523.203766 sec | file /mnt/simulator_out/fast5/744973-120.fast5.tar (51).
+file completed: 19763s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-123.fast5.tar
+[34mfast5: copying 54[0;39m
+[34m+ fast5: finished copy 54[0;39m
+[34mfastq: copying 54[0;39m
+[34m+ fastq: finished copy 54[0;39m
+[t5(10.40.18.5)::INFO] Connecting to 10.40.18.5
+[t5(10.40.18.5)::INFO] Assigning /mnt/simulator_out/fast5/744973-123.fast5.tar (54) to 10.40.18.5
+[t11(10.40.18.11)::INFO] Received message 'done.' at time 20062.792993 sec | file /mnt/simulator_out/fast5/744973-121.fast5.tar (52).
+file completed: 20312.5s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-124.fast5.tar
+[34mfast5: copying 55[0;39m
+[34m+ fast5: finished copy 55[0;39m
+[34mfastq: copying 55[0;39m
+[34m+ fastq: finished copy 55[0;39m
+[t9(10.40.18.9)::INFO] Connecting to 10.40.18.9
+[t9(10.40.18.9)::INFO] Assigning /mnt/simulator_out/fast5/744973-124.fast5.tar (55) to 10.40.18.9
+[t1(10.40.18.1)::INFO] Received message 'done.' at time 20622.433243 sec | file /mnt/simulator_out/fast5/744973-122.fast5.tar (53).
+file completed: 20870.7s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-125.fast5.tar
+[34mfast5: copying 56[0;39m
+[34m+ fast5: finished copy 56[0;39m
+[34mfastq: copying 56[0;39m
+[34m+ fastq: finished copy 56[0;39m
+file completed: 20921.6s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744977-1.fast5.tar
+[34mfast5: copying 57[0;39m
+[t6(10.40.18.6)::INFO] Connecting to 10.40.18.6
+[t6(10.40.18.6)::INFO] Assigning /mnt/simulator_out/fast5/744973-125.fast5.tar (56) to 10.40.18.6
+[34m+ fast5: finished copy 57[0;39m
+[34mfastq: copying 57[0;39m
+[34m+ fastq: finished copy 57[0;39m
+[t12(10.40.18.12)::INFO] Connecting to 10.40.18.12
+[t12(10.40.18.12)::INFO] Assigning /mnt/simulator_out/fast5/744977-1.fast5.tar (57) to 10.40.18.12
+[t5(10.40.18.5)::INFO] Received message 'done.' at time 21118.366299 sec | file /mnt/simulator_out/fast5/744973-123.fast5.tar (54).
+[t12(10.40.18.12)::INFO] Received message 'done.' at time 21262.295115 sec | file /mnt/simulator_out/fast5/744977-1.fast5.tar (57).
+file completed: 21452.1s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-126.fast5.tar
+[34mfast5: copying 58[0;39m
+[34m+ fast5: finished copy 58[0;39m
+[34mfastq: copying 58[0;39m
+[34m+ fastq: finished copy 58[0;39m
+[t13(10.40.18.13)::INFO] Connecting to 10.40.18.13
+[t13(10.40.18.13)::INFO] Assigning /mnt/simulator_out/fast5/744973-126.fast5.tar (58) to 10.40.18.13
+file completed: 21589.5s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744977-2.fast5.tar
+[34mfast5: copying 59[0;39m
+[34m+ fast5: finished copy 59[0;39m
+[34mfastq: copying 59[0;39m
+[34m+ fastq: finished copy 59[0;39m
+[t2(10.40.18.2)::INFO] Connecting to 10.40.18.2
+[t2(10.40.18.2)::INFO] Assigning /mnt/simulator_out/fast5/744977-2.fast5.tar (59) to 10.40.18.2
+[t9(10.40.18.9)::INFO] Received message 'done.' at time 21700.521001 sec | file /mnt/simulator_out/fast5/744973-124.fast5.tar (55).
+[t2(10.40.18.2)::INFO] Received message 'done.' at time 21707.899262 sec | file /mnt/simulator_out/fast5/744977-2.fast5.tar (59).
+file completed: 22006.2s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-127.fast5.tar
+[34mfast5: copying 60[0;39m
+[34m+ fast5: finished copy 60[0;39m
+[34mfastq: copying 60[0;39m
+[34m+ fastq: finished copy 60[0;39m
+[t11(10.40.18.11)::INFO] Connecting to 10.40.18.11
+[t11(10.40.18.11)::INFO] Assigning /mnt/simulator_out/fast5/744973-127.fast5.tar (60) to 10.40.18.11
+[t6(10.40.18.6)::INFO] Received message 'done.' at time 22328.630702 sec | file /mnt/simulator_out/fast5/744973-125.fast5.tar (56).
+file completed: 22586.8s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-128.fast5.tar
+[34mfast5: copying 61[0;39m
+[34m+ fast5: finished copy 61[0;39m
+[34mfastq: copying 61[0;39m
+[34m+ fastq: finished copy 61[0;39m
+[t9(10.40.18.9)::INFO] Connecting to 10.40.18.9
+[t9(10.40.18.9)::INFO] Assigning /mnt/simulator_out/fast5/744973-128.fast5.tar (61) to 10.40.18.9
+[t13(10.40.18.13)::INFO] Received message 'done.' at time 22876.392929 sec | file /mnt/simulator_out/fast5/744973-126.fast5.tar (58).
+file completed: 23170.2s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-130.fast5.tar
+[34mfast5: copying 62[0;39m
+[34m+ fast5: finished copy 62[0;39m
+[34mfastq: copying 62[0;39m
+[34m+ fastq: finished copy 62[0;39m
+[t13(10.40.18.13)::INFO] Connecting to 10.40.18.13
+[t13(10.40.18.13)::INFO] Assigning /mnt/simulator_out/fast5/744973-130.fast5.tar (62) to 10.40.18.13
+[t11(10.40.18.11)::INFO] Received message 'done.' at time 23405.075898 sec | file /mnt/simulator_out/fast5/744973-127.fast5.tar (60).
+file completed: 23757s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-131.fast5.tar
+[34mfast5: copying 63[0;39m
+[34m+ fast5: finished copy 63[0;39m
+[34mfastq: copying 63[0;39m
+[34m+ fastq: finished copy 63[0;39m
+[t12(10.40.18.12)::INFO] Connecting to 10.40.18.12
+[t12(10.40.18.12)::INFO] Assigning /mnt/simulator_out/fast5/744973-131.fast5.tar (63) to 10.40.18.12
+[t9(10.40.18.9)::INFO] Received message 'done.' at time 24016.213206 sec | file /mnt/simulator_out/fast5/744973-128.fast5.tar (61).
+file completed: 24371.5s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-132.fast5.tar
+[34mfast5: copying 64[0;39m
+[34m+ fast5: finished copy 64[0;39m
+[34mfastq: copying 64[0;39m
+[34m+ fastq: finished copy 64[0;39m
+[t7(10.40.18.7)::INFO] Connecting to 10.40.18.7
+[t7(10.40.18.7)::INFO] Assigning /mnt/simulator_out/fast5/744973-132.fast5.tar (64) to 10.40.18.7
+[t13(10.40.18.13)::INFO] Received message 'done.' at time 24557.741123 sec | file /mnt/simulator_out/fast5/744973-130.fast5.tar (62).
+file completed: 24995s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-133.fast5.tar
+[34mfast5: copying 65[0;39m
+[34m+ fast5: finished copy 65[0;39m
+[34mfastq: copying 65[0;39m
+[34m+ fastq: finished copy 65[0;39m
+[t11(10.40.18.11)::INFO] Connecting to 10.40.18.11
+[t11(10.40.18.11)::INFO] Assigning /mnt/simulator_out/fast5/744973-133.fast5.tar (65) to 10.40.18.11
+[t12(10.40.18.12)::INFO] Received message 'done.' at time 25127.272020 sec | file /mnt/simulator_out/fast5/744973-131.fast5.tar (63).
+file completed: 25611.7s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-134.fast5.tar
+[34mfast5: copying 66[0;39m
+[34m+ fast5: finished copy 66[0;39m
+[34mfastq: copying 66[0;39m
+[34m+ fastq: finished copy 66[0;39m
+[t5(10.40.18.5)::INFO] Connecting to 10.40.18.5
+[t5(10.40.18.5)::INFO] Assigning /mnt/simulator_out/fast5/744973-134.fast5.tar (66) to 10.40.18.5
+[t7(10.40.18.7)::INFO] Received message 'done.' at time 25748.228614 sec | file /mnt/simulator_out/fast5/744973-132.fast5.tar (64).
+file completed: 26244.3s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-135.fast5.tar
+[34mfast5: copying 67[0;39m
+[34m+ fast5: finished copy 67[0;39m
+[34mfastq: copying 67[0;39m
+[34m+ fastq: finished copy 67[0;39m
+[t1(10.40.18.1)::INFO] Connecting to 10.40.18.1
+[t1(10.40.18.1)::INFO] Assigning /mnt/simulator_out/fast5/744973-135.fast5.tar (67) to 10.40.18.1
+[t11(10.40.18.11)::INFO] Received message 'done.' at time 26426.960195 sec | file /mnt/simulator_out/fast5/744973-133.fast5.tar (65).
+file completed: 26913.7s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-136.fast5.tar
+[34mfast5: copying 68[0;39m
+[t5(10.40.18.5)::INFO] Received message 'done.' at time 26991.737988 sec | file /mnt/simulator_out/fast5/744973-134.fast5.tar (66).
+[34m+ fast5: finished copy 68[0;39m
+[34mfastq: copying 68[0;39m
+[34m+ fastq: finished copy 68[0;39m
+[t5(10.40.18.5)::INFO] Connecting to 10.40.18.5
+[t5(10.40.18.5)::INFO] Assigning /mnt/simulator_out/fast5/744973-136.fast5.tar (68) to 10.40.18.5
+file completed: 27216.7s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744975-7.fast5.tar
+[34mfast5: copying 69[0;39m
+[34m+ fast5: finished copy 69[0;39m
+[34mfastq: copying 69[0;39m
+[34m+ fastq: finished copy 69[0;39m
+[t3(10.40.18.3)::INFO] Connecting to 10.40.18.3
+[t3(10.40.18.3)::INFO] Assigning /mnt/simulator_out/fast5/744975-7.fast5.tar (69) to 10.40.18.3
+[t1(10.40.18.1)::INFO] Received message 'done.' at time 27621.072175 sec | file /mnt/simulator_out/fast5/744973-135.fast5.tar (67).
+file completed: 27604.2s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-137.fast5.tar
+[34mfast5: copying 70[0;39m
+[t3(10.40.18.3)::INFO] Received message 'done.' at time 27642.065052 sec | file /mnt/simulator_out/fast5/744975-7.fast5.tar (69).
+[34m+ fast5: finished copy 70[0;39m
+[34mfastq: copying 70[0;39m
+[34m+ fastq: finished copy 70[0;39m
+[t10(10.40.18.10)::INFO] Connecting to 10.40.18.10
+[t10(10.40.18.10)::INFO] Assigning /mnt/simulator_out/fast5/744973-137.fast5.tar (70) to 10.40.18.10
+file completed: 28309.5s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-138.fast5.tar
+[34mfast5: copying 71[0;39m
+[t5(10.40.18.5)::INFO] Received message 'done.' at time 28335.774360 sec | file /mnt/simulator_out/fast5/744973-136.fast5.tar (68).
+[34m+ fast5: finished copy 71[0;39m
+[34mfastq: copying 71[0;39m
+[34m+ fastq: finished copy 71[0;39m
+[t9(10.40.18.9)::INFO] Connecting to 10.40.18.9
+[t9(10.40.18.9)::INFO] Assigning /mnt/simulator_out/fast5/744973-138.fast5.tar (71) to 10.40.18.9
+file completed: 28925.2s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-139.fast5.tar
+[34mfast5: copying 72[0;39m
+[t10(10.40.18.10)::INFO] Received message 'done.' at time 28976.238620 sec | file /mnt/simulator_out/fast5/744973-137.fast5.tar (70).
+[34m+ fast5: finished copy 72[0;39m
+[34mfastq: copying 72[0;39m
+[34m+ fastq: finished copy 72[0;39m
+[t16(10.40.18.16)::INFO] Connecting to 10.40.18.16
+[t16(10.40.18.16)::INFO] Assigning /mnt/simulator_out/fast5/744973-139.fast5.tar (72) to 10.40.18.16
+file completed: 29285.2s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-141.fast5.tar
+[34mfast5: copying 73[0;39m
+[34m+ fast5: finished copy 73[0;39m
+[34mfastq: copying 73[0;39m
+[34m+ fastq: finished copy 73[0;39m
+[t11(10.40.18.11)::INFO] Connecting to 10.40.18.11
+[t11(10.40.18.11)::INFO] Assigning /mnt/simulator_out/fast5/744973-141.fast5.tar (73) to 10.40.18.11
+file completed: 29635.7s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-142.fast5.tar
+[34mfast5: copying 74[0;39m
+[t9(10.40.18.9)::INFO] Received message 'done.' at time 29694.460397 sec | file /mnt/simulator_out/fast5/744973-138.fast5.tar (71).
+[34m+ fast5: finished copy 74[0;39m
+[34mfastq: copying 74[0;39m
+[34m+ fastq: finished copy 74[0;39m
+[t12(10.40.18.12)::INFO] Connecting to 10.40.18.12
+[t12(10.40.18.12)::INFO] Assigning /mnt/simulator_out/fast5/744973-142.fast5.tar (74) to 10.40.18.12
+file completed: 29995.1s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-143.fast5.tar
+[34mfast5: copying 75[0;39m
+[34m+ fast5: finished copy 75[0;39m
+[34mfastq: copying 75[0;39m
+[34m+ fastq: finished copy 75[0;39m
+[t4(10.40.18.4)::INFO] Connecting to 10.40.18.4
+[t4(10.40.18.4)::INFO] Assigning /mnt/simulator_out/fast5/744973-143.fast5.tar (75) to 10.40.18.4
+[t16(10.40.18.16)::INFO] Received message 'done.' at time 30272.035365 sec | file /mnt/simulator_out/fast5/744973-139.fast5.tar (72).
+file completed: 30355.7s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-144.fast5.tar
+[34mfast5: copying 76[0;39m
+[34m+ fast5: finished copy 76[0;39m
+[34mfastq: copying 76[0;39m
+[34m+ fastq: finished copy 76[0;39m
+[t3(10.40.18.3)::INFO] Connecting to 10.40.18.3
+[t3(10.40.18.3)::INFO] Assigning /mnt/simulator_out/fast5/744973-144.fast5.tar (76) to 10.40.18.3
+file completed: 30723.6s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-145.fast5.tar
+[34mfast5: copying 77[0;39m
+[t11(10.40.18.11)::INFO] Received message 'done.' at time 30817.703033 sec | file /mnt/simulator_out/fast5/744973-141.fast5.tar (73).
+[34m+ fast5: finished copy 77[0;39m
+[34mfastq: copying 77[0;39m
+[34m+ fastq: finished copy 77[0;39m
+[t10(10.40.18.10)::INFO] Connecting to 10.40.18.10
+[t10(10.40.18.10)::INFO] Assigning /mnt/simulator_out/fast5/744973-145.fast5.tar (77) to 10.40.18.10
+[t12(10.40.18.12)::INFO] Received message 'done.' at time 31097.731000 sec | file /mnt/simulator_out/fast5/744973-142.fast5.tar (74).
+file completed: 31103.4s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-146.fast5.tar
+[34mfast5: copying 78[0;39m
+[34m+ fast5: finished copy 78[0;39m
+[34mfastq: copying 78[0;39m
+[34m+ fastq: finished copy 78[0;39m
+[t8(10.40.18.8)::INFO] Connecting to 10.40.18.8
+[t8(10.40.18.8)::INFO] Assigning /mnt/simulator_out/fast5/744973-146.fast5.tar (78) to 10.40.18.8
+[t4(10.40.18.4)::INFO] Received message 'done.' at time 31414.600994 sec | file /mnt/simulator_out/fast5/744973-143.fast5.tar (75).
+file completed: 31491.2s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-147.fast5.tar
+[34mfast5: copying 79[0;39m
+[34m+ fast5: finished copy 79[0;39m
+[34mfastq: copying 79[0;39m
+[34m+ fastq: finished copy 79[0;39m
+[t2(10.40.18.2)::INFO] Connecting to 10.40.18.2
+[t2(10.40.18.2)::INFO] Assigning /mnt/simulator_out/fast5/744973-147.fast5.tar (79) to 10.40.18.2
+[t3(10.40.18.3)::INFO] Received message 'done.' at time 31801.421086 sec | file /mnt/simulator_out/fast5/744973-144.fast5.tar (76).
+file completed: 31876.2s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-148.fast5.tar
+[34mfast5: copying 80[0;39m
+[34m+ fast5: finished copy 80[0;39m
+[34mfastq: copying 80[0;39m
+[34m+ fastq: finished copy 80[0;39m
+[t12(10.40.18.12)::INFO] Connecting to 10.40.18.12
+[t12(10.40.18.12)::INFO] Assigning /mnt/simulator_out/fast5/744973-148.fast5.tar (80) to 10.40.18.12
+[t10(10.40.18.10)::INFO] Received message 'done.' at time 32171.838493 sec | file /mnt/simulator_out/fast5/744973-145.fast5.tar (77).
+file completed: 32261.2s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-149.fast5.tar
+[34mfast5: copying 81[0;39m
+[34m+ fast5: finished copy 81[0;39m
+[34mfastq: copying 81[0;39m
+[34m+ fastq: finished copy 81[0;39m
+[t16(10.40.18.16)::INFO] Connecting to 10.40.18.16
+[t16(10.40.18.16)::INFO] Assigning /mnt/simulator_out/fast5/744973-149.fast5.tar (81) to 10.40.18.16
+[t8(10.40.18.8)::INFO] Received message 'done.' at time 32573.683129 sec | file /mnt/simulator_out/fast5/744973-146.fast5.tar (78).
+file completed: 32655.8s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-150.fast5.tar
+[34mfast5: copying 82[0;39m
+[34m+ fast5: finished copy 82[0;39m
+[34mfastq: copying 82[0;39m
+[34m+ fastq: finished copy 82[0;39m
+[t9(10.40.18.9)::INFO] Connecting to 10.40.18.9
+[t9(10.40.18.9)::INFO] Assigning /mnt/simulator_out/fast5/744973-150.fast5.tar (82) to 10.40.18.9
+file completed: 33072s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-152.fast5.tar
+[34mfast5: copying 83[0;39m
+[t2(10.40.18.2)::INFO] Received message 'done.' at time 33121.052834 sec | file /mnt/simulator_out/fast5/744973-147.fast5.tar (79).
+[34m+ fast5: finished copy 83[0;39m
+[34mfastq: copying 83[0;39m
+[34m+ fastq: finished copy 83[0;39m
+[t6(10.40.18.6)::INFO] Connecting to 10.40.18.6
+[t6(10.40.18.6)::INFO] Assigning /mnt/simulator_out/fast5/744973-152.fast5.tar (83) to 10.40.18.6
+[t12(10.40.18.12)::INFO] Received message 'done.' at time 33349.614656 sec | file /mnt/simulator_out/fast5/744973-148.fast5.tar (80).
+file completed: 33492.7s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-153.fast5.tar
+[34mfast5: copying 84[0;39m
+[34m+ fast5: finished copy 84[0;39m
+[34mfastq: copying 84[0;39m
+[34m+ fastq: finished copy 84[0;39m
+[t1(10.40.18.1)::INFO] Connecting to 10.40.18.1
+[t1(10.40.18.1)::INFO] Assigning /mnt/simulator_out/fast5/744973-153.fast5.tar (84) to 10.40.18.1
+[t16(10.40.18.16)::INFO] Received message 'done.' at time 33715.832127 sec | file /mnt/simulator_out/fast5/744973-149.fast5.tar (81).
+file completed: 33915.3s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-154.fast5.tar
+[34mfast5: copying 85[0;39m
+[34m+ fast5: finished copy 85[0;39m
+[34mfastq: copying 85[0;39m
+[34m+ fastq: finished copy 85[0;39m
+[t8(10.40.18.8)::INFO] Connecting to 10.40.18.8
+[t8(10.40.18.8)::INFO] Assigning /mnt/simulator_out/fast5/744973-154.fast5.tar (85) to 10.40.18.8
+[t9(10.40.18.9)::INFO] Received message 'done.' at time 34079.665926 sec | file /mnt/simulator_out/fast5/744973-150.fast5.tar (82).
+file completed: 34360.3s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-155.fast5.tar
+[34mfast5: copying 86[0;39m
+[34m+ fast5: finished copy 86[0;39m
+[34mfastq: copying 86[0;39m
+[34m+ fastq: finished copy 86[0;39m
+[t4(10.40.18.4)::INFO] Connecting to 10.40.18.4
+[t4(10.40.18.4)::INFO] Assigning /mnt/simulator_out/fast5/744973-155.fast5.tar (86) to 10.40.18.4
+[t6(10.40.18.6)::INFO] Received message 'done.' at time 34589.393372 sec | file /mnt/simulator_out/fast5/744973-152.fast5.tar (83).
+file completed: 34803s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-156.fast5.tar
+[34mfast5: copying 87[0;39m
+[34m+ fast5: finished copy 87[0;39m
+[34mfastq: copying 87[0;39m
+[34m+ fastq: finished copy 87[0;39m
+[t13(10.40.18.13)::INFO] Connecting to 10.40.18.13
+[t13(10.40.18.13)::INFO] Assigning /mnt/simulator_out/fast5/744973-156.fast5.tar (87) to 10.40.18.13
+[t1(10.40.18.1)::INFO] Received message 'done.' at time 34918.706475 sec | file /mnt/simulator_out/fast5/744973-153.fast5.tar (84).
+file completed: 35236.3s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-157.fast5.tar
+[34mfast5: copying 88[0;39m
+[34m+ fast5: finished copy 88[0;39m
+[34mfastq: copying 88[0;39m
+[34m+ fastq: finished copy 88[0;39m
+[t11(10.40.18.11)::INFO] Connecting to 10.40.18.11
+[t11(10.40.18.11)::INFO] Assigning /mnt/simulator_out/fast5/744973-157.fast5.tar (88) to 10.40.18.11
+[t8(10.40.18.8)::INFO] Received message 'done.' at time 35405.569075 sec | file /mnt/simulator_out/fast5/744973-154.fast5.tar (85).
+file completed: 35680.4s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-158.fast5.tar
+[34mfast5: copying 89[0;39m
+[34m+ fast5: finished copy 89[0;39m
+[34mfastq: copying 89[0;39m
+[34m+ fastq: finished copy 89[0;39m
+[t6(10.40.18.6)::INFO] Connecting to 10.40.18.6
+[t6(10.40.18.6)::INFO] Assigning /mnt/simulator_out/fast5/744973-158.fast5.tar (89) to 10.40.18.6
+[t4(10.40.18.4)::INFO] Received message 'done.' at time 35845.529644 sec | file /mnt/simulator_out/fast5/744973-155.fast5.tar (86).
+file completed: 36124.3s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-159.fast5.tar
+[34mfast5: copying 90[0;39m
+[34m+ fast5: finished copy 90[0;39m
+[34mfastq: copying 90[0;39m
+[34m+ fastq: finished copy 90[0;39m
+[t8(10.40.18.8)::INFO] Connecting to 10.40.18.8
+[t8(10.40.18.8)::INFO] Assigning /mnt/simulator_out/fast5/744973-159.fast5.tar (90) to 10.40.18.8
+[t13(10.40.18.13)::INFO] Received message 'done.' at time 36311.272166 sec | file /mnt/simulator_out/fast5/744973-156.fast5.tar (87).
+file completed: 36574.5s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-160.fast5.tar
+[34mfast5: copying 91[0;39m
+[34m+ fast5: finished copy 91[0;39m
+[34mfastq: copying 91[0;39m
+[34m+ fastq: finished copy 91[0;39m
+[t2(10.40.18.2)::INFO] Connecting to 10.40.18.2
+[t2(10.40.18.2)::INFO] Assigning /mnt/simulator_out/fast5/744973-160.fast5.tar (91) to 10.40.18.2
+[t11(10.40.18.11)::INFO] Received message 'done.' at time 36751.054655 sec | file /mnt/simulator_out/fast5/744973-157.fast5.tar (88).
+file completed: 37028.4s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-161.fast5.tar
+[34mfast5: copying 92[0;39m
+[t6(10.40.18.6)::INFO] Received message 'done.' at time 37104.565111 sec | file /mnt/simulator_out/fast5/744973-158.fast5.tar (89).
+[34m+ fast5: finished copy 92[0;39m
+[34mfastq: copying 92[0;39m
+[34m+ fastq: finished copy 92[0;39m
+[t16(10.40.18.16)::INFO] Connecting to 10.40.18.16
+[t16(10.40.18.16)::INFO] Assigning /mnt/simulator_out/fast5/744973-161.fast5.tar (92) to 10.40.18.16
+file completed: 37490.9s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-163.fast5.tar
+[34mfast5: copying 93[0;39m
+[t8(10.40.18.8)::INFO] Received message 'done.' at time 37564.731638 sec | file /mnt/simulator_out/fast5/744973-159.fast5.tar (90).
+[34m+ fast5: finished copy 93[0;39m
+[34mfastq: copying 93[0;39m
+[34m+ fastq: finished copy 93[0;39m
+[t12(10.40.18.12)::INFO] Connecting to 10.40.18.12
+[t12(10.40.18.12)::INFO] Assigning /mnt/simulator_out/fast5/744973-163.fast5.tar (93) to 10.40.18.12
+file completed: 37961.2s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-164.fast5.tar
+[34mfast5: copying 94[0;39m
+[34m+ fast5: finished copy 94[0;39m
+[34mfastq: copying 94[0;39m
+[34m+ fastq: finished copy 94[0;39m
+[t7(10.40.18.7)::INFO] Connecting to 10.40.18.7
+[t7(10.40.18.7)::INFO] Assigning /mnt/simulator_out/fast5/744973-164.fast5.tar (94) to 10.40.18.7
+[t2(10.40.18.2)::INFO] Received message 'done.' at time 38075.356743 sec | file /mnt/simulator_out/fast5/744973-160.fast5.tar (91).
+[t16(10.40.18.16)::INFO] Received message 'done.' at time 38445.712702 sec | file /mnt/simulator_out/fast5/744973-161.fast5.tar (92).
+file completed: 38446.6s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-165.fast5.tar
+[34mfast5: copying 95[0;39m
+[34m+ fast5: finished copy 95[0;39m
+[34mfastq: copying 95[0;39m
+[34m+ fastq: finished copy 95[0;39m
+[t2(10.40.18.2)::INFO] Connecting to 10.40.18.2
+[t2(10.40.18.2)::INFO] Assigning /mnt/simulator_out/fast5/744973-165.fast5.tar (95) to 10.40.18.2
+[t12(10.40.18.12)::INFO] Received message 'done.' at time 38930.934184 sec | file /mnt/simulator_out/fast5/744973-163.fast5.tar (93).
+file completed: 38940.4s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-166.fast5.tar
+[34mfast5: copying 96[0;39m
+[34m+ fast5: finished copy 96[0;39m
+[34mfastq: copying 96[0;39m
+[34m+ fastq: finished copy 96[0;39m
+[t12(10.40.18.12)::INFO] Connecting to 10.40.18.12
+[t12(10.40.18.12)::INFO] Assigning /mnt/simulator_out/fast5/744973-166.fast5.tar (96) to 10.40.18.12
+[t7(10.40.18.7)::INFO] Received message 'done.' at time 39442.243850 sec | file /mnt/simulator_out/fast5/744973-164.fast5.tar (94).
+file completed: 39453.2s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-167.fast5.tar
+[34mfast5: copying 97[0;39m
+[34m+ fast5: finished copy 97[0;39m
+[34mfastq: copying 97[0;39m
+[34m+ fastq: finished copy 97[0;39m
+[t10(10.40.18.10)::INFO] Connecting to 10.40.18.10
+[t10(10.40.18.10)::INFO] Assigning /mnt/simulator_out/fast5/744973-167.fast5.tar (97) to 10.40.18.10
+[t2(10.40.18.2)::INFO] Received message 'done.' at time 39853.137261 sec | file /mnt/simulator_out/fast5/744973-165.fast5.tar (95).
+file completed: 39968.6s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-168.fast5.tar
+[34mfast5: copying 98[0;39m
+[34m+ fast5: finished copy 98[0;39m
+[34mfastq: copying 98[0;39m
+[34m+ fastq: finished copy 98[0;39m
+[t13(10.40.18.13)::INFO] Connecting to 10.40.18.13
+[t13(10.40.18.13)::INFO] Assigning /mnt/simulator_out/fast5/744973-168.fast5.tar (98) to 10.40.18.13
+[t12(10.40.18.12)::INFO] Received message 'done.' at time 40372.632875 sec | file /mnt/simulator_out/fast5/744973-166.fast5.tar (96).
+file completed: 40503.1s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-169.fast5.tar
+[34mfast5: copying 99[0;39m
+[34m+ fast5: finished copy 99[0;39m
+[34mfastq: copying 99[0;39m
+[34m+ fastq: finished copy 99[0;39m
+[t14(10.40.18.14)::INFO] Connecting to 10.40.18.14
+[t14(10.40.18.14)::INFO] Assigning /mnt/simulator_out/fast5/744973-169.fast5.tar (99) to 10.40.18.14
+[t10(10.40.18.10)::INFO] Received message 'done.' at time 40889.455994 sec | file /mnt/simulator_out/fast5/744973-167.fast5.tar (97).
+file completed: 41040.9s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-170.fast5.tar
+[34mfast5: copying 100[0;39m
+[34m+ fast5: finished copy 100[0;39m
+[34mfastq: copying 100[0;39m
+[34m+ fastq: finished copy 100[0;39m
+[t2(10.40.18.2)::INFO] Connecting to 10.40.18.2
+[t2(10.40.18.2)::INFO] Assigning /mnt/simulator_out/fast5/744973-170.fast5.tar (100) to 10.40.18.2
+[t13(10.40.18.13)::INFO] Received message 'done.' at time 41387.447935 sec | file /mnt/simulator_out/fast5/744973-168.fast5.tar (98).
+file completed: 41585.1s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-171.fast5.tar
+[34mfast5: copying 101[0;39m
+[34m+ fast5: finished copy 101[0;39m
+[34mfastq: copying 101[0;39m
+[34m+ fastq: finished copy 101[0;39m
+[t15(10.40.18.15)::INFO] Connecting to 10.40.18.15
+[t15(10.40.18.15)::INFO] Assigning /mnt/simulator_out/fast5/744973-171.fast5.tar (101) to 10.40.18.15
+[t14(10.40.18.14)::INFO] Received message 'done.' at time 41954.995533 sec | file /mnt/simulator_out/fast5/744973-169.fast5.tar (99).
+file completed: 42169.6s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-172.fast5.tar
+[34mfast5: copying 102[0;39m
+[34m+ fast5: finished copy 102[0;39m
+[34mfastq: copying 102[0;39m
+[34m+ fastq: finished copy 102[0;39m
+[t7(10.40.18.7)::INFO] Connecting to 10.40.18.7
+[t7(10.40.18.7)::INFO] Assigning /mnt/simulator_out/fast5/744973-172.fast5.tar (102) to 10.40.18.7
+[t2(10.40.18.2)::INFO] Received message 'done.' at time 42436.024778 sec | file /mnt/simulator_out/fast5/744973-170.fast5.tar (100).
+file completed: 42741s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-174.fast5.tar
+[34mfast5: copying 103[0;39m
+[34m+ fast5: finished copy 103[0;39m
+[34mfastq: copying 103[0;39m
+[34m+ fastq: finished copy 103[0;39m
+[t8(10.40.18.8)::INFO] Connecting to 10.40.18.8
+[t8(10.40.18.8)::INFO] Assigning /mnt/simulator_out/fast5/744973-174.fast5.tar (103) to 10.40.18.8
+[t15(10.40.18.15)::INFO] Received message 'done.' at time 42977.398566 sec | file /mnt/simulator_out/fast5/744973-171.fast5.tar (101).
+file completed: 43318.4s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-175.fast5.tar
+[34mfast5: copying 104[0;39m
+[34m+ fast5: finished copy 104[0;39m
+[34mfastq: copying 104[0;39m
+[34m+ fastq: finished copy 104[0;39m
+[t5(10.40.18.5)::INFO] Connecting to 10.40.18.5
+[t5(10.40.18.5)::INFO] Assigning /mnt/simulator_out/fast5/744973-175.fast5.tar (104) to 10.40.18.5
+[t7(10.40.18.7)::INFO] Received message 'done.' at time 43675.793326 sec | file /mnt/simulator_out/fast5/744973-172.fast5.tar (102).
+file completed: 43893.9s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-176.fast5.tar
+[34mfast5: copying 105[0;39m
+[34m+ fast5: finished copy 105[0;39m
+[34mfastq: copying 105[0;39m
+[34m+ fastq: finished copy 105[0;39m
+[t12(10.40.18.12)::INFO] Connecting to 10.40.18.12
+[t12(10.40.18.12)::INFO] Assigning /mnt/simulator_out/fast5/744973-176.fast5.tar (105) to 10.40.18.12
+[t8(10.40.18.8)::INFO] Received message 'done.' at time 44171.061499 sec | file /mnt/simulator_out/fast5/744973-174.fast5.tar (103).
+file completed: 44469.4s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-177.fast5.tar
+[34mfast5: copying 106[0;39m
+[34m+ fast5: finished copy 106[0;39m
+[34mfastq: copying 106[0;39m
+[34m+ fastq: finished copy 106[0;39m
+[t14(10.40.18.14)::INFO] Connecting to 10.40.18.14
+[t14(10.40.18.14)::INFO] Assigning /mnt/simulator_out/fast5/744973-177.fast5.tar (106) to 10.40.18.14
+[t5(10.40.18.5)::INFO] Received message 'done.' at time 44755.097462 sec | file /mnt/simulator_out/fast5/744973-175.fast5.tar (104).
+file completed: 45063.9s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-178.fast5.tar
+[34mfast5: copying 107[0;39m
+[34m+ fast5: finished copy 107[0;39m
+[34mfastq: copying 107[0;39m
+[34m+ fastq: finished copy 107[0;39m
+[t1(10.40.18.1)::INFO] Connecting to 10.40.18.1
+[t1(10.40.18.1)::INFO] Assigning /mnt/simulator_out/fast5/744973-178.fast5.tar (107) to 10.40.18.1
+[t12(10.40.18.12)::INFO] Received message 'done.' at time 45353.950096 sec | file /mnt/simulator_out/fast5/744973-176.fast5.tar (105).
+file completed: 45648.3s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-179.fast5.tar
+[34mfast5: copying 108[0;39m
+[34m+ fast5: finished copy 108[0;39m
+[34mfastq: copying 108[0;39m
+[34m+ fastq: finished copy 108[0;39m
+[t7(10.40.18.7)::INFO] Connecting to 10.40.18.7
+[t7(10.40.18.7)::INFO] Assigning /mnt/simulator_out/fast5/744973-179.fast5.tar (108) to 10.40.18.7
+[t14(10.40.18.14)::INFO] Received message 'done.' at time 45843.308710 sec | file /mnt/simulator_out/fast5/744973-177.fast5.tar (106).
+file completed: 46251.4s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-180.fast5.tar
+[34mfast5: copying 109[0;39m
+[34m+ fast5: finished copy 109[0;39m
+[34mfastq: copying 109[0;39m
+[34m+ fastq: finished copy 109[0;39m
+[t16(10.40.18.16)::INFO] Connecting to 10.40.18.16
+[t16(10.40.18.16)::INFO] Assigning /mnt/simulator_out/fast5/744973-180.fast5.tar (109) to 10.40.18.16
+[t1(10.40.18.1)::INFO] Received message 'done.' at time 46461.389682 sec | file /mnt/simulator_out/fast5/744973-178.fast5.tar (107).
+file completed: 46867.4s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-181.fast5.tar
+[34mfast5: copying 110[0;39m
+[34m+ fast5: finished copy 110[0;39m
+[34mfastq: copying 110[0;39m
+[34m+ fastq: finished copy 110[0;39m
+[t9(10.40.18.9)::INFO] Connecting to 10.40.18.9
+[t9(10.40.18.9)::INFO] Assigning /mnt/simulator_out/fast5/744973-181.fast5.tar (110) to 10.40.18.9
+[t7(10.40.18.7)::INFO] Received message 'done.' at time 47131.177228 sec | file /mnt/simulator_out/fast5/744973-179.fast5.tar (108).
+file completed: 47487.7s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-182.fast5.tar
+[34mfast5: copying 111[0;39m
+[34m+ fast5: finished copy 111[0;39m
+[34mfastq: copying 111[0;39m
+[34m+ fastq: finished copy 111[0;39m
+[t1(10.40.18.1)::INFO] Connecting to 10.40.18.1
+[t1(10.40.18.1)::INFO] Assigning /mnt/simulator_out/fast5/744973-182.fast5.tar (111) to 10.40.18.1
+[t16(10.40.18.16)::INFO] Received message 'done.' at time 47637.821345 sec | file /mnt/simulator_out/fast5/744973-180.fast5.tar (109).
+file completed: 48037.2s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744975-8.fast5.tar
+[34mfast5: copying 112[0;39m
+[34m+ fast5: finished copy 112[0;39m
+[34mfastq: copying 112[0;39m
+[34m+ fastq: finished copy 112[0;39m
+[t11(10.40.18.11)::INFO] Connecting to 10.40.18.11
+[t11(10.40.18.11)::INFO] Assigning /mnt/simulator_out/fast5/744975-8.fast5.tar (112) to 10.40.18.11
+file completed: 48163.6s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-183.fast5.tar
+[34mfast5: copying 113[0;39m
+[t9(10.40.18.9)::INFO] Received message 'done.' at time 48211.424843 sec | file /mnt/simulator_out/fast5/744973-181.fast5.tar (110).
+[34m+ fast5: finished copy 113[0;39m
+[34mfastq: copying 113[0;39m
+[34m+ fastq: finished copy 113[0;39m
+[t16(10.40.18.16)::INFO] Connecting to 10.40.18.16
+[t16(10.40.18.16)::INFO] Assigning /mnt/simulator_out/fast5/744973-183.fast5.tar (113) to 10.40.18.16
+[t11(10.40.18.11)::INFO] Received message 'done.' at time 48530.317909 sec | file /mnt/simulator_out/fast5/744975-8.fast5.tar (112).
+[t1(10.40.18.1)::INFO] Received message 'done.' at time 48801.892960 sec | file /mnt/simulator_out/fast5/744973-182.fast5.tar (111).
+file completed: 48852.5s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-2.fast5.tar
+[34mfast5: copying 114[0;39m
+[34m+ fast5: finished copy 114[0;39m
+[34mfastq: copying 114[0;39m
+[34m+ fastq: finished copy 114[0;39m
+[t5(10.40.18.5)::INFO] Connecting to 10.40.18.5
+[t5(10.40.18.5)::INFO] Assigning /mnt/simulator_out/fast5/744973-2.fast5.tar (114) to 10.40.18.5
+file completed: 49556.1s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-3.fast5.tar
+[34mfast5: copying 115[0;39m
+[34m+ fast5: finished copy 115[0;39m
+[34mfastq: copying 115[0;39m
+[34m+ fastq: finished copy 115[0;39m
+[t14(10.40.18.14)::INFO] Connecting to 10.40.18.14
+[t14(10.40.18.14)::INFO] Assigning /mnt/simulator_out/fast5/744973-3.fast5.tar (115) to 10.40.18.14
+[t16(10.40.18.16)::INFO] Received message 'done.' at time 49710.294436 sec | file /mnt/simulator_out/fast5/744973-183.fast5.tar (113).
+file completed: 50264.9s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-4.fast5.tar
+[34mfast5: copying 116[0;39m
+[t5(10.40.18.5)::INFO] Received message 'done.' at time 50283.722075 sec | file /mnt/simulator_out/fast5/744973-2.fast5.tar (114).
+[34m+ fast5: finished copy 116[0;39m
+[34mfastq: copying 116[0;39m
+[34m+ fastq: finished copy 116[0;39m
+[t15(10.40.18.15)::INFO] Connecting to 10.40.18.15
+[t15(10.40.18.15)::INFO] Assigning /mnt/simulator_out/fast5/744973-4.fast5.tar (116) to 10.40.18.15
+[t14(10.40.18.14)::INFO] Received message 'done.' at time 50972.868832 sec | file /mnt/simulator_out/fast5/744973-3.fast5.tar (115).
+file completed: 50961.9s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-5.fast5.tar
+[34mfast5: copying 117[0;39m
+[34m+ fast5: finished copy 117[0;39m
+[34mfastq: copying 117[0;39m
+[34m+ fastq: finished copy 117[0;39m
+[t6(10.40.18.6)::INFO] Connecting to 10.40.18.6
+[t6(10.40.18.6)::INFO] Assigning /mnt/simulator_out/fast5/744973-5.fast5.tar (117) to 10.40.18.6
+file completed: 51665.4s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-6.fast5.tar
+[34mfast5: copying 118[0;39m
+[t15(10.40.18.15)::INFO] Received message 'done.' at time 51701.452852 sec | file /mnt/simulator_out/fast5/744973-4.fast5.tar (116).
+[34m+ fast5: finished copy 118[0;39m
+[34mfastq: copying 118[0;39m
+[34m+ fastq: finished copy 118[0;39m
+[t7(10.40.18.7)::INFO] Connecting to 10.40.18.7
+[t7(10.40.18.7)::INFO] Assigning /mnt/simulator_out/fast5/744973-6.fast5.tar (118) to 10.40.18.7
+[t6(10.40.18.6)::INFO] Received message 'done.' at time 52244.875352 sec | file /mnt/simulator_out/fast5/744973-5.fast5.tar (117).
+file completed: 52397.6s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-7.fast5.tar
+[34mfast5: copying 119[0;39m
+[34m+ fast5: finished copy 119[0;39m
+[34mfastq: copying 119[0;39m
+[34m+ fastq: finished copy 119[0;39m
+[t8(10.40.18.8)::INFO] Connecting to 10.40.18.8
+[t8(10.40.18.8)::INFO] Assigning /mnt/simulator_out/fast5/744973-7.fast5.tar (119) to 10.40.18.8
+[t7(10.40.18.7)::INFO] Received message 'done.' at time 53046.325787 sec | file /mnt/simulator_out/fast5/744973-6.fast5.tar (118).
+file completed: 53187s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-8.fast5.tar
+[34mfast5: copying 120[0;39m
+[34m+ fast5: finished copy 120[0;39m
+[34mfastq: copying 120[0;39m
+[34m+ fastq: finished copy 120[0;39m
+[t2(10.40.18.2)::INFO] Connecting to 10.40.18.2
+[t2(10.40.18.2)::INFO] Assigning /mnt/simulator_out/fast5/744973-8.fast5.tar (120) to 10.40.18.2
+[t8(10.40.18.8)::INFO] Received message 'done.' at time 53805.259349 sec | file /mnt/simulator_out/fast5/744973-7.fast5.tar (119).
+file completed: 53919.5s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744975-9.fast5.tar
+[34mfast5: copying 121[0;39m
+[34m+ fast5: finished copy 121[0;39m
+[34mfastq: copying 121[0;39m
+[34m+ fastq: finished copy 121[0;39m
+[t14(10.40.18.14)::INFO] Connecting to 10.40.18.14
+[t14(10.40.18.14)::INFO] Assigning /mnt/simulator_out/fast5/744975-9.fast5.tar (121) to 10.40.18.14
+file completed: 53958s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-9.fast5.tar
+[34mfast5: copying 122[0;39m
+[34m+ fast5: finished copy 122[0;39m
+[34mfastq: copying 122[0;39m
+[34m+ fastq: finished copy 122[0;39m
+[t4(10.40.18.4)::INFO] Connecting to 10.40.18.4
+[t4(10.40.18.4)::INFO] Assigning /mnt/simulator_out/fast5/744973-9.fast5.tar (122) to 10.40.18.4
+[t14(10.40.18.14)::INFO] Received message 'done.' at time 54055.636992 sec | file /mnt/simulator_out/fast5/744975-9.fast5.tar (121).
+[t2(10.40.18.2)::INFO] Received message 'done.' at time 54610.348641 sec | file /mnt/simulator_out/fast5/744973-8.fast5.tar (120).
+file completed: 54764.9s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-10.fast5.tar
+[34mfast5: copying 123[0;39m
+[34m+ fast5: finished copy 123[0;39m
+[34mfastq: copying 123[0;39m
+[34m+ fastq: finished copy 123[0;39m
+[t11(10.40.18.11)::INFO] Connecting to 10.40.18.11
+[t11(10.40.18.11)::INFO] Assigning /mnt/simulator_out/fast5/744973-10.fast5.tar (123) to 10.40.18.11
+[t4(10.40.18.4)::INFO] Received message 'done.' at time 55400.229751 sec | file /mnt/simulator_out/fast5/744973-9.fast5.tar (122).
+file completed: 55587.7s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-11.fast5.tar
+[34mfast5: copying 124[0;39m
+[34m+ fast5: finished copy 124[0;39m
+[34mfastq: copying 124[0;39m
+[34m+ fastq: finished copy 124[0;39m
+[t6(10.40.18.6)::INFO] Connecting to 10.40.18.6
+[t6(10.40.18.6)::INFO] Assigning /mnt/simulator_out/fast5/744973-11.fast5.tar (124) to 10.40.18.6
+[t11(10.40.18.11)::INFO] Received message 'done.' at time 56198.065572 sec | file /mnt/simulator_out/fast5/744973-10.fast5.tar (123).
+file completed: 56442.1s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-13.fast5.tar
+[34mfast5: copying 125[0;39m
+[34m+ fast5: finished copy 125[0;39m
+[34mfastq: copying 125[0;39m
+[34m+ fastq: finished copy 125[0;39m
+[t12(10.40.18.12)::INFO] Connecting to 10.40.18.12
+[t12(10.40.18.12)::INFO] Assigning /mnt/simulator_out/fast5/744973-13.fast5.tar (125) to 10.40.18.12
+[t6(10.40.18.6)::INFO] Received message 'done.' at time 56995.962778 sec | file /mnt/simulator_out/fast5/744973-11.fast5.tar (124).
+file completed: 57317.9s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-14.fast5.tar
+[34mfast5: copying 126[0;39m
+[34m+ fast5: finished copy 126[0;39m
+[34mfastq: copying 126[0;39m
+[34m+ fastq: finished copy 126[0;39m
+[t4(10.40.18.4)::INFO] Connecting to 10.40.18.4
+[t4(10.40.18.4)::INFO] Assigning /mnt/simulator_out/fast5/744973-14.fast5.tar (126) to 10.40.18.4
+[t12(10.40.18.12)::INFO] Received message 'done.' at time 57897.392028 sec | file /mnt/simulator_out/fast5/744973-13.fast5.tar (125).
+file completed: 57921.4s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-15.fast5.tar
+[34mfast5: copying 127[0;39m
+[34m+ fast5: finished copy 127[0;39m
+[34mfastq: copying 127[0;39m
+[34m+ fastq: finished copy 127[0;39m
+[t11(10.40.18.11)::INFO] Connecting to 10.40.18.11
+[t11(10.40.18.11)::INFO] Assigning /mnt/simulator_out/fast5/744973-15.fast5.tar (127) to 10.40.18.11
+file completed: 58389.3s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-16.fast5.tar
+[34mfast5: copying 128[0;39m
+[34m+ fast5: finished copy 128[0;39m
+[34mfastq: copying 128[0;39m
+[34m+ fastq: finished copy 128[0;39m
+[t9(10.40.18.9)::INFO] Connecting to 10.40.18.9
+[t9(10.40.18.9)::INFO] Assigning /mnt/simulator_out/fast5/744973-16.fast5.tar (128) to 10.40.18.9
+[t4(10.40.18.4)::INFO] Received message 'done.' at time 58788.900324 sec | file /mnt/simulator_out/fast5/744973-14.fast5.tar (126).
+file completed: 58868.5s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-17.fast5.tar
+[34mfast5: copying 129[0;39m
+[34m+ fast5: finished copy 129[0;39m
+[34mfastq: copying 129[0;39m
+[34m+ fastq: finished copy 129[0;39m
+[t16(10.40.18.16)::INFO] Connecting to 10.40.18.16
+[t16(10.40.18.16)::INFO] Assigning /mnt/simulator_out/fast5/744973-17.fast5.tar (129) to 10.40.18.16
+[t11(10.40.18.11)::INFO] Received message 'done.' at time 59306.083209 sec | file /mnt/simulator_out/fast5/744973-15.fast5.tar (127).
+file completed: 59372.2s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-18.fast5.tar
+[34mfast5: copying 130[0;39m
+[34m+ fast5: finished copy 130[0;39m
+[34mfastq: copying 130[0;39m
+[34m+ fastq: finished copy 130[0;39m
+[t1(10.40.18.1)::INFO] Connecting to 10.40.18.1
+[t1(10.40.18.1)::INFO] Assigning /mnt/simulator_out/fast5/744973-18.fast5.tar (130) to 10.40.18.1
+file completed: 59885.1s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-19.fast5.tar
+[34mfast5: copying 131[0;39m
+[34m+ fast5: finished copy 131[0;39m
+[34mfastq: copying 131[0;39m
+[t9(10.40.18.9)::INFO] Received message 'done.' at time 59983.761985 sec | file /mnt/simulator_out/fast5/744973-16.fast5.tar (128).
+[34m+ fastq: finished copy 131[0;39m
+[t4(10.40.18.4)::INFO] Connecting to 10.40.18.4
+[t4(10.40.18.4)::INFO] Assigning /mnt/simulator_out/fast5/744973-19.fast5.tar (131) to 10.40.18.4
+[t16(10.40.18.16)::INFO] Received message 'done.' at time 60341.746936 sec | file /mnt/simulator_out/fast5/744973-17.fast5.tar (129).
+file completed: 60411.3s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-20.fast5.tar
+[34mfast5: copying 132[0;39m
+[34m+ fast5: finished copy 132[0;39m
+[34mfastq: copying 132[0;39m
+[34m+ fastq: finished copy 132[0;39m
+[t3(10.40.18.3)::INFO] Connecting to 10.40.18.3
+[t3(10.40.18.3)::INFO] Assigning /mnt/simulator_out/fast5/744973-20.fast5.tar (132) to 10.40.18.3
+[t1(10.40.18.1)::INFO] Received message 'done.' at time 60789.648136 sec | file /mnt/simulator_out/fast5/744973-18.fast5.tar (130).
+file completed: 60953.6s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-21.fast5.tar
+[34mfast5: copying 133[0;39m
+[34m+ fast5: finished copy 133[0;39m
+[34mfastq: copying 133[0;39m
+[34m+ fastq: finished copy 133[0;39m
+[t11(10.40.18.11)::INFO] Connecting to 10.40.18.11
+[t11(10.40.18.11)::INFO] Assigning /mnt/simulator_out/fast5/744973-21.fast5.tar (133) to 10.40.18.11
+[t4(10.40.18.4)::INFO] Received message 'done.' at time 61299.010938 sec | file /mnt/simulator_out/fast5/744973-19.fast5.tar (131).
+file completed: 61494.2s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-22.fast5.tar
+[34mfast5: copying 134[0;39m
+[34m+ fast5: finished copy 134[0;39m
+[34mfastq: copying 134[0;39m
+[34m+ fastq: finished copy 134[0;39m
+[t1(10.40.18.1)::INFO] Connecting to 10.40.18.1
+[t1(10.40.18.1)::INFO] Assigning /mnt/simulator_out/fast5/744973-22.fast5.tar (134) to 10.40.18.1
+[t3(10.40.18.3)::INFO] Received message 'done.' at time 61797.309403 sec | file /mnt/simulator_out/fast5/744973-20.fast5.tar (132).
+file completed: 62068.9s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-24.fast5.tar
+[34mfast5: copying 135[0;39m
+[34m+ fast5: finished copy 135[0;39m
+[34mfastq: copying 135[0;39m
+[34m+ fastq: finished copy 135[0;39m
+[t15(10.40.18.15)::INFO] Connecting to 10.40.18.15
+[t15(10.40.18.15)::INFO] Assigning /mnt/simulator_out/fast5/744973-24.fast5.tar (135) to 10.40.18.15
+[t11(10.40.18.11)::INFO] Received message 'done.' at time 62367.083225 sec | file /mnt/simulator_out/fast5/744973-21.fast5.tar (133).
+file completed: 62685.3s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-25.fast5.tar
+[34mfast5: copying 136[0;39m
+[34m+ fast5: finished copy 136[0;39m
+[34mfastq: copying 136[0;39m
+[34m+ fastq: finished copy 136[0;39m
+[t16(10.40.18.16)::INFO] Connecting to 10.40.18.16
+[t16(10.40.18.16)::INFO] Assigning /mnt/simulator_out/fast5/744973-25.fast5.tar (136) to 10.40.18.16
+[t1(10.40.18.1)::INFO] Received message 'done.' at time 62910.599106 sec | file /mnt/simulator_out/fast5/744973-22.fast5.tar (134).
+file completed: 63315.6s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-26.fast5.tar
+[34mfast5: copying 137[0;39m
+[34m+ fast5: finished copy 137[0;39m
+[34mfastq: copying 137[0;39m
+[34m+ fastq: finished copy 137[0;39m
+[t9(10.40.18.9)::INFO] Connecting to 10.40.18.9
+[t9(10.40.18.9)::INFO] Assigning /mnt/simulator_out/fast5/744973-26.fast5.tar (137) to 10.40.18.9
+[t15(10.40.18.15)::INFO] Received message 'done.' at time 63508.258141 sec | file /mnt/simulator_out/fast5/744973-24.fast5.tar (135).
+file completed: 63964s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-27.fast5.tar
+[34mfast5: copying 138[0;39m
+[34m+ fast5: finished copy 138[0;39m
+[34mfastq: copying 138[0;39m
+[34m+ fastq: finished copy 138[0;39m
+[t2(10.40.18.2)::INFO] Connecting to 10.40.18.2
+[t2(10.40.18.2)::INFO] Assigning /mnt/simulator_out/fast5/744973-27.fast5.tar (138) to 10.40.18.2
+[t16(10.40.18.16)::INFO] Received message 'done.' at time 64166.486735 sec | file /mnt/simulator_out/fast5/744973-25.fast5.tar (136).
+file completed: 64615.3s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-28.fast5.tar
+[34mfast5: copying 139[0;39m
+[34m+ fast5: finished copy 139[0;39m
+[34mfastq: copying 139[0;39m
+[34m+ fastq: finished copy 139[0;39m
+[t5(10.40.18.5)::INFO] Connecting to 10.40.18.5
+[t5(10.40.18.5)::INFO] Assigning /mnt/simulator_out/fast5/744973-28.fast5.tar (139) to 10.40.18.5
+[t9(10.40.18.9)::INFO] Received message 'done.' at time 64840.059129 sec | file /mnt/simulator_out/fast5/744973-26.fast5.tar (137).
+file completed: 65258.2s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-29.fast5.tar
+[34mfast5: copying 140[0;39m
+[34m+ fast5: finished copy 140[0;39m
+[34mfastq: copying 140[0;39m
+[34m+ fastq: finished copy 140[0;39m
+[t10(10.40.18.10)::INFO] Connecting to 10.40.18.10
+[t10(10.40.18.10)::INFO] Assigning /mnt/simulator_out/fast5/744973-29.fast5.tar (140) to 10.40.18.10
+[t2(10.40.18.2)::INFO] Received message 'done.' at time 65409.756926 sec | file /mnt/simulator_out/fast5/744973-27.fast5.tar (138).
+file completed: 65909.5s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-30.fast5.tar
+[34mfast5: copying 141[0;39m
+[34m+ fast5: finished copy 141[0;39m
+[34mfastq: copying 141[0;39m
+[34m+ fastq: finished copy 141[0;39m
+[t4(10.40.18.4)::INFO] Connecting to 10.40.18.4
+[t4(10.40.18.4)::INFO] Assigning /mnt/simulator_out/fast5/744973-30.fast5.tar (141) to 10.40.18.4
+[t5(10.40.18.5)::INFO] Received message 'done.' at time 66054.667468 sec | file /mnt/simulator_out/fast5/744973-28.fast5.tar (139).
+file completed: 66610.7s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-31.fast5.tar
+[34mfast5: copying 142[0;39m
+[34m+ fast5: finished copy 142[0;39m
+[34mfastq: copying 142[0;39m
+[34m+ fastq: finished copy 142[0;39m
+[t3(10.40.18.3)::INFO] Connecting to 10.40.18.3
+[t3(10.40.18.3)::INFO] Assigning /mnt/simulator_out/fast5/744973-31.fast5.tar (142) to 10.40.18.3
+[t10(10.40.18.10)::INFO] Received message 'done.' at time 66747.190803 sec | file /mnt/simulator_out/fast5/744973-29.fast5.tar (140).
+[t4(10.40.18.4)::INFO] Received message 'done.' at time 67295.081499 sec | file /mnt/simulator_out/fast5/744973-30.fast5.tar (141).
+file completed: 67342.3s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-32.fast5.tar
+[34mfast5: copying 143[0;39m
+[34m+ fast5: finished copy 143[0;39m
+[34mfastq: copying 143[0;39m
+[34m+ fastq: finished copy 143[0;39m
+[t1(10.40.18.1)::INFO] Connecting to 10.40.18.1
+[t1(10.40.18.1)::INFO] Assigning /mnt/simulator_out/fast5/744973-32.fast5.tar (143) to 10.40.18.1
+[t3(10.40.18.3)::INFO] Received message 'done.' at time 68049.264448 sec | file /mnt/simulator_out/fast5/744973-31.fast5.tar (142).
+file completed: 68045.4s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-33.fast5.tar
+[34mfast5: copying 144[0;39m
+[34m+ fast5: finished copy 144[0;39m
+[34mfastq: copying 144[0;39m
+[34m+ fastq: finished copy 144[0;39m
+[t6(10.40.18.6)::INFO] Connecting to 10.40.18.6
+[t6(10.40.18.6)::INFO] Assigning /mnt/simulator_out/fast5/744973-33.fast5.tar (144) to 10.40.18.6
+[t1(10.40.18.1)::INFO] Received message 'done.' at time 68772.691075 sec | file /mnt/simulator_out/fast5/744973-32.fast5.tar (143).
+file completed: 68762.9s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-35.fast5.tar
+[34mfast5: copying 145[0;39m
+[34m+ fast5: finished copy 145[0;39m
+[34mfastq: copying 145[0;39m
+[34m+ fastq: finished copy 145[0;39m
+[t9(10.40.18.9)::INFO] Connecting to 10.40.18.9
+[t9(10.40.18.9)::INFO] Assigning /mnt/simulator_out/fast5/744973-35.fast5.tar (145) to 10.40.18.9
+file completed: 69510.3s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-36.fast5.tar
+[34mfast5: copying 146[0;39m
+[t6(10.40.18.6)::INFO] Received message 'done.' at time 69542.579283 sec | file /mnt/simulator_out/fast5/744973-33.fast5.tar (144).
+[34m+ fast5: finished copy 146[0;39m
+[34mfastq: copying 146[0;39m
+[34m+ fastq: finished copy 146[0;39m
+[t6(10.40.18.6)::INFO] Connecting to 10.40.18.6
+[t6(10.40.18.6)::INFO] Assigning /mnt/simulator_out/fast5/744973-36.fast5.tar (146) to 10.40.18.6
+[t9(10.40.18.9)::INFO] Received message 'done.' at time 70181.583743 sec | file /mnt/simulator_out/fast5/744973-35.fast5.tar (145).
+file completed: 70290.7s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-37.fast5.tar
+[34mfast5: copying 147[0;39m
+[34m+ fast5: finished copy 147[0;39m
+[34mfastq: copying 147[0;39m
+[34m+ fastq: finished copy 147[0;39m
+[t1(10.40.18.1)::INFO] Connecting to 10.40.18.1
+[t1(10.40.18.1)::INFO] Assigning /mnt/simulator_out/fast5/744973-37.fast5.tar (147) to 10.40.18.1
+[t6(10.40.18.6)::INFO] Received message 'done.' at time 70899.754980 sec | file /mnt/simulator_out/fast5/744973-36.fast5.tar (146).
+file completed: 71092.7s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-38.fast5.tar
+[34mfast5: copying 148[0;39m
+[34m+ fast5: finished copy 148[0;39m
+[34mfastq: copying 148[0;39m
+[34m+ fastq: finished copy 148[0;39m
+[t8(10.40.18.8)::INFO] Connecting to 10.40.18.8
+[t8(10.40.18.8)::INFO] Assigning /mnt/simulator_out/fast5/744973-38.fast5.tar (148) to 10.40.18.8
+[t1(10.40.18.1)::INFO] Received message 'done.' at time 71674.235076 sec | file /mnt/simulator_out/fast5/744973-37.fast5.tar (147).
+file completed: 71910.3s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-39.fast5.tar
+[34mfast5: copying 149[0;39m
+[34m+ fast5: finished copy 149[0;39m
+[34mfastq: copying 149[0;39m
+[34m+ fastq: finished copy 149[0;39m
+[t14(10.40.18.14)::INFO] Connecting to 10.40.18.14
+[t14(10.40.18.14)::INFO] Assigning /mnt/simulator_out/fast5/744973-39.fast5.tar (149) to 10.40.18.14
+[t8(10.40.18.8)::INFO] Received message 'done.' at time 72538.685219 sec | file /mnt/simulator_out/fast5/744973-38.fast5.tar (148).
+file completed: 72672.1s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-40.fast5.tar
+[34mfast5: copying 150[0;39m
+[34m+ fast5: finished copy 150[0;39m
+[34mfastq: copying 150[0;39m
+[34m+ fastq: finished copy 150[0;39m
+[t3(10.40.18.3)::INFO] Connecting to 10.40.18.3
+[t3(10.40.18.3)::INFO] Assigning /mnt/simulator_out/fast5/744973-40.fast5.tar (150) to 10.40.18.3
+[t14(10.40.18.14)::INFO] Received message 'done.' at time 73455.009329 sec | file /mnt/simulator_out/fast5/744973-39.fast5.tar (149).
+file completed: 73492.6s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-41.fast5.tar
+[34mfast5: copying 151[0;39m
+[34m+ fast5: finished copy 151[0;39m
+[34mfastq: copying 151[0;39m
+[34m+ fastq: finished copy 151[0;39m
+[t6(10.40.18.6)::INFO] Connecting to 10.40.18.6
+[t6(10.40.18.6)::INFO] Assigning /mnt/simulator_out/fast5/744973-41.fast5.tar (151) to 10.40.18.6
+[t3(10.40.18.3)::INFO] Received message 'done.' at time 74062.563152 sec | file /mnt/simulator_out/fast5/744973-40.fast5.tar (150).
+file completed: 74343.7s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-42.fast5.tar
+[34mfast5: copying 152[0;39m
+[34m+ fast5: finished copy 152[0;39m
+[34mfastq: copying 152[0;39m
+[34m+ fastq: finished copy 152[0;39m
+[t14(10.40.18.14)::INFO] Connecting to 10.40.18.14
+[t14(10.40.18.14)::INFO] Assigning /mnt/simulator_out/fast5/744973-42.fast5.tar (152) to 10.40.18.14
+[t6(10.40.18.6)::INFO] Received message 'done.' at time 74951.007187 sec | file /mnt/simulator_out/fast5/744973-41.fast5.tar (151).
+file completed: 75238.8s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-43.fast5.tar
+[34mfast5: copying 153[0;39m
+[34m+ fast5: finished copy 153[0;39m
+[34mfastq: copying 153[0;39m
+[34m+ fastq: finished copy 153[0;39m
+[t12(10.40.18.12)::INFO] Connecting to 10.40.18.12
+[t12(10.40.18.12)::INFO] Assigning /mnt/simulator_out/fast5/744973-43.fast5.tar (153) to 10.40.18.12
+[t14(10.40.18.14)::INFO] Received message 'done.' at time 75748.882874 sec | file /mnt/simulator_out/fast5/744973-42.fast5.tar (152).
+file completed: 76150s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-44.fast5.tar
+[34mfast5: copying 154[0;39m
+[34m+ fast5: finished copy 154[0;39m
+[34mfastq: copying 154[0;39m
+[34m+ fastq: finished copy 154[0;39m
+[t2(10.40.18.2)::INFO] Connecting to 10.40.18.2
+[t2(10.40.18.2)::INFO] Assigning /mnt/simulator_out/fast5/744973-44.fast5.tar (154) to 10.40.18.2
+[t12(10.40.18.12)::INFO] Received message 'done.' at time 76693.420106 sec | file /mnt/simulator_out/fast5/744973-43.fast5.tar (153).
+file completed: 77121s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-46.fast5.tar
+[34mfast5: copying 155[0;39m
+[34m+ fast5: finished copy 155[0;39m
+[34mfastq: copying 155[0;39m
+[34m+ fastq: finished copy 155[0;39m
+[t14(10.40.18.14)::INFO] Connecting to 10.40.18.14
+[t14(10.40.18.14)::INFO] Assigning /mnt/simulator_out/fast5/744973-46.fast5.tar (155) to 10.40.18.14
+[t2(10.40.18.2)::INFO] Received message 'done.' at time 77559.603103 sec | file /mnt/simulator_out/fast5/744973-44.fast5.tar (154).
+file completed: 78077.3s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-47.fast5.tar
+[34mfast5: copying 156[0;39m
+[34m+ fast5: finished copy 156[0;39m
+[34mfastq: copying 156[0;39m
+[34m+ fastq: finished copy 156[0;39m
+[t7(10.40.18.7)::INFO] Connecting to 10.40.18.7
+[t7(10.40.18.7)::INFO] Assigning /mnt/simulator_out/fast5/744973-47.fast5.tar (156) to 10.40.18.7
+[t14(10.40.18.14)::INFO] Received message 'done.' at time 78654.083424 sec | file /mnt/simulator_out/fast5/744973-46.fast5.tar (155).
+file completed: 79096.9s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-48.fast5.tar
+[34mfast5: copying 157[0;39m
+[34m+ fast5: finished copy 157[0;39m
+[34mfastq: copying 157[0;39m
+[34m+ fastq: finished copy 157[0;39m
+[t5(10.40.18.5)::INFO] Connecting to 10.40.18.5
+[t5(10.40.18.5)::INFO] Assigning /mnt/simulator_out/fast5/744973-48.fast5.tar (157) to 10.40.18.5
+[t7(10.40.18.7)::INFO] Received message 'done.' at time 79403.490997 sec | file /mnt/simulator_out/fast5/744973-47.fast5.tar (156).
+file completed: 80131s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-49.fast5.tar
+[34mfast5: copying 158[0;39m
+[34m+ fast5: finished copy 158[0;39m
+[34mfastq: copying 158[0;39m
+[34m+ fastq: finished copy 158[0;39m
+[t16(10.40.18.16)::INFO] Connecting to 10.40.18.16
+[t16(10.40.18.16)::INFO] Assigning /mnt/simulator_out/fast5/744973-49.fast5.tar (158) to 10.40.18.16
+[t5(10.40.18.5)::INFO] Received message 'done.' at time 80513.075234 sec | file /mnt/simulator_out/fast5/744973-48.fast5.tar (157).
+file completed: 81242.2s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-50.fast5.tar
+[34mfast5: copying 159[0;39m
+[34m+ fast5: finished copy 159[0;39m
+[34mfastq: copying 159[0;39m
+[34m+ fastq: finished copy 159[0;39m
+[t14(10.40.18.14)::INFO] Connecting to 10.40.18.14
+[t14(10.40.18.14)::INFO] Assigning /mnt/simulator_out/fast5/744973-50.fast5.tar (159) to 10.40.18.14
+[t16(10.40.18.16)::INFO] Received message 'done.' at time 81462.984629 sec | file /mnt/simulator_out/fast5/744973-49.fast5.tar (158).
+file completed: 82354.9s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-51.fast5.tar
+[34mfast5: copying 160[0;39m
+[34m+ fast5: finished copy 160[0;39m
+[34mfastq: copying 160[0;39m
+[34m+ fastq: finished copy 160[0;39m
+[t1(10.40.18.1)::INFO] Connecting to 10.40.18.1
+[t1(10.40.18.1)::INFO] Assigning /mnt/simulator_out/fast5/744973-51.fast5.tar (160) to 10.40.18.1
+[t14(10.40.18.14)::INFO] Received message 'done.' at time 82653.668064 sec | file /mnt/simulator_out/fast5/744973-50.fast5.tar (159).
+file completed: 83579.1s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-52.fast5.tar
+[34mfast5: copying 161[0;39m
+[34m+ fast5: finished copy 161[0;39m
+[34mfastq: copying 161[0;39m
+[34m+ fastq: finished copy 161[0;39m
+[t12(10.40.18.12)::INFO] Connecting to 10.40.18.12
+[t12(10.40.18.12)::INFO] Assigning /mnt/simulator_out/fast5/744973-52.fast5.tar (161) to 10.40.18.12
+[t1(10.40.18.1)::INFO] Received message 'done.' at time 83713.910925 sec | file /mnt/simulator_out/fast5/744973-51.fast5.tar (160).
+file completed: 84784.3s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-53.fast5.tar
+[34mfast5: copying 162[0;39m
+[34m+ fast5: finished copy 162[0;39m
+[34mfastq: copying 162[0;39m
+[34m+ fastq: finished copy 162[0;39m
+[t5(10.40.18.5)::INFO] Connecting to 10.40.18.5
+[t5(10.40.18.5)::INFO] Assigning /mnt/simulator_out/fast5/744973-53.fast5.tar (162) to 10.40.18.5
+[t12(10.40.18.12)::INFO] Received message 'done.' at time 85074.128406 sec | file /mnt/simulator_out/fast5/744973-52.fast5.tar (161).
+file completed: 85996.2s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-54.fast5.tar
+[34mfast5: copying 163[0;39m
+[34m+ fast5: finished copy 163[0;39m
+[34mfastq: copying 163[0;39m
+[34m+ fastq: finished copy 163[0;39m
+[t11(10.40.18.11)::INFO] Connecting to 10.40.18.11
+[t11(10.40.18.11)::INFO] Assigning /mnt/simulator_out/fast5/744973-54.fast5.tar (163) to 10.40.18.11
+[t5(10.40.18.5)::INFO] Received message 'done.' at time 86289.020177 sec | file /mnt/simulator_out/fast5/744973-53.fast5.tar (162).
+file completed: 86948s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-55.fast5.tar
+[34mfast5: copying 164[0;39m
+[34m+ fast5: finished copy 164[0;39m
+[34mfastq: copying 164[0;39m
+[34m+ fastq: finished copy 164[0;39m
+[t3(10.40.18.3)::INFO] Connecting to 10.40.18.3
+[t3(10.40.18.3)::INFO] Assigning /mnt/simulator_out/fast5/744973-55.fast5.tar (164) to 10.40.18.3
+[t11(10.40.18.11)::INFO] Received message 'done.' at time 87436.285079 sec | file /mnt/simulator_out/fast5/744973-54.fast5.tar (163).
+file completed: 87776.6s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-57.fast5.tar
+[34mfast5: copying 165[0;39m
+[34m+ fast5: finished copy 165[0;39m
+[34mfastq: copying 165[0;39m
+[34m+ fastq: finished copy 165[0;39m
+[t14(10.40.18.14)::INFO] Connecting to 10.40.18.14
+[t14(10.40.18.14)::INFO] Assigning /mnt/simulator_out/fast5/744973-57.fast5.tar (165) to 10.40.18.14
+[t3(10.40.18.3)::INFO] Received message 'done.' at time 88310.678004 sec | file /mnt/simulator_out/fast5/744973-55.fast5.tar (164).
+file completed: 88625.6s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-58.fast5.tar
+[34mfast5: copying 166[0;39m
+[34m+ fast5: finished copy 166[0;39m
+[34mfastq: copying 166[0;39m
+[34m+ fastq: finished copy 166[0;39m
+[t9(10.40.18.9)::INFO] Connecting to 10.40.18.9
+[t9(10.40.18.9)::INFO] Assigning /mnt/simulator_out/fast5/744973-58.fast5.tar (166) to 10.40.18.9
+[t14(10.40.18.14)::INFO] Received message 'done.' at time 89203.929717 sec | file /mnt/simulator_out/fast5/744973-57.fast5.tar (165).
+file completed: 89497.6s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-59.fast5.tar
+[34mfast5: copying 167[0;39m
+[34m+ fast5: finished copy 167[0;39m
+[34mfastq: copying 167[0;39m
+[34m+ fastq: finished copy 167[0;39m
+[t4(10.40.18.4)::INFO] Connecting to 10.40.18.4
+[t4(10.40.18.4)::INFO] Assigning /mnt/simulator_out/fast5/744973-59.fast5.tar (167) to 10.40.18.4
+[t9(10.40.18.9)::INFO] Received message 'done.' at time 90129.268082 sec | file /mnt/simulator_out/fast5/744973-58.fast5.tar (166).
+file completed: 90360.2s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-60.fast5.tar
+[34mfast5: copying 168[0;39m
+[34m+ fast5: finished copy 168[0;39m
+[34mfastq: copying 168[0;39m
+[34m+ fastq: finished copy 168[0;39m
+[t5(10.40.18.5)::INFO] Connecting to 10.40.18.5
+[t5(10.40.18.5)::INFO] Assigning /mnt/simulator_out/fast5/744973-60.fast5.tar (168) to 10.40.18.5
+[t4(10.40.18.4)::INFO] Received message 'done.' at time 90948.432574 sec | file /mnt/simulator_out/fast5/744973-59.fast5.tar (167).
+file completed: 91289.9s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-61.fast5.tar
+[34mfast5: copying 169[0;39m
+[34m+ fast5: finished copy 169[0;39m
+[34mfastq: copying 169[0;39m
+[34m+ fastq: finished copy 169[0;39m
+[t13(10.40.18.13)::INFO] Connecting to 10.40.18.13
+[t13(10.40.18.13)::INFO] Assigning /mnt/simulator_out/fast5/744973-61.fast5.tar (169) to 10.40.18.13
+[t5(10.40.18.5)::INFO] Received message 'done.' at time 91745.597175 sec | file /mnt/simulator_out/fast5/744973-60.fast5.tar (168).
+file completed: 92262.4s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-62.fast5.tar
+[34mfast5: copying 170[0;39m
+[34m+ fast5: finished copy 170[0;39m
+[34mfastq: copying 170[0;39m
+[34m+ fastq: finished copy 170[0;39m
+[t10(10.40.18.10)::INFO] Connecting to 10.40.18.10
+[t10(10.40.18.10)::INFO] Assigning /mnt/simulator_out/fast5/744973-62.fast5.tar (170) to 10.40.18.10
+[t13(10.40.18.13)::INFO] Received message 'done.' at time 92699.101612 sec | file /mnt/simulator_out/fast5/744973-61.fast5.tar (169).
+file completed: 93227.4s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-63.fast5.tar
+[34mfast5: copying 171[0;39m
+[34m+ fast5: finished copy 171[0;39m
+[34mfastq: copying 171[0;39m
+[34m+ fastq: finished copy 171[0;39m
+[t3(10.40.18.3)::INFO] Connecting to 10.40.18.3
+[t3(10.40.18.3)::INFO] Assigning /mnt/simulator_out/fast5/744973-63.fast5.tar (171) to 10.40.18.3
+[t10(10.40.18.10)::INFO] Received message 'done.' at time 93730.557940 sec | file /mnt/simulator_out/fast5/744973-62.fast5.tar (170).
+file completed: 94187s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-64.fast5.tar
+[34mfast5: copying 172[0;39m
+[34m+ fast5: finished copy 172[0;39m
+[34mfastq: copying 172[0;39m
+[34m+ fastq: finished copy 172[0;39m
+[t1(10.40.18.1)::INFO] Connecting to 10.40.18.1
+[t1(10.40.18.1)::INFO] Assigning /mnt/simulator_out/fast5/744973-64.fast5.tar (172) to 10.40.18.1
+[t3(10.40.18.3)::INFO] Received message 'done.' at time 94685.826433 sec | file /mnt/simulator_out/fast5/744973-63.fast5.tar (171).
+file completed: 95210.3s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-65.fast5.tar
+[34mfast5: copying 173[0;39m
+[34m+ fast5: finished copy 173[0;39m
+[34mfastq: copying 173[0;39m
+[34m+ fastq: finished copy 173[0;39m
+[t13(10.40.18.13)::INFO] Connecting to 10.40.18.13
+[t13(10.40.18.13)::INFO] Assigning /mnt/simulator_out/fast5/744973-65.fast5.tar (173) to 10.40.18.13
+[t1(10.40.18.1)::INFO] Received message 'done.' at time 95543.109673 sec | file /mnt/simulator_out/fast5/744973-64.fast5.tar (172).
+file completed: 96293.1s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-66.fast5.tar
+[34mfast5: copying 174[0;39m
+[34m+ fast5: finished copy 174[0;39m
+[34mfastq: copying 174[0;39m
+[34m+ fastq: finished copy 174[0;39m
+[t16(10.40.18.16)::INFO] Connecting to 10.40.18.16
+[t16(10.40.18.16)::INFO] Assigning /mnt/simulator_out/fast5/744973-66.fast5.tar (174) to 10.40.18.16
+[t13(10.40.18.13)::INFO] Received message 'done.' at time 96652.620723 sec | file /mnt/simulator_out/fast5/744973-65.fast5.tar (173).
+file completed: 97453.8s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-68.fast5.tar
+[34mfast5: copying 175[0;39m
+[34m+ fast5: finished copy 175[0;39m
+[34mfastq: copying 175[0;39m
+[34m+ fastq: finished copy 175[0;39m
+[t8(10.40.18.8)::INFO] Connecting to 10.40.18.8
+[t8(10.40.18.8)::INFO] Assigning /mnt/simulator_out/fast5/744973-68.fast5.tar (175) to 10.40.18.8
+[t16(10.40.18.16)::INFO] Received message 'done.' at time 97728.017822 sec | file /mnt/simulator_out/fast5/744973-66.fast5.tar (174).
+file completed: 98691.6s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-69.fast5.tar
+[34mfast5: copying 176[0;39m
+[34m+ fast5: finished copy 176[0;39m
+[34mfastq: copying 176[0;39m
+[34m+ fastq: finished copy 176[0;39m
+[t12(10.40.18.12)::INFO] Connecting to 10.40.18.12
+[t12(10.40.18.12)::INFO] Assigning /mnt/simulator_out/fast5/744973-69.fast5.tar (176) to 10.40.18.12
+[t8(10.40.18.8)::INFO] Received message 'done.' at time 98816.074357 sec | file /mnt/simulator_out/fast5/744973-68.fast5.tar (175).
+file completed: 100002s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-70.fast5.tar
+[34mfast5: copying 177[0;39m
+[34m+ fast5: finished copy 177[0;39m
+[34mfastq: copying 177[0;39m
+[34m+ fastq: finished copy 177[0;39m
+[t2(10.40.18.2)::INFO] Connecting to 10.40.18.2
+[t2(10.40.18.2)::INFO] Assigning /mnt/simulator_out/fast5/744973-70.fast5.tar (177) to 10.40.18.2
+[t12(10.40.18.12)::INFO] Received message 'done.' at time 100113.129554 sec | file /mnt/simulator_out/fast5/744973-69.fast5.tar (176).
+[t2(10.40.18.2)::INFO] Received message 'done.' at time 101251.446627 sec | file /mnt/simulator_out/fast5/744973-70.fast5.tar (177).
+file completed: 101356s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-71.fast5.tar
+[34mfast5: copying 178[0;39m
+[34m+ fast5: finished copy 178[0;39m
+[34mfastq: copying 178[0;39m
+[34m+ fastq: finished copy 178[0;39m
+[t14(10.40.18.14)::INFO] Connecting to 10.40.18.14
+[t14(10.40.18.14)::INFO] Assigning /mnt/simulator_out/fast5/744973-71.fast5.tar (178) to 10.40.18.14
+[t14(10.40.18.14)::INFO] Received message 'done.' at time 102597.749086 sec | file /mnt/simulator_out/fast5/744973-71.fast5.tar (178).
+file completed: 102799s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-72.fast5.tar
+[34mfast5: copying 179[0;39m
+[34m+ fast5: finished copy 179[0;39m
+[34mfastq: copying 179[0;39m
+[34m+ fastq: finished copy 179[0;39m
+[t5(10.40.18.5)::INFO] Connecting to 10.40.18.5
+[t5(10.40.18.5)::INFO] Assigning /mnt/simulator_out/fast5/744973-72.fast5.tar (179) to 10.40.18.5
+[t5(10.40.18.5)::INFO] Received message 'done.' at time 104083.939035 sec | file /mnt/simulator_out/fast5/744973-72.fast5.tar (179).
+file completed: 104474s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-73.fast5.tar
+[34mfast5: copying 180[0;39m
+[34m+ fast5: finished copy 180[0;39m
+[34mfastq: copying 180[0;39m
+[34m+ fastq: finished copy 180[0;39m
+[t7(10.40.18.7)::INFO] Connecting to 10.40.18.7
+[t7(10.40.18.7)::INFO] Assigning /mnt/simulator_out/fast5/744973-73.fast5.tar (180) to 10.40.18.7
+[t7(10.40.18.7)::WARNING][1;33m Device 10.40.18.7 has hung/disconnected. [0m
+[t7(10.40.18.7)::INFO] Connecting to 10.40.18.7
+[t7(10.40.18.7)::INFO] Assigning /mnt/simulator_out/fast5/744973-73.fast5.tar (180) to 10.40.18.7
+[t7(10.40.18.7)::INFO] Received message 'done.' at time 105978.295581 sec | file /mnt/simulator_out/fast5/744973-73.fast5.tar (180).
+file completed: 106451s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-74.fast5.tar
+[34mfast5: copying 181[0;39m
+[34m+ fast5: finished copy 181[0;39m
+[34mfastq: copying 181[0;39m
+[34m+ fastq: finished copy 181[0;39m
+[t5(10.40.18.5)::INFO] Connecting to 10.40.18.5
+[t5(10.40.18.5)::INFO] Assigning /mnt/simulator_out/fast5/744973-74.fast5.tar (181) to 10.40.18.5
+[t5(10.40.18.5)::INFO] Received message 'done.' at time 107518.420583 sec | file /mnt/simulator_out/fast5/744973-74.fast5.tar (181).
+file completed: 108704s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-75.fast5.tar
+[34mfast5: copying 182[0;39m
+[34m+ fast5: finished copy 182[0;39m
+[34mfastq: copying 182[0;39m
+[34m+ fastq: finished copy 182[0;39m
+[t11(10.40.18.11)::INFO] Connecting to 10.40.18.11
+[t11(10.40.18.11)::INFO] Assigning /mnt/simulator_out/fast5/744973-75.fast5.tar (182) to 10.40.18.11
+[t11(10.40.18.11)::INFO] Received message 'done.' at time 109696.396700 sec | file /mnt/simulator_out/fast5/744973-75.fast5.tar (182).
+file completed: 111461s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-76.fast5.tar
+[34mfast5: copying 183[0;39m
+[34m+ fast5: finished copy 183[0;39m
+[34mfastq: copying 183[0;39m
+[34m+ fastq: finished copy 183[0;39m
+[t9(10.40.18.9)::INFO] Connecting to 10.40.18.9
+[t9(10.40.18.9)::INFO] Assigning /mnt/simulator_out/fast5/744973-76.fast5.tar (183) to 10.40.18.9
+[t9(10.40.18.9)::INFO] Received message 'done.' at time 112351.976404 sec | file /mnt/simulator_out/fast5/744973-76.fast5.tar (183).
+file completed: 115373s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-77.fast5.tar
+[34mfast5: copying 184[0;39m
+[34m+ fast5: finished copy 184[0;39m
+[34mfastq: copying 184[0;39m
+[34m+ fastq: finished copy 184[0;39m
+[t6(10.40.18.6)::INFO] Connecting to 10.40.18.6
+[t6(10.40.18.6)::INFO] Assigning /mnt/simulator_out/fast5/744973-77.fast5.tar (184) to 10.40.18.6
+[t6(10.40.18.6)::INFO] Received message 'done.' at time 116270.517567 sec | file /mnt/simulator_out/fast5/744973-77.fast5.tar (184).
+file completed: 116588s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-79.fast5.tar
+[34mfast5: copying 185[0;39m
+[34m+ fast5: finished copy 185[0;39m
+[34mfastq: copying 185[0;39m
+[34m+ fastq: finished copy 185[0;39m
+[t16(10.40.18.16)::INFO] Connecting to 10.40.18.16
+[t16(10.40.18.16)::INFO] Assigning /mnt/simulator_out/fast5/744973-79.fast5.tar (185) to 10.40.18.16
+file completed: 117936s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-80.fast5.tar
+[34mfast5: copying 186[0;39m
+[t16(10.40.18.16)::INFO] Received message 'done.' at time 117991.221605 sec | file /mnt/simulator_out/fast5/744973-79.fast5.tar (185).
+[34m+ fast5: finished copy 186[0;39m
+[34mfastq: copying 186[0;39m
+[34m+ fastq: finished copy 186[0;39m
+[t7(10.40.18.7)::INFO] Connecting to 10.40.18.7
+[t7(10.40.18.7)::INFO] Assigning /mnt/simulator_out/fast5/744973-80.fast5.tar (186) to 10.40.18.7
+[t7(10.40.18.7)::INFO] Received message 'done.' at time 119378.392766 sec | file /mnt/simulator_out/fast5/744973-80.fast5.tar (186).
+file completed: 119434s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-81.fast5.tar
+[34mfast5: copying 187[0;39m
+[34m+ fast5: finished copy 187[0;39m
+[34mfastq: copying 187[0;39m
+[34m+ fastq: finished copy 187[0;39m
+[t8(10.40.18.8)::INFO] Connecting to 10.40.18.8
+[t8(10.40.18.8)::INFO] Assigning /mnt/simulator_out/fast5/744973-81.fast5.tar (187) to 10.40.18.8
+[t8(10.40.18.8)::INFO] Received message 'done.' at time 120871.415144 sec | file /mnt/simulator_out/fast5/744973-81.fast5.tar (187).
+file completed: 121046s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-82.fast5.tar
+[34mfast5: copying 188[0;39m
+[34m+ fast5: finished copy 188[0;39m
+[34mfastq: copying 188[0;39m
+[34m+ fastq: finished copy 188[0;39m
+[t14(10.40.18.14)::INFO] Connecting to 10.40.18.14
+[t14(10.40.18.14)::INFO] Assigning /mnt/simulator_out/fast5/744973-82.fast5.tar (188) to 10.40.18.14
+[t14(10.40.18.14)::INFO] Received message 'done.' at time 122237.426498 sec | file /mnt/simulator_out/fast5/744973-82.fast5.tar (188).
+file completed: 122771s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-83.fast5.tar
+[34mfast5: copying 189[0;39m
+[34m+ fast5: finished copy 189[0;39m
+[34mfastq: copying 189[0;39m
+[34m+ fastq: finished copy 189[0;39m
+[t3(10.40.18.3)::INFO] Connecting to 10.40.18.3
+[t3(10.40.18.3)::INFO] Assigning /mnt/simulator_out/fast5/744973-83.fast5.tar (189) to 10.40.18.3
+[t3(10.40.18.3)::INFO] Received message 'done.' at time 123798.942447 sec | file /mnt/simulator_out/fast5/744973-83.fast5.tar (189).
+file completed: 124693s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-84.fast5.tar
+[34mfast5: copying 190[0;39m
+[34m+ fast5: finished copy 190[0;39m
+[34mfastq: copying 190[0;39m
+[34m+ fastq: finished copy 190[0;39m
+[t6(10.40.18.6)::INFO] Connecting to 10.40.18.6
+[t6(10.40.18.6)::INFO] Assigning /mnt/simulator_out/fast5/744973-84.fast5.tar (190) to 10.40.18.6
+[t6(10.40.18.6)::INFO] Received message 'done.' at time 125750.324957 sec | file /mnt/simulator_out/fast5/744973-84.fast5.tar (190).
+file completed: 127207s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-85.fast5.tar
+[34mfast5: copying 191[0;39m
+[34m+ fast5: finished copy 191[0;39m
+[34mfastq: copying 191[0;39m
+[34m+ fastq: finished copy 191[0;39m
+[t10(10.40.18.10)::INFO] Connecting to 10.40.18.10
+[t10(10.40.18.10)::INFO] Assigning /mnt/simulator_out/fast5/744973-85.fast5.tar (191) to 10.40.18.10
+[t10(10.40.18.10)::INFO] Received message 'done.' at time 128060.125773 sec | file /mnt/simulator_out/fast5/744973-85.fast5.tar (191).
+file completed: 130450s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-86.fast5.tar
+[34mfast5: copying 192[0;39m
+[34m+ fast5: finished copy 192[0;39m
+[34mfastq: copying 192[0;39m
+[34m+ fastq: finished copy 192[0;39m
+[t8(10.40.18.8)::INFO] Connecting to 10.40.18.8
+[t8(10.40.18.8)::INFO] Assigning /mnt/simulator_out/fast5/744973-86.fast5.tar (192) to 10.40.18.8
+[t8(10.40.18.8)::INFO] Received message 'done.' at time 131158.669836 sec | file /mnt/simulator_out/fast5/744973-86.fast5.tar (192).
+file completed: 134586s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-87.fast5.tar
+[34mfast5: copying 193[0;39m
+[34m+ fast5: finished copy 193[0;39m
+[34mfastq: copying 193[0;39m
+[34m+ fastq: finished copy 193[0;39m
+[t9(10.40.18.9)::INFO] Connecting to 10.40.18.9
+[t9(10.40.18.9)::INFO] Assigning /mnt/simulator_out/fast5/744973-87.fast5.tar (193) to 10.40.18.9
+[t9(10.40.18.9)::INFO] Received message 'done.' at time 135130.078060 sec | file /mnt/simulator_out/fast5/744973-87.fast5.tar (193).
+file completed: 140676s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-88.fast5.tar
+[34mfast5: copying 194[0;39m
+[34m+ fast5: finished copy 194[0;39m
+[34mfastq: copying 194[0;39m
+[34m+ fastq: finished copy 194[0;39m
+[t4(10.40.18.4)::INFO] Connecting to 10.40.18.4
+[t4(10.40.18.4)::INFO] Assigning /mnt/simulator_out/fast5/744973-88.fast5.tar (194) to 10.40.18.4
+[t4(10.40.18.4)::INFO] Received message 'done.' at time 141207.455570 sec | file /mnt/simulator_out/fast5/744973-88.fast5.tar (194).
+file completed: 145617s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-90.fast5.tar
+[34mfast5: copying 195[0;39m
+[34m+ fast5: finished copy 195[0;39m
+[34mfastq: copying 195[0;39m
+[34m+ fastq: finished copy 195[0;39m
+[t13(10.40.18.13)::INFO] Connecting to 10.40.18.13
+[t13(10.40.18.13)::INFO] Assigning /mnt/simulator_out/fast5/744973-90.fast5.tar (195) to 10.40.18.13
+[t13(10.40.18.13)::INFO] Received message 'done.' at time 146239.893600 sec | file /mnt/simulator_out/fast5/744973-90.fast5.tar (195).
+file completed: 149775s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-91.fast5.tar
+[34mfast5: copying 196[0;39m
+[34m+ fast5: finished copy 196[0;39m
+[34mfastq: copying 196[0;39m
+[34m+ fastq: finished copy 196[0;39m
+[t11(10.40.18.11)::INFO] Connecting to 10.40.18.11
+[t11(10.40.18.11)::INFO] Assigning /mnt/simulator_out/fast5/744973-91.fast5.tar (196) to 10.40.18.11
+[t11(10.40.18.11)::INFO] Received message 'done.' at time 150625.019819 sec | file /mnt/simulator_out/fast5/744973-91.fast5.tar (196).
+file completed: 155348s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-92.fast5.tar
+[34mfast5: copying 197[0;39m
+[34m+ fast5: finished copy 197[0;39m
+[34mfastq: copying 197[0;39m
+[34m+ fastq: finished copy 197[0;39m
+[t9(10.40.18.9)::INFO] Connecting to 10.40.18.9
+[t9(10.40.18.9)::INFO] Assigning /mnt/simulator_out/fast5/744973-92.fast5.tar (197) to 10.40.18.9
+[t9(10.40.18.9)::INFO] Received message 'done.' at time 156115.430682 sec | file /mnt/simulator_out/fast5/744973-92.fast5.tar (197).
+file completed: 162338s | file: /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3//fast5//744973-93.fast5.tar
+[34mfast5: copying 198[0;39m
+[34m+ fast5: finished copy 198[0;39m
+[34mfastq: copying 198[0;39m
+[34m+ fastq: finished copy 198[0;39m
+testing/simulator.sh: line 382: syntax error near unexpected token `('
+testing/simulator.sh: line 382: `e (( $(echo "$SECONDS < $ordered_time" | bc -l) )) # While the file's has not been 'completed''
+[t7(10.40.18.7)::INFO] Connecting to 10.40.18.7
+[t7(10.40.18.7)::INFO] Assigning /mnt/simulator_out/fast5/744973-93.fast5.tar (198) to 10.40.18.7
+[t7(10.40.18.7)::WARNING][1;33m Device 10.40.18.7 has hung/disconnected. [0m
+[t7(10.40.18.7)::INFO] Connecting to 10.40.18.7
+[t7(10.40.18.7)::INFO] Assigning /mnt/simulator_out/fast5/744973-93.fast5.tar (198) to 10.40.18.7
+[t7(10.40.18.7)::WARNING][1;33m Device 10.40.18.7 has hung/disconnected. [0m
+[t7(10.40.18.7)::INFO] Connecting to 10.40.18.7
+[t7(10.40.18.7)::INFO] Assigning /mnt/simulator_out/fast5/744973-93.fast5.tar (198) to 10.40.18.7
+[t7(10.40.18.7)::INFO] Received message 'done.' at time 163400.721207 sec | file /mnt/simulator_out/fast5/744973-93.fast5.tar (198).
