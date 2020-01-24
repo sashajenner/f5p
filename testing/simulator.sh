@@ -426,10 +426,19 @@ elif [ "$FORMAT" = "--zebra" ]; then
 			filename_pathless=$(basename $filename_path) # Extract the filename without the path
 			filename="${filename_pathless%.*}" # Extract the filename without the extension nor the path
 
+			test_cmd=$(cat $seq_summary_file 2>/dev/null | 
+					grep "$filename_pathless\|filename" | 
+					wc -l)
+
+			# If sequencing summary file is empty or filename not found
+			if [ "$test_cmd" = "0" ] || [ "$test_cmd" = "1" ]; then
+				continue # Continue to next file
+			fi
+
 			# Cat the sequencing summary txt file to awk
 			# which prints the highest start_time + duration (i.e. the completion time of that file)
 			end_time=$(cat $seq_summary_file 2>/dev/null |
-			grep -E "$filename_pathless\|filename" |
+			grep "$filename_pathless\|filename" |
 			awk '
 			BEGIN { 
 				FS="\t" # set the file separator to tabs

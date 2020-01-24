@@ -66,11 +66,11 @@ scriptinfo() { head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#-" | sed -e "s/^#-
 
     #== Default variables ==#
 
-loud=false # default option off
-format_specified=false # assume no format specified
+loud=false # Default option off
+format_specified=false # Assume no format specified
 
 ## Handle flags
-while [ ! $# -eq 0 ]; do # while there are arguments
+while [ ! $# -eq 0 ]; do # While there are arguments
     case "$1" in
 
 		--format | -f)
@@ -112,7 +112,7 @@ while [ ! $# -eq 0 ]; do # while there are arguments
     shift
 done
 
-if ! $format_specified; then
+if ! $format_specified; then # If no format is specified
 	echo "No format specified!"
 	usagefull
 	exit 1
@@ -122,26 +122,27 @@ fi
 
 	#== Begin ==#
 
-declare -A file_time_map # declare an associative array to hold the file with corresponding completion time
+declare -A file_time_map # Declare an associative array to hold the file with corresponding completion time
 
 if [ "$FORMAT" = "--778" ]; then
 
-	F5_DIR="$SEARCH_DIR"fast5/
-	LOGS_DIR="$SEARCH_DIR"logs/ # extract logs directory when sequencing summary files are contained
+	F5_DIR="$SEARCH_DIR"/fast5/
+	LOGS_DIR="$SEARCH_DIR"/logs/ # Extract logs directory when sequencing summary files are contained
 
-	for filename_path in $F5_DIR/*.fast5.tar; do # files with tar extension in the fast5 directory
+	for filename_path in $F5_DIR/*.fast5.tar; do # Files with tar extension in the fast5 directory
 
-		filename_pathless=$(basename $filename_path) # extract the filename without the path
-		filename="${filename_pathless%%.*}" # extract the filename without the extension nor the path
+		filename_pathless=$(basename $filename_path) # Extract the filename without the path
+		filename="${filename_pathless%%.*}" # Extract the filename without the extension nor the path
 
-		# extract corresponding sequencing summary filename
+		# Extract corresponding sequencing summary filename
 		seq_summary_file=$LOGS_DIR/sequencing_summary."$filename".txt.gz
-		# cat the sequencing summary txt.gz file to awk
+
+		# Cat the sequencing summary txt.gz file to awk
 		# which prints the highest start_time + duration (i.e. the completion time of that file)
 		end_time=$(zcat $seq_summary_file 2>/dev/null | awk '
 			BEGIN { 
-				FS="\t" # set the file separator to tabs
-				# define variables
+				FS="\t" # Set the file separator to tabs
+				# Eefine variables
 				final_time=0
 			}
 			
@@ -157,33 +158,34 @@ if [ "$FORMAT" = "--778" ]; then
 			}
 			
 			NR > 1 {
-				if ($start_time_field + $duration_field > final_time) { # if the start-time + duration is greater than the current final time
-					final_time = $start_time_field + $duration_field # update the final time
+				if ($start_time_field + $duration_field > final_time) { # If the start-time + duration is greater than the current final time
+					final_time = $start_time_field + $duration_field # Update the final time
 				}
 			} 
 			
-			END { printf final_time }') # end by printing the final time
+			END { printf final_time }') # End by printing the final time
 		
-		file_time_map["$filename_path"]=$end_time # set a key, value combination of the end time and file
+		file_time_map["$filename_path"]=$end_time # Set a key, value combination of the end time and file
 	done
 
 
 elif [ "$FORMAT" = "--NA" ]; then
 
-	F5_DIR="$SEARCH_DIR"fast5/
+	F5_DIR="$SEARCH_DIR"/fast5/
 
-	for filename_path in $F5_DIR/*.fast5; do # files with tar extension in the fast5 directory
+	for filename_path in $F5_DIR/*.fast5; do # Iterate through fast5 files
 
-		filename_pathless=$(basename $filename_path) # extract the filename without the path
-		filename="${filename_pathless%.*}" # extract the filename without the extension nor the path
+		filename_pathless=$(basename $filename_path) # Extract the filename without the path
+		filename="${filename_pathless%.*}" # Extract the filename without the extension nor the path
 
-		# extract corresponding sequencing summary filename
+		# Extract corresponding sequencing summary filename
 		seq_summary_file=$SEARCH_DIR/fastq/$filename/sequencing_summary.txt
-		# cat the sequencing summary txt file to awk
+
+		# Cat the sequencing summary txt file to awk
 		# which prints the highest start_time + duration (i.e. the completion time of that file)
 		end_time=$(cat $seq_summary_file 2>/dev/null | awk '
 			BEGIN { 
-				FS="\t" # set the file separator to tabs
+				FS="\t" # Set the file separator to tabs
 				# Define variables
 				final_time=0
 			}
@@ -209,6 +211,52 @@ elif [ "$FORMAT" = "--NA" ]; then
         
 		file_time_map["$filename_path"]=$end_time # Set a key, value combination of the end time and file
 	done
+
+elif [ "$FORMAT" = "--zebra" ]; then
+
+	F5_DIR="$SEARCH_DIR"/fast5/
+
+	# Extract the sequencing summary filename
+	seq_summary_file=$SEARCH_DIR/sequencing_summary.txt
+
+	for filename_path in $F5_DIR/*.fast5; do # Iterate through fast5 files
+
+		filename_pathless=$(basename $filename_path) # Extract the filename without the path
+		filename="${filename_pathless%.*}" # Extract the filename without the extension nor the path
+
+		# Cat the sequencing summary txt file to awk
+		# grep for the filename and the header
+		# and print the highest start_time + duration (i.e. the completion time of that file)
+		end_time=$(cat $seq_summary_file 2>/dev/null |
+		grep "$filename_pathless\|filename" |
+		awk '
+		BEGIN { 
+			FS="\t" # Set the file separator to tabs
+			# Define variables
+			final_time=0
+		}
+		
+		NR==1 {
+			for (i = 1; i <= NF; i ++) {
+				if ($i == "start_time") {
+					start_time_field = i
+				
+				} else if ($i == "duration") {
+					duration_field = i
+				}
+			}
+		}
+		
+		NR > 1 {
+			if ($start_time_field + $duration_field > final_time) { # If the start-time + duration is greater than the current final time
+				final_time = $start_time_field + $duration_field # Update the final time
+			}
+		} 
+		
+		END { printf final_time }') # End by printing the final time
+        
+		file_time_map["$filename_path"]=$end_time # Set a key, value combination of the end time and file
+	done
 	
 fi
 
@@ -218,34 +266,38 @@ file_time_map["initial"]=0
 max_wait_time=0 # Minimum wait time
 first_iter=true
 for ordered_file in $(
-	for filename in "${!file_time_map[@]}"; do # for each time in the keys of the associative array
-		echo "$filename,${file_time_map["$filename"]}" # output the time
+	for filename in "${!file_time_map[@]}"; do # For each time in the keys of the associative array
+		echo "$filename,${file_time_map["$filename"]}" # Output the time
 	done |
-	sort -g -t "," -k 2,2 | # sort the output in ascending generic numerical order (including floating point numbers)
+	sort -g -t "," -k 2,2 | # Sort the output in ascending generic numerical order (including floating point numbers)
 	cut -d "," -f 1
 	)
 do
 
-	ordered_time=${file_time_map["$ordered_file"]}
+	ordered_time=${file_time_map["$ordered_file"]} # Get the time
 
-    if $loud; then
-        echo "time completed: ${ordered_time}s | file: $ordered_file"
+    if $loud; then # If loud option set
+        echo "time completed: ${ordered_time}s | file: $ordered_file" # Print message
     fi
 
+	# Find the maximum wait time
     if $first_iter; then
         first_iter=false
     else
+		# Find the difference between the current and previous file time
         diff=$(python -c "print($ordered_time - $prev_ordered_time)")
+
+		# If the difference is larger the the current max wait time
         if (( $(echo "$diff > $max_wait_time" | bc -l) )); then
-            max_wait_time=$(python -c "print($ordered_time - $prev_ordered_time)")
+            max_wait_time=$(python -c "print($ordered_time - $prev_ordered_time)") # Set the max wait time
         fi
     fi
 
     prev_ordered_time=$ordered_time
 done
 
-if $loud; then
-    echo "Max wait is" $(python -c "print($max_wait_time / 60)") "mins"
+if $loud; then # If loud option set
+    echo "Max wait is" $(python -c "print($max_wait_time / 60)") "mins" # Print message
 else
     echo $max_wait_time
 fi

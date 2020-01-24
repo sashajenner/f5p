@@ -82,8 +82,14 @@ MINIMAP=/nanopore/bin/minimap2-arm
 METHCALL=/nanopore/bin/f5c # or nanopolish
 SAMTOOLS=/nanopore/bin/samtools
 
-REF_FA=/nanopore/reference/hg38noAlt.fa # reference fasta for methylation call
-REF_IDX=/nanopore/reference/hg38noAlt.idx # reference index for minimap2
+if [ "$FORMAT" = "--zebra" ]; then # Zebrafish reference genome
+    REF_FA=/mnt/zebrafish/zebrafish_genome.fa # reference fasta for methylation call
+    REF_IDX=/mnt/zebrafish/zebrafish_genome.fa.fai # reference index for minimap2
+
+else # Human reference genome
+    REF_FA=/nanopore/reference/hg38noAlt.fa # reference fasta for methylation call
+    REF_IDX=/nanopore/reference/hg38noAlt.idx # reference index for minimap2
+fi
 
 # temporary space on the local storage or the network mount
 SCRATCH=/nanopore/scratch

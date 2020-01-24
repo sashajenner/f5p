@@ -322,8 +322,8 @@ if $simulate; then # If the simulation option is on
     test -d $FAST5FOLDER || exit 1
 
     # Create fast5 and fastq folders if they don't exist
-    test -d $MONITOR_PARENT_DIR/fast5 || mkdir $MONITOR_PARENT_DIR/methylation || exit 1
-    test -d $MONITOR_PARENT_DIR/fastq || mkdir $MONITOR_PARENT_DIR/methylation || exit 1
+    test -d $MONITOR_PARENT_DIR/fast5 || mkdir $MONITOR_PARENT_DIR/fast5 || exit 1
+    test -d $MONITOR_PARENT_DIR/fastq || mkdir $MONITOR_PARENT_DIR/fastq || exit 1
 
     # Execute simulator in the background giving time for monitor to set up
     if $real_sim; then
@@ -339,12 +339,12 @@ fi
 if $resuming; then # If resuming option set
     bash $SCRIPT_PATH/monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
     bash $SCRIPT_PATH/monitor/ensure.sh -r -f $FORMAT 2>> $LOG |
-    /usr/bin/time -v ./$SCRIPT_PATH/f5pl_realtime $FORMAT $SCRIPT_PATH/data/ip_list.cfg -r |& # Redirect all stderr to stdout
+    /usr/bin/time -v $SCRIPT_PATH/f5pl_realtime $FORMAT $SCRIPT_PATH/data/ip_list.cfg -r |& # Redirect all stderr to stdout
     tee -a $LOG
 else
     bash $SCRIPT_PATH/monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
     bash $SCRIPT_PATH/monitor/ensure.sh -f $FORMAT 2>> $LOG |
-    /usr/bin/time -v ./$SCRIPT_PATH/f5pl_realtime $FORMAT $SCRIPT_PATH/data/ip_list.cfg |& # Redirect all stderr to stdout
+    /usr/bin/time -v $SCRIPT_PATH/f5pl_realtime $FORMAT $SCRIPT_PATH/data/ip_list.cfg |& # Redirect all stderr to stdout
     tee -a $LOG
 fi
 
