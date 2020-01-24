@@ -174,7 +174,41 @@ print(processing_df) # testing
 
 all_end_times_df <- cbind.fill(all_end_times_df, processing_df, fill = NA)
 
+
+
+
+
+
+
+# processing 5000 dataset
+processing_logs <- c("../testing/5000/real-sim/take2/log.txt") # (todo: change to legitimate location later)
+processing_times <- system(paste0("bash extract_analysis_timestamps.sh ", processing_logs[1]), intern = T)
+processing_df <- read.csv(text = processing_times, sep = " ", header = F)
+colnames(processing_df) <- c("time_process_5000", "file_order")
+
+processing_df["time_process_5000"] <- processing_df["time_process_5000"] / 3600 # Get time in hours (3600s in 1h)
+
+
+print(processing_df) # testing
+
+row <- 1
+while (row <= nrow(processing_df)) {
+    file_no <- processing_df[row, "file_order"]
+    processing_df[row, "solo_bases_process_5000"] <- all_end_times_df[file_no, "solo_bases_5000"]
+    row <- row + 1
+}
+
+# Create column "tot_bases_process_NA" that is a cumulative sum of the individual bases,
+# then convert to gigabases
+processing_df <- within(processing_df, tot_bases_process_5000 <- cumsum(solo_bases_process_5000))
+processing_df["tot_bases_process_5000"] <- processing_df["tot_bases_process_5000"] / (10 ^ 9) # Convert to gigabases
+
+print(processing_df) # testing
+
+all_end_times_df <- cbind.fill(all_end_times_df, processing_df, fill = NA)
+
 print(all_end_times_df) # testing
+
 
 
 
@@ -184,7 +218,8 @@ colnames(all_end_times_df) <- c("time_1500", "solo_bases_1500", "tot_bases_1500"
                                 "time_5000", "solo_bases_5000", "tot_bases_5000",
                                 "time_NA", "solo_bases_NA", "tot_bases_NA",
                                 "time_process_1500", "process_file_order_1500", "solo_bases_process_1500", "tot_bases_process_1500",
-                                "time_process_NA", "process_file_order_NA", "solo_bases_process_NA", "tot_bases_process_NA")
+                                "time_process_NA", "process_file_order_NA", "solo_bases_process_NA", "tot_bases_process_NA",
+                                "time_process_5000", "process_file_order_5000", "solo_bases_process_5000", "tot_bases_process_5000")
 print(all_end_times_df) # testing
 
 
@@ -198,11 +233,13 @@ sequenced_bases_vs_time <- plot_ly(all_end_times_df,
                                       line = list(color = "rgba(0, 0, 0, 1)", dash = "dot")) %>%
                             add_trace(x = ~time_5000, y = ~tot_bases_5000, name = "sequencing 5000",
                                       line = list(color = "rgba(19, 230, 0, 0.7)", dash = "solid")) %>%
+                            add_trace(x = ~time_process_5000, y = ~tot_bases_process_5000, name = "analysing 5000",
+                                      line = list(color = "rgba(0, 0, 0, 1)", dash = "dot")) %>%
                             add_trace(x = ~time_NA, y = ~tot_bases_NA, name = "sequencing NA",
                                       line = list(color = "rgba(0, 145, 230, 0.7)", dash = "solid")) %>%
                             add_trace(x = ~time_process_NA, y = ~tot_bases_process_NA, name = "analysing NA", 
                                       line = list(color = "rgba(0, 0, 0, 1)", dash = "dot")) %>%
-                            layout(title = "Bases Sequenced Over Time",
+                            layout(title = "Gigabases Sequenced / Analysed in Realtime",
                                     xaxis = list(title = "Time (h)"),
                                     yaxis = list(title = "Gigabases Sequenced / Analysed"))
 
@@ -214,11 +251,13 @@ sequenced_files_vs_time <- plot_ly(all_end_times_df,
                                       line = list(color = "rgba(0, 0, 0, 1)", dash = "dot")) %>%
                             add_trace(x = ~time_5000, name = "sequencing 5000",
                                       line = list(color = "rgba(19, 230, 0, 0.7)", dash = "solid")) %>%
+                            add_trace(x = ~time_process_5000, name = "analysing 5000",
+                                      line = list(color = "rgba(0, 0, 0, 1)", dash = "dot")) %>%
                             add_trace(x = ~time_NA, name = "sequencing NA",
                                       line = list(color = "rgba(0, 145, 230, 0.7)", dash = "solid")) %>%
                             add_trace(x = ~time_process_NA, name = "analysing NA", 
                                       line = list(color = "rgba(0, 0, 0, 1)", dash = "dot")) %>%
-                            layout(title = "Files Sequenced Over Time",
+                            layout(title = "Files Sequenced / Analysed in Realtime",
                                     xaxis = list(title = "Time (h)"),
                                     yaxis = list(title = "Number of Files Sequenced / Analysed"))
 
