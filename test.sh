@@ -22,7 +22,12 @@ cp /dev/null screenlog.0 # Empty previous log file
 #    echo y | 
 #    bash run.sh -f --778 -m /mnt/simulator_out -8 /mnt/778/778-5000ng/778-5000ng_albacore-2.1.3/ --real -t -a"
 
-# Run zebra realtime simulation in the background
+# Run zebra realtime simulation in the background  :::Success-but file didn't get analysed properly:::
+# screen -S sim_zebra -L -d -m bash -c "
+#    echo y | 
+#    bash run.sh -f --zebra -m /mnt/simulator_out -8 /mnt/zebrafish/zebrafish_tiny/ --real -t -a"
+
+# Run zebra realtime simulation in the background  :::Failure-didn't end:::
 screen -S sim_zebra -L -d -m bash -c "
    echo y | 
    bash run.sh -f --zebra -m /mnt/simulator_out -8 /mnt/zebrafish/zebrafish_test/ --real -t -a"

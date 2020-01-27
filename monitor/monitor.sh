@@ -200,8 +200,10 @@ while $timeout; do
         echo > $SCRIPT_PATH/$TEMP_FILE # Empty contents of temp file
     fi
 
+    time_elapsed=$((SECONDS/TIME_FACTOR))
     # If there has been no files created in a specified period of time exit program
-    if [ $((SECONDS/TIME_FACTOR)) = "$TIME_INACTIVE" -o "$(cat $SCRIPT_PATH/$TEMP_FILE)" = "-1" ]; then
+    # or -1 flag has been called by background process
+    if (( $(echo "$time_elapsed > $TIME_INACTIVE" | bc -l) )) || [ "$(cat $SCRIPT_PATH/$TEMP_FILE)" = "-1" ]; then
         exit
     fi
 
