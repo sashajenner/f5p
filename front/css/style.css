@@ -1,0 +1,22 @@
+fieldset {
+    background-color: rgb(216, 250, 227);
+    width: 500px;
+    padding: 16px;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;	
+    border-radius: 8px;	
+    margin: 0 auto;
+}
+
+fieldset.invisible {
+    background-color: transparent;
+    max-width: 500px;
+    padding: 16px;
+    border: 0px;
+    margin: 0 auto; 
+    width:250px;
+} 
+
+form { 
+    text-align: center
+}
