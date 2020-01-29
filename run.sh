@@ -6,7 +6,7 @@
 #+    ${SCRIPT_NAME} -f [format] -m [directory] [options ...]
 #%
 #% DESCRIPTION
-#%    Runs realtime sequenced genome analysis given input directory
+#%    Runs realtime (or not) sequenced genome analysis given input directory
 #%    and the expected file format.
 #%
 #% OPTIONS
@@ -45,6 +45,7 @@
 #%        default log.txt                           
 #%
 #%    -m [directory], --monitor [directory]         Monitor a specific directory
+#%    --non-realtime [directory]                    Specify non-realtime analysis
 #%    -r, --resume                                  Resumes from last processing position
 #%    -s, --script                                  Custom script for processing files on the cluster
 #%        default scripts/fast5_pipeline.sh             - Default script which calls minimap, f5c & samtools
@@ -75,6 +76,8 @@
 #%        ${SCRIPT_NAME} -f [format] -m [directory] -r
 #%    realtime simulation
 #%        ${SCRIPT_NAME} -f [format] -m [directory] -8 [directory] --real -t -a
+#%    non realtime
+#%        ${SCRIPT_NAME} --non-realtime [directory]
 #%
 #================================================================
 #- IMPLEMENTATION
@@ -110,6 +113,7 @@ LOG=$SCRIPT_PATH/log.txt # Default log file
 resuming=false
 simulate=false
 real_sim=false
+realtime=true
 
 # Default timeout of 1 hour
 TIME_FACTOR="hr"
@@ -177,6 +181,12 @@ while [ ! $# -eq 0 ]; do # while there are arguments
             # which is monitored for new files
             MONITOR_PARENT_DIR=$2
             monitor_dir_specified=true
+            shift
+            ;;
+
+        --non-realtime)
+            realtime=false
+            MONITOR_PARENT_DIR=$2
             shift
             ;;
 
@@ -363,4 +373,4 @@ cp $PIPELINE_SCRIPT $SCRIPT_PATH/data/logs/ # Copy pipeline script
 
 bash $SCRIPT_PATH/scripts/failed_device_logs.sh # Get the logs of the files where the pipeline crashed
 
-cp -r data $FOLDER/f5pmaster # Copy entire data folder to local f5pmaster folder
+cp -r data $MONITOR_PARENT_DIR/f5pmaster # Copy entire data folder to local f5pmaster folder
