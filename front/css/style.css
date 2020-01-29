@@ -20,3 +20,11 @@ fieldset.invisible {
 form { 
     text-align: center
 }
+
+div#log {
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+    margin: 1em 0;
+    font-size:150%;
+}

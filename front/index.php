@@ -3,7 +3,7 @@
     <head>
         <title>Realtime Analysis</title>
         <script src="js/jquery-3.4.1.min.js"></script>
-        <link rel="stylesheet" href="css/style.css?21-01-2020:16 05" />
+        <link rel="stylesheet" href="css/style.css?29-01-2020:11 18" />
     </head>
 
     <body>
@@ -13,7 +13,7 @@
                 <br>
                 <select name="format" id="format" required>
                     <?php
-                        $formats = explode("\n", shell_exec("bash /home/sasha/realf5p/run.sh --avail"));
+                        $formats = explode("\n", shell_exec("bash ../run.sh --avail"));
                         if (empty($formats[count($formats)-1])) { // remove last element if empty
                             unset($formats[count($formats)-1]);
                         }
@@ -63,7 +63,7 @@
                 <label for="script-exist">1) Existing pipelines</label>
                 <select name="existing_script" id="script-exist">
                     <?php
-                        $scripts_arr = explode("\n", shell_exec("ls -p /home/sasha/realf5p/scripts | grep -v / | grep fast5_pipeline"));
+                        $scripts_arr = explode("\n", shell_exec("ls -p ../scripts | grep -v / | grep fast5_pipeline"));
                         if (empty($scripts_arr[count($scripts_arr)-1])) { // remove last element if empty
                             unset($scripts_arr[count($scripts_arr)-1]);
                         }
@@ -168,7 +168,7 @@
             </fieldset>
         </form>
 
-        <form id="logs_button" action="logs.php">
+        <form id="logs_button" action="logs.php" method="POST">
             <input type="submit" class="button" name="logs" value="view output" />
         </form>
 
@@ -282,12 +282,12 @@
 
                         if ($simulate) {
                             echo "Command being run:<br>";
-                            $cmd = sprintf("screen -S %s -L -d -m bash -c 'echo y | bash /home/sasha/realf5p/run.sh -f %s -m %s -8 %s%s --t %s --n %s -t %s%s'", 
+                            $cmd = sprintf("screen -S %s -L -d -m bash -c 'echo y | bash ../run.sh -f %s -m %s -8 %s%s --t %s --n %s -t %s%s'", 
                                             $name, $format, $monitor_dir, $simulate_dir, $real_sim, $time_between_batches, $no_batches, $timeout_format, $timeout_time);
 
                         } else {
                             echo "Command being run:<br>";
-                            $cmd = sprintf("screen -S %s -L -d -m bash -c 'bash /home/sasha/realf5p/run.sh -f %s -m %s -t %s%s'", 
+                            $cmd = sprintf("screen -S %s -L -d -m bash -c 'bash ../run.sh -f %s -m %s -t %s%s'", 
                                             $name, $format, $monitor_dir, $timeout_format, $timeout_time);
                         }
 
@@ -314,9 +314,6 @@
 
                     }
                 }
-
-                echo "<br>"; // testing
-                system("ls"); // testing
             ?>
         </p>
         <!-- <script src="js/oldbutton.js"></script> -->
