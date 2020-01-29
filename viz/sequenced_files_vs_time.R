@@ -226,43 +226,49 @@ print(all_end_times_df) # testing
 
 
 sequenced_bases_vs_time <- plot_ly(all_end_times_df,
-                                   x = ~time_1500, y = ~tot_bases_1500, name = "sequencing 1500",
-                                   type = "scatter", mode = "lines", 
-                                   line = list(color = "rgba(245, 5, 5, 0.7)", dash = "solid")) %>%
-                            add_trace(x = ~time_process_1500, y = ~tot_bases_process_1500, name = "analysing 1500",
+                                   x = ~time_NA, y = ~tot_bases_NA, name = "sequencing NA12878_cq",
+                                   type = "scatter", mode = "lines",
+                                   line = list(color = "rgba(0, 145, 230, 0.7)", dash = "solid")) %>%
+                            add_trace(x = ~time_process_NA, y = ~tot_bases_process_NA, name = "analysing NA12878_cq", 
                                       line = list(color = "rgba(0, 0, 0, 1)", dash = "dot")) %>%
-                            add_trace(x = ~time_5000, y = ~tot_bases_5000, name = "sequencing 5000",
+
+                            add_trace(x = ~time_5000, y = ~tot_bases_5000, name = "sequencing 778-5000ng",
                                       line = list(color = "rgba(19, 230, 0, 0.7)", dash = "solid")) %>%
-                            add_trace(x = ~time_process_5000, y = ~tot_bases_process_5000, name = "analysing 5000",
+                            add_trace(x = ~time_process_5000, y = ~tot_bases_process_5000, name = "analysing 778-5000ng",
                                       line = list(color = "rgba(0, 0, 0, 1)", dash = "dot")) %>%
-                            add_trace(x = ~time_NA, y = ~tot_bases_NA, name = "sequencing NA",
-                                      line = list(color = "rgba(0, 145, 230, 0.7)", dash = "solid")) %>%
-                            add_trace(x = ~time_process_NA, y = ~tot_bases_process_NA, name = "analysing NA", 
+
+                            add_trace(x = ~time_1500, y = ~tot_bases_1500, name = "sequencing 778-1500ng",
+                                      line = list(color = "rgba(245, 5, 5, 0.7)", dash = "solid")) %>%
+                            add_trace(x = ~time_process_1500, y = ~tot_bases_process_1500, name = "analysing 778-1500ng",
                                       line = list(color = "rgba(0, 0, 0, 1)", dash = "dot")) %>%
+
                             layout(title = "Gigabases Sequenced / Analysed in Realtime",
                                     xaxis = list(title = "Time (h)"),
                                     yaxis = list(title = "Gigabases Sequenced / Analysed"))
 
 sequenced_files_vs_time <- plot_ly(all_end_times_df,
-                                   x = ~time_1500, name = "sequencing 1500",
+                                   x = ~time_NA, name = "sequencing NA12878_cq",
                                    type = "scatter", mode = "lines",
-                                   line = list(color = "rgba(245, 5, 5, 0.7)", dash = "solid")) %>%
-                            add_trace(x = ~time_process_1500, name = "analysing 1500",
+                                   line = list(color = "rgba(0, 145, 230, 0.7)", dash = "solid")) %>%     
+                            add_trace(x = ~time_process_NA, name = "analysing NA12878_cq", 
                                       line = list(color = "rgba(0, 0, 0, 1)", dash = "dot")) %>%
-                            add_trace(x = ~time_5000, name = "sequencing 5000",
+
+                            add_trace(x = ~time_5000, name = "sequencing 778-5000ng",
                                       line = list(color = "rgba(19, 230, 0, 0.7)", dash = "solid")) %>%
-                            add_trace(x = ~time_process_5000, name = "analysing 5000",
+                            add_trace(x = ~time_process_5000, name = "analysing 778-5000ng",
                                       line = list(color = "rgba(0, 0, 0, 1)", dash = "dot")) %>%
-                            add_trace(x = ~time_NA, name = "sequencing NA",
-                                      line = list(color = "rgba(0, 145, 230, 0.7)", dash = "solid")) %>%
-                            add_trace(x = ~time_process_NA, name = "analysing NA", 
+
+                            add_trace(x = ~time_1500, name = "sequencing 778-1500ng",
+                                      line = list(color = "rgba(245, 5, 5, 0.7)", dash = "solid")) %>%
+                            add_trace(x = ~time_process_1500, name = "analysing 778-1500ng",
                                       line = list(color = "rgba(0, 0, 0, 1)", dash = "dot")) %>%
+
                             layout(title = "Files Sequenced / Analysed in Realtime",
                                     xaxis = list(title = "Time (h)"),
                                     yaxis = list(title = "Number of Files Sequenced / Analysed"))
 
 plotly_IMAGE(sequenced_bases_vs_time, format = "png", out_file = "sequenced_bases_vs_time.png")
-plotly_IMAGE(sequenced_files_vs_time, format = "png", out_file = "sequenced_files_vs_time.png")
+plotly_IMAGE(sequenced_files_vs_time, format = "png", out_file = "sequenced_files_vs_time.png")                         
 
 options(browser = "false")
 api_create(sequenced_bases_vs_time, filename = "sequenced_bases_vs_time", sharing = "public")
