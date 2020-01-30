@@ -326,36 +326,42 @@ test -d $MONITOR_PARENT_DIR/methylation || mkdir $MONITOR_PARENT_DIR/methylation
 # Copy the pipeline script to all worker nodes
 ansible all -m copy -a "src=$PIPELINE_SCRIPT dest=/nanopore/bin/fast5_pipeline.sh mode=0755" |& tee -a $LOG
 
-if $simulate; then # If the simulation option is on
+if ! $realtime; then # If non-realtime option set
+    /usr/bin/time -v $SCRIPT_PATH/f5pl $SCRIPT_PATH/data/ip_list.cfg $SCRIPT_PATH/data/dev.cfg |& # Redirect all stderr to stdout
+    tee $LOG
 
-    # Check the existence of the simulation folder
-    test -d $FAST5FOLDER || exit 1
+else # Else assume realtime analysis is desired
+    if $simulate; then # If the simulation option is on
 
-    # Create fast5 and fastq folders if they don't exist
-    test -d $MONITOR_PARENT_DIR/fast5 || mkdir $MONITOR_PARENT_DIR/fast5 || exit 1
-    test -d $MONITOR_PARENT_DIR/fastq || mkdir $MONITOR_PARENT_DIR/fastq || exit 1
+        # Check the existence of the simulation folder
+        test -d $FAST5FOLDER || exit 1
 
-    # Execute simulator in the background giving time for monitor to set up
-    if $real_sim; then
-        (sleep 10; bash $SCRIPT_PATH/testing/simulator.sh -f $FORMAT -r -n $NO_BATCHES $SIMULATE_FOLDER $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
-    else
-        (sleep 10; bash $SCRIPT_PATH/testing/simulator.sh -f $FORMAT -n $NO_BATCHES -t $TIME_BETWEEN_BATCHES $SIMULATE_FOLDER $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
+        # Create fast5 and fastq folders if they don't exist
+        test -d $MONITOR_PARENT_DIR/fast5 || mkdir $MONITOR_PARENT_DIR/fast5 || exit 1
+        test -d $MONITOR_PARENT_DIR/fastq || mkdir $MONITOR_PARENT_DIR/fastq || exit 1
+
+        # Execute simulator in the background giving time for monitor to set up
+        if $real_sim; then
+            (sleep 10; bash $SCRIPT_PATH/testing/simulator.sh -f $FORMAT -r -n $NO_BATCHES $SIMULATE_FOLDER $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
+        else
+            (sleep 10; bash $SCRIPT_PATH/testing/simulator.sh -f $FORMAT -n $NO_BATCHES -t $TIME_BETWEEN_BATCHES $SIMULATE_FOLDER $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
+        fi
+
     fi
 
-fi
-
-# Monitor the new file creation in fast5 folder and execute realtime f5-pipeline script
-# Close after timeout met
-if $resuming; then # If resuming option set
-    bash $SCRIPT_PATH/monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
-    bash $SCRIPT_PATH/monitor/ensure.sh -r -f $FORMAT 2>> $LOG |
-    /usr/bin/time -v $SCRIPT_PATH/f5pl_realtime $FORMAT $SCRIPT_PATH/data/ip_list.cfg -r |& # Redirect all stderr to stdout
-    tee -a $LOG
-else
-    bash $SCRIPT_PATH/monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
-    bash $SCRIPT_PATH/monitor/ensure.sh -f $FORMAT 2>> $LOG |
-    /usr/bin/time -v $SCRIPT_PATH/f5pl_realtime $FORMAT $SCRIPT_PATH/data/ip_list.cfg |& # Redirect all stderr to stdout
-    tee -a $LOG
+    # Monitor the new file creation in fast5 folder and execute realtime f5-pipeline script
+    # Close after timeout met
+    if $resuming; then # If resuming option set
+        bash $SCRIPT_PATH/monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
+        bash $SCRIPT_PATH/monitor/ensure.sh -r -f $FORMAT 2>> $LOG |
+        /usr/bin/time -v $SCRIPT_PATH/f5pl_realtime $FORMAT $SCRIPT_PATH/data/ip_list.cfg -r |& # Redirect all stderr to stdout
+        tee -a $LOG
+    else
+        bash $SCRIPT_PATH/monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
+        bash $SCRIPT_PATH/monitor/ensure.sh -f $FORMAT 2>> $LOG |
+        /usr/bin/time -v $SCRIPT_PATH/f5pl_realtime $FORMAT $SCRIPT_PATH/data/ip_list.cfg |& # Redirect all stderr to stdout
+        tee -a $LOG
+    fi
 fi
 
 mv *.cfg data/logs # Move all config files

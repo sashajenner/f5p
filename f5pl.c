@@ -388,10 +388,23 @@ int main(int argc, char* argv[]) {
             fprintf(failed_report, "%s\n", core.file_list[id]);
         }
         fclose(failed_report);
+
+        // free each filename in the list of files
+        for (i = 0; i < core.file_list_cnt; i ++) {
+            free(core.file_list[i]);
+        }
+        free(core.file_list); // free the file list
     }
 
     INFO("Everything done. Elapsed time: %.3fh",(realtime() - realtime0)/3600);
-    //todo : free iplist and filelist
+
+    // free each ip string in the list of ips
+    for (i = 0; i < ip_cnt; i ++) {
+        free(ip_list[i]);
+    }
+    free(ip_list); // free the ip list
+
+
 
     return 0;
 }

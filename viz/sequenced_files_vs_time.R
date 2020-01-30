@@ -115,7 +115,7 @@ colnames(all_end_times_df) <- c("time_1500", "solo_bases_1500", "tot_bases_1500"
 
 
 # processing 1500 dataset
-processing_logs <- c("../testing/1500/real-sim/take4/log.txt") # (todo: change to legitimate location later)
+processing_logs <- c("../testing/1500/real-sim/take4/log.txt")
 processing_times <- system(paste0("bash extract_analysis_timestamps.sh ", processing_logs[1]), intern = T)
 processing_df <- read.csv(text = processing_times, sep = " ", header = F)
 colnames(processing_df) <- c("time_process_1500", "file_order")
@@ -148,7 +148,7 @@ print(all_end_times_df) # testing
 
 
 # processing NA dataset
-processing_logs <- c("../testing/NA/real-sim/log.txt") # (todo: change to legitimate location later)
+processing_logs <- c("../testing/NA/real-sim/log.txt")
 processing_times <- system(paste0("bash extract_analysis_timestamps.sh ", processing_logs[1]), intern = T)
 processing_df <- read.csv(text = processing_times, sep = " ", header = F)
 colnames(processing_df) <- c("time_process_NA", "file_order")
@@ -181,7 +181,7 @@ all_end_times_df <- cbind.fill(all_end_times_df, processing_df, fill = NA)
 
 
 # processing 5000 dataset
-processing_logs <- c("../testing/5000/real-sim/take2/log.txt") # (todo: change to legitimate location later)
+processing_logs <- c("../testing/5000/real-sim/take2/log.txt")
 processing_times <- system(paste0("bash extract_analysis_timestamps.sh ", processing_logs[1]), intern = T)
 processing_df <- read.csv(text = processing_times, sep = " ", header = F)
 colnames(processing_df) <- c("time_process_5000", "file_order")

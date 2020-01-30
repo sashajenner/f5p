@@ -71,6 +71,30 @@ node_global_args_t core; // remember that core is used throughout
 
 double initial_time = 0;
 
+// function that tries to reassign a failed file to the core's failed array
+void reassign_failed_file(int32_t fidx) {
+
+    pthread_mutex_lock(&global_mutex); // lock the mutex from other threads (todo : this can be a different lock for efficiency)
+
+    int32_t failed_cnt = core.failed_cnt; // alias the current failed count
+    core.failed_cnt ++; // increment the failed counter
+    core.failed[failed_cnt] = fidx; // add file index to the failed array
+
+    if (core.file_list_cnt <= MAX_FILES) { // if file count less than or equal to max continue
+        // append failed file to file list to be reprocessed
+        core.file_list[core.file_list_cnt] = core.file_list[fidx];
+        core.file_list_cnt ++; // increment the file counter
+
+    } else { // else exit with error msg
+        ERROR("The number of files exceeded the hard coded limit of %d\n",
+                MAX_FILES);
+        pthread_mutex_unlock(&global_mutex); // unlock mutex
+        exit(EXIT_FAILURE);
+    }
+
+    pthread_mutex_unlock(&global_mutex); // unlock mutex
+}
+
 // thread function that handles each node
 void* node_handler(void* arg) {
     
@@ -90,7 +114,7 @@ void* node_handler(void* arg) {
     char msg[MAX_PATH_SIZE + 1 + MAX_FLAG_SIZE]; // declare message pointer for sending to daemon
 
     while (1) {
-        pthread_mutex_lock(&global_mutex); // lock mutex from other threads (todo : try to lock first?)
+        pthread_mutex_lock(&global_mutex); // lock mutex from other threads
         int32_t fidx = core.file_list_idx; // define current file index
 
         if (fidx < core.file_list_cnt) { // if there are files to be processed
@@ -151,26 +175,7 @@ void* node_handler(void* arg) {
                     "[t%d(%s)::WARNING]\033[1;33m Connection initiation to device %s failed. Giving up hope on the device.\033[0m\n",
                     tid + 1, core.ip_list[tid], core.ip_list[tid]);
 
-            // (todo : factor this logic as a function?)
-            pthread_mutex_lock(&global_mutex); // lock the mutex from other threads (todo : this can be a different lock for efficiency)
-            
-            int32_t failed_cnt = core.failed_cnt; // alias the current failed count
-            core.failed_cnt ++; // increment the failed counter
-            core.failed[failed_cnt] = fidx; // add file index to the failed array
-
-            if (core.file_list_cnt <= MAX_FILES) { // if file count less than or equal to max continue
-                // append failed file to file list to be reprocessed
-                core.file_list[core.file_list_cnt] = core.file_list[fidx];
-                core.file_list_cnt ++; // increment the file counter
-            
-            } else { // else exit with error msg
-                ERROR("The number of files exceeded the hard coded limit of %d\n",
-                        MAX_FILES);
-                pthread_mutex_unlock(&global_mutex); // unlock mutex
-                exit(EXIT_FAILURE);
-            }
-
-            pthread_mutex_unlock(&global_mutex); // unlock mutex
+            reassign_failed_file(fidx);
 
             break;
         }
@@ -199,25 +204,7 @@ void* node_handler(void* arg) {
                         "[t%d(%s)::ERROR]\033[1;31m Device %s failed %d times consecutively. Retiring the device. \033[0m\n",
                         tid + 1, core.ip_list[tid], core.ip_list[tid], count);
 
-                pthread_mutex_lock(&global_mutex); // lock the mutex from other threads (todo : this can be a different lock for efficiency)
-                
-                int32_t failed_cnt = core.failed_cnt; // alias the current failed count
-                core.failed_cnt ++; // increment the number of failures
-                core.failed[failed_cnt] = fidx; // add the file index to the failed array
-                
-                if (core.file_list_cnt <= MAX_FILES) { // if file count less than or equal to max continue
-                    // append failed file to file list to be reprocessed
-                    core.file_list[core.file_list_cnt] = core.file_list[fidx];
-                    core.file_list_cnt ++; // increment the file counter
-            
-                } else { // else exit with error msg
-                    ERROR("The number of files exceeded the hard coded limit of %d\n",
-                            MAX_FILES);
-                    pthread_mutex_unlock(&global_mutex); // unlock mutex
-                    exit(EXIT_FAILURE);
-                }
-
-                pthread_mutex_unlock(&global_mutex); // unlock mutex
+                reassign_failed_file(fidx);
 
                 fclose(report); // close the report file
 
@@ -236,25 +223,7 @@ void* node_handler(void* arg) {
                         "[t%d(%s)::WARNING]\033[1;33m Connection initiation to device %s failed. Giving up hope on the device.\033[0m\n",
                         tid + 1, core.ip_list[tid], core.ip_list[tid]);  
 
-                pthread_mutex_lock(&global_mutex); // lock the mutex from other threads (todo : this can be a different lock for efficiency)
-                
-                int32_t failed_cnt = core.failed_cnt; // alias the current failed count
-                core.failed_cnt ++; // increment the number of failures
-                core.failed[failed_cnt] = fidx; // add the file index to the failed array
-
-                if (core.file_list_cnt <= MAX_FILES) { // if file count less than or equal to max continue
-                    // append failed file to file list to be reprocessed
-                    core.file_list[core.file_list_cnt] = core.file_list[fidx];
-                    core.file_list_cnt ++; // increment the file counter
-            
-                } else { // else exit with error msg
-                    ERROR("The number of files exceeded the hard coded limit of %d\n",
-                            MAX_FILES);
-                    pthread_mutex_unlock(&global_mutex); // unlock mutex
-                    exit(EXIT_FAILURE);
-                }
-
-                pthread_mutex_unlock(&global_mutex); // unlock the mutex
+                reassign_failed_file(fidx);
 
                 fclose(report); // close the report file
 

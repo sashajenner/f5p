@@ -123,7 +123,6 @@ if [ "$FORMAT" = "--778" ]; then
     LOG_LOCAL=$SCRATCH/$F5_PREFIX.log
     MINIMAP_LOCAL=$SCRATCH/$F5_PREFIX.minimap
 
-    # (todo : optimise? --overwrite flag with tar?)
     test -d $F5_DIR_LOCAL && rm -rf $F5_DIR_LOCAL # remove local fast5 directory if it exists
     mkdir -p $F5_DIR_LOCAL # make local fast5 directory and create parent directories if needed
     tar -xf $F5_TAR_FILEPATH -C $F5_DIR_LOCAL # untar fast5 file into local fast5 directory
