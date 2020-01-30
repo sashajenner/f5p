@@ -3,18 +3,18 @@
 # @coauthor: Sasha Jenner (jenner.sasha@gmail.com)
 
 ###############################################################################
-USAGE="Usage: $0 -f <format> [options ...] <filepath>"
+USAGE="Usage: $0 -f [format] [options ...] [filepath]"
 : ${3?$USAGE} # require at least 3 args else give usage message
 
 HELP=$"Flags:
--f, --format        follows a specified format of fast5 and fastq files
-        --778           <in_dir>
+-f [format], --format=[format]          Follows a specified format of fast5 and fastq files
+        --778           [directory]
                         |-- fast5/
                             |-- <prefix>.fast5.tar
                         |-- fastq/
                             |-- fastq_*.<prefix>.fastq.gz
         
-        --NA            <in_dir>
+        --NA            [directory]
                         |-- fast5/
                             |-- <prefix>.fast5
                         |-- fastq/
@@ -35,7 +35,7 @@ format_specified=false # assume no format specified
 while [ ! $# -eq 0 ]; do # while there are arguments
     case "$1" in
 
-        --format | -f)
+        -f)
 			format_specified=true
 
 			case "$2" in
@@ -52,6 +52,25 @@ while [ ! $# -eq 0 ]; do # while there are arguments
 					;;
             esac
 			shift
+			;;
+
+        --format=*)
+			format_specified=true
+            format="${1#*=}"
+
+			case "$format" in
+
+				--778 | --NA | --zebra)
+					FORMAT=$format
+					;;
+
+				*)
+					echo "Incorrect or no format specified"
+					echo $USAGE
+					echo "$HELP"
+					exit 1
+					;;
+            esac
 			;;
 
         --help | -h)

@@ -185,7 +185,7 @@ void* node_handler(void* arg) {
                 tid + 1, core.ip_list[tid], reprocessing ? "Reassigning" : "Assigning",
                 core.file_list[fidx], fidx + 1 - failed_before_cnt, core.ip_list[tid]);
         
-        sprintf(msg, "--format %s %s", core.format, core.file_list[fidx]);
+        sprintf(msg, "--format=%s %s", core.format, core.file_list[fidx]);
         send_full_msg(socketfd, msg, strlen(msg)); // send filename and format to thread
         // read msg into buffer and receive the buffer's expected length
         int received = recv_full_msg_try(socketfd, buffer, MAX_PATH_SIZE, RECEIVE_TIME_OUT);
@@ -317,7 +317,7 @@ int main(int argc, char* argv[]) {
     } else if (argc != 3 ||
         ! ( strcmp(argv[1], "--778") || strcmp(argv[1], "--NA") || strcmp(argv[1], "--zebra") )
         ) { // check there is at least 2 args
-        ERROR("Not enough arguments. Usage %s <format> <ip_list> [--resume | -r]\n"
+        ERROR("Not enough arguments. Usage %s [format] [ip_list] [--resume | -r]\n"
                "Acceptable formats:\n"
                     "\t--778   [in_dir]\n"
                                 "\t\t|-- fast5/\n"

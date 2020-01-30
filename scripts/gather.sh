@@ -1,6 +1,6 @@
 if [ $# -ne 3 ]; then
 	echo "usage $0 sourcefile dest_path_and_prefix extension"
-	exit
+	exit 1
 fi
 
 source=$1

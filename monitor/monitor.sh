@@ -14,15 +14,15 @@
 #%    -f, --flag                                    Print flag of -1 if exited due to completion
 #%    -h, --help                                    Print help message
 #%    -i, --info                                    Print script information
-#%    -n [num], --num-files [num]                   Exit after given number of files
+#%    -n [num], --num-files=[num]                   Exit after given number of files
 #%    -t [timeout_format] [time],               
-#%    --timeout [timeout_format] [time]             Exits after a specified time period of no new files
+#%    --timeout [timeout_format]=[time]             Exits after a specified time period of no new files
 #%        default -t -hr 1                              - Default timeout of 1 hour
 #%
 #%    timeout formats
-#%        -s [time], --seconds [time]               Timeout format in seconds
-#%        -m [time], --minutes [time]               "---------------" minutes
-#%        -hr [time], --hours  [time]               "---------------" hours
+#%        -s [time], --seconds=[time]               Timeout format in seconds
+#%        -m [time], --minutes=[time]               "---------------" minutes
+#%        -hr [time], --hours=[time]                "---------------" hours
 #%
 #% EXAMPLES
 #%    exit after 10 new files
@@ -85,29 +85,50 @@ while [ ! $# -eq 0 ]; do # While there are arguments
             exit 0
             ;;
 
-        --num-files | -n)
+        -n)
             NO_FILES=$2
             shift
             ;;
 
+        --num-files=*)
+            NO_FILES="${1#*=}"
+            ;;
+
         --timeout | -t)
-            TIME_INACTIVE=$3 # Time to wait until timeout
-            timeout=true # Set timeout option on
+            timeout=true
 
             case "$2" in
-                --seconds | -s)
-                    TIME_FACTOR=1 # 1 sec in a sec  
+                -s)
+                    TIME_FACTOR=1 # 1 sec in a sec
+                    TIME_INACTIVE=$3
                     shift
                     ;;
 
-                --minutes | -m)
+                --seconds=*)
+                    TIME_FACTOR=1 # 1 sec in a sec
+                    TIME_INACTIVE="${2#*=}"
+                    ;;
+
+                -m)
                     TIME_FACTOR=60 # 60 sec in a min
+                    TIME_INACTIVE=$3
                     shift
                     ;;
 
-                --hours | -hr)
+                --minutes=*)
+                    TIME_FACTOR=60 # 60 sec in a min
+                    TIME_INACTIVE="${2#*=}"
+                    ;;
+
+                -hr)
                     TIME_FACTOR=3600 # 3600 sec in an hour
+                    TIME_INACTIVE=$3
                     shift
+                    ;;
+
+                --hours=*)
+                    TIME_FACTOR=3600 # 3600 sec in an hour
+                    TIME_INACTIVE="${2#*=}"
                     ;;
 
                 *)
@@ -204,7 +225,7 @@ while $timeout; do
     # If there has been no files created in a specified period of time exit program
     # or -1 flag has been called by background process
     if (( $(echo "$time_elapsed > $TIME_INACTIVE" | bc -l) )) || [ "$(cat $SCRIPT_PATH/$TEMP_FILE)" = "-1" ]; then
-        exit
+        exit 0
     fi
 
 done
@@ -212,6 +233,6 @@ done
 while : ; do # While true
     # If -1 flag in temporary file
     if [ "$(cat $SCRIPT_PATH/$TEMP_FILE)" = "-1" ]; then
-        exit
+        exit 0
     fi
 done

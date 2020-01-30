@@ -10,7 +10,7 @@
 #%    into specified directory.
 #%
 #% OPTIONS
-#%    -f [format], --format [format]                Follows a specified format of fast5 and fastq files
+#%    -f [format], --format=[format]                Follows a specified format of fast5 and fastq files
 #%                                          
 #%    available formats
 #%        --778           [directory]               Old format that's not too bad
@@ -39,9 +39,9 @@
 #%                                                             
 #%    -h, --help                                    Print help message
 #%    -i, --info                                    Print script information
-#%	  -n [num], --num-batches [num]					Copy a given number of batches
+#%	  -n [num], --num-batches=[num]					Copy a given number of batches
 #%    -r, --real-sim								Realistic simulation
-#%	  -t [time], --time-between [time]				Time to wait in between copying
+#%	  -t [time], --time-between=[time]				Time to wait in between copying
 #%
 #% EXAMPLES
 #%    normal simulation with 30s between batches
@@ -84,19 +84,11 @@ format_specified=false # Assume no format specified
 while [ ! $# -eq 0 ]; do # While there are arguments
     case "$1" in
 
-		--format | -f)
+		-f)
 			format_specified=true
 
 			case "$2" in
-				--778)
-					FORMAT=$2
-					;;
-
-				--NA)
-					FORMAT=$2
-					;;
-				
-				--zebra)
+				--778 | --NA | --zebra)
 					FORMAT=$2
 					;;
 
@@ -109,6 +101,23 @@ while [ ! $# -eq 0 ]; do # While there are arguments
 			shift
 			;;
 
+		--format=*)
+			format_specified=true
+			format="${1#*=}"
+
+			case "$format" in
+				--778 | --NA | --zebra)
+					FORMAT=$format
+					;;
+
+				*)
+					echo "Incorrect or no format specified"
+					usagefull
+					exit 1
+					;;
+			esac
+			;;
+
         --help | -h)
             usagefull
             exit 0
@@ -119,18 +128,26 @@ while [ ! $# -eq 0 ]; do # While there are arguments
             exit 0
             ;;
 
-        --num-batches | -n)
+        -n)
             NO_BATCHES=$2
             shift
             ;;
+
+		--num-batches=*)
+			NO_BATCHES="${1#*=}"
+			;;
 
         --real-sim | -r)
             REAL_SIM=true
             ;;
 
-		--time-between | -t)
+		-t)
 			TIME=$2
 			shift
+			;;
+
+		--time-between=*)
+			TIME="${1#*=}"
 			;;
 
         *)

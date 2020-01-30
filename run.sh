@@ -11,7 +11,7 @@
 #%
 #% OPTIONS
 #%    -a, --avail                                   Output available formats
-#%    -f [format], --format [format]                Follows a specified format of fast5 and fastq files
+#%    -f [format], --format=[format]                Follows a specified format of fast5 and fastq files
 #%                                          
 #%    available formats
 #%        --778           [directory]               Old format that's not too bad
@@ -41,33 +41,33 @@
 #%                                                             
 #%    -h, --help                                    Print help message
 #%    -i, --info                                    Print script information
-#%    -l [filename], --log [filename]               Specify log filename for logs
+#%    -l [filename], --log=[filename]               Specify log filename for logs
 #%        default log.txt                           
 #%
-#%    -m [directory], --monitor [directory]         Monitor a specific directory
-#%    --non-realtime [directory]                    Specify non-realtime analysis
+#%    -m [directory], --monitor=[directory]         Monitor a specific directory
+#%    --non-realtime=[directory]                    Specify non-realtime analysis
 #%    -r, --resume                                  Resumes from last processing position
-#%    -s, --script                                  Custom script for processing files on the cluster
+#%    -s [file], --script=[file]                    Custom script for processing files on the cluster
 #%        default scripts/fast5_pipeline.sh             - Default script which calls minimap, f5c & samtools
 #%
 #%    -t [timeout_format] [time],               
-#%    --timeout [timeout_format] [time]             Exits after a specified time period of no new files
+#%    --timeout [timeout_format]=[time]             Exits after a specified time period of no new files
 #%        default -t -hr 1                              - Default timeout of 1 hour
 #%
 #%    timeout formats
-#%        -s [time], --seconds [time]               Timeout format in seconds
-#%        -m [time], --minutes [time]               "---------------" minutes
-#%        -hr [time], --hours  [time]               "---------------" hours
+#%        -s [time], --seconds=[time]               Timeout format in seconds
+#%        -m [time], --minutes=[time]               "---------------" minutes
+#%        -hr [time], --hours=[time]                "---------------" hours
 #%        -a, --automatic                           Timeout calculated automatically to testing data
 #%
 #%
 #%    -8 [directory] [simulate_options],
-#%    --simul8 [directory] [simulate_options]       Simulate sequenced files for testing (or fun!)
+#%    --simul8=[directory] [simulate_options]       Simulate sequenced files for testing (or fun!)
 #%
 #%    simulate options
-#%        --n [number_of_batches]                   Stop simulating after a certain number of batches
+#%        --n=[number_of_batches]                   Stop simulating after a certain number of batches
 #%        --real                                    Simulate realistically given sequencing summary files
-#%        --t [time_between_batches]                Simulate batches with a certain time between them  
+#%        --t=[time_between_batches]                Simulate batches with a certain time between them  
 #%            default 0s                            
 #%
 #% EXAMPLES
@@ -77,7 +77,7 @@
 #%    realtime simulation
 #%        ${SCRIPT_NAME} -f [format] -m [directory] -8 [directory] --real -t -a
 #%    non realtime
-#%        ${SCRIPT_NAME} --non-realtime [directory]
+#%        ${SCRIPT_NAME} --non-realtime=[directory]
 #%
 #================================================================
 #- IMPLEMENTATION
@@ -136,19 +136,11 @@ while [ ! $# -eq 0 ]; do # while there are arguments
             exit 0
             ;;
 
-        --format | -f)
+        -f)
             format_specified=true
 
             case "$2" in
-                --778)
-                    FORMAT=$2
-                    ;;
-
-                --NA)
-                    FORMAT=$2
-                    ;;
-
-                --zebra)
+                --778 | --NA | --zebra)
                     FORMAT=$2
                     ;;
 
@@ -161,6 +153,23 @@ while [ ! $# -eq 0 ]; do # while there are arguments
             shift
             ;;
 
+        --format=*)
+            format_specified=true
+            format="${1#*=}"
+
+            case "$format" in
+                --778 | --NA | --zebra)
+                    FORMAT=$format
+                    ;;
+
+                *)
+                    echo "Incorrect or no format specified"
+                    usagefull
+                    exit 1
+                    ;;
+            esac
+            ;;
+
         --help | -h)
             usagefull
             exit 0
@@ -171,73 +180,137 @@ while [ ! $# -eq 0 ]; do # while there are arguments
             exit 0
             ;;
 
-        --log | -l)
+        -l)
             LOG=$2
             shift
             ;;
 
-        --monitor | -m)
-            # Parent directory with fast5 and fastq subdirectories 
-            # which is monitored for new files
+        --log=*)
+            LOG="${1#*=}"
+            ;;
+
+        # Parent directory with fast5 and fastq subdirectories 
+        # which is monitored for new files
+
+        -m)
             MONITOR_PARENT_DIR=$2
             monitor_dir_specified=true
             shift
             ;;
 
-        --non-realtime)
+        --monitor=*)
+            MONITOR_PARENT_DIR="${1#*=}"
+            monitor_dir_specified=true
+            ;;
+
+        --non-realtime=*)
             realtime=false
-            MONITOR_PARENT_DIR=$2
-            shift
+            MONITOR_PARENT_DIR="${1#*=}"
             ;;
 
         --resume | -r)
             resuming=true
             ;;
 
-        --script | -s)
+        -s)
             PIPELINE_SCRIPT=$2
             shift
             ;;
 
-        --simul8 | -8)
+        --script=*)
+            PIPELINE_SCRIPT="${1#*=}"
+            ;;
+
+        -8)
             simulate=true
             SIMULATE_FOLDER=$2 # Folder containing dataset to simulate sequencing
 
-            case "$3" in
-                --n)
-                    NO_BATCHES=$4
-                    shift
-                    ;;
+            while [ ! $# -eq 0 ]; do # while there are arguments
+                case "$3" in
+                    --n=*)
+                        NO_BATCHES="${3#*=}"
+                        ;;
 
-                --real)
-                    real_sim=true
-                    ;;
-                    
-                --t)
-                    TIME_BETWEEN_BATCHES=$4
-                    shift
-                    ;;
-            esac
-            shift
+                    --real)
+                        real_sim=true
+                        ;;
+                        
+                    --t=*)
+                        TIME_BETWEEN_BATCHES="${3#*=}"
+                        ;;
+
+                    *)
+                        shift
+                        break
+                        ;;
+                esac
+                shift
+            done
+
+            ;;
+
+        --simul8=*)
+            simulate=true
+            SIMULATE_FOLDER="${1#*=}" # Folder containing dataset to simulate sequencing
+
+            while [ ! $# -eq 0 ]; do # while there are arguments
+                case "$2" in
+                    --n=*)
+                        NO_BATCHES="${2#*=}"
+                        ;;
+
+                    --real)
+                        real_sim=true
+                        ;;
+                        
+                    --t=*)
+                        TIME_BETWEEN_BATCHES="${2#*=}"
+                        ;;
+
+                    *)
+                        shift
+                        break
+                        ;;
+                esac
+                shift
+            done
+
             ;;
 
         --timeout | -t)
-            TIME_INACTIVE=$3 # time to wait until timeout
 
             case "$2" in
-                --seconds | -s)
+                -s)
                     TIME_FACTOR="s" 
+                    TIME_INACTIVE=$3
                     shift
                     ;;
 
-                --minutes | -m)
+                --seconds=*)
+                    TIME_FACTOR="s"
+                    TIME_INACTIVE="${2#*=}"
+                    ;;
+
+                -m)
                     TIME_FACTOR="m"
+                    TIME_INACTIVE=$3
                     shift
                     ;;
 
-                --hours | -hr)
+                --minutes=*)
+                    TIME_FACTOR="m"
+                    TIME_INACTIVE="${2#*=}"
+                    ;;
+
+                -hr)
                     TIME_FACTOR="hr"
+                    TIME_INACTIVE=$3
                     shift
+                    ;;
+
+                --hours=*)
+                    TIME_FACTOR="hr"
+                    TIME_INACTIVE="${2#*=}"
                     ;;
 
                 --automatic | -a)
@@ -257,7 +330,7 @@ while [ ! $# -eq 0 ]; do # while there are arguments
                         MAX_WAIT=$(bash $SCRIPT_PATH/max_time_between_files.sh -f $FORMAT $SIMULATE_FOLDER)
                     fi
 
-                    TIME_INACTIVE=$(python -c "print($MAX_WAIT + 600)") # add buffer of 10 minutes (600s)
+                    TIME_INACTIVE=$(python -c "print($MAX_WAIT + 600)") # Add buffer of 10 minutes (600s)
                     shift
                     ;;
 

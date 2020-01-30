@@ -10,7 +10,7 @@
 #%	  Prints max time in seconds by default if loud option not set.
 #%
 #% OPTIONS
-#%    -f [format], --format [format]                Follows a specified format of fast5 and fastq files
+#%    -f [format], --format=[format]                Follows a specified format of fast5 and fastq files
 #%                                          
 #%    available formats
 #%        --778           [directory]               Old format that's not too bad
@@ -73,7 +73,7 @@ format_specified=false # Assume no format specified
 while [ ! $# -eq 0 ]; do # While there are arguments
     case "$1" in
 
-		--format | -f)
+		-f)
             format_specified=true
 
             case "$2" in
@@ -88,6 +88,23 @@ while [ ! $# -eq 0 ]; do # While there are arguments
                     ;;
 			esac
             shift
+            ;;
+
+		--format=*)
+            format_specified=true
+			format="${1#*=}"
+
+            case "$format" in
+                --778 | --NA | --zebra)
+                    FORMAT=$format
+                    ;;
+
+                *)
+                    echo "Incorrect or no format specified"
+                    usagefull
+                    exit 1
+                    ;;
+			esac
             ;;
 
         --help | -h)

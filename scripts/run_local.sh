@@ -4,7 +4,7 @@ while true; do
     read -p "This will overwrite stats from the previous run. Do you wish to continue?" yn
     case $yn in
         [Yy]* ) make install; break;;
-        [Nn]* ) exit;;
+        [Nn]* ) exit 0;;
         * ) echo "Please answer yes or no.";;
     esac
 done
