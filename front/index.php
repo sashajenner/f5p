@@ -8,6 +8,9 @@
 
     <body>
         <form id="analysis_form" method="POST">
+            <fieldset class="invisible">
+                <input type="submit" class="button" name="reset" value="reset to default options" />
+            </fieldset>
             <fieldset>
                 <label for="format" style="font-weight: bold;">Format</label>
                 <br>
@@ -36,7 +39,8 @@
                 <br>
                 <select name="dir" id="dir" required>
                     <?php
-                        $mnt_dirs_str = shell_exec("ls -d /mnt/*/");
+                        $cmd = 'find /mnt/ -maxdepth 3 -type d | grep -v "/fast5\|/fastq\|/log2\|/logs\|/sam\|/methylation\|/bam"';
+                        $mnt_dirs_str = shell_exec($cmd);
                         $mnt_dirs_arr = explode("\n", $mnt_dirs_str);
                         if (empty($mnt_dirs_arr[count($mnt_dirs_arr)-1])) { // remove last element if empty
                             unset($mnt_dirs_arr[count($mnt_dirs_arr)-1]);
@@ -161,15 +165,12 @@
             <br>
             <fieldset class="invisible">
                 <input type="submit" class="button" name="execute" value="start realtime analysis" />
-                <input type="submit" class="button" name="halt" value="stop it" />
-            </fieldset>
-            <fieldset class="invisible">
-                <input type="submit" class="button" name="reset" value="reset to default options" />
+                <input type="submit" class="button" name="halt" value="stop all" />
             </fieldset>
         </form>
 
         <form id="logs_button" action="logs.php" method="POST">
-            <input type="submit" class="button" name="logs" value="view output" />
+            <input type="submit" class="button" name="logs" value="view jobs" />
         </form>
 
         <p><br>
@@ -296,21 +297,25 @@
                     }
                     
                 } else if (isset($_POST['halt'])) {
-                    if ($_POST['halt'] == "stop it") {
+                    if ($_POST['halt'] == "stop all") {
                         system("screen -list");
-                        $recent_screen = shell_exec("screen -list | sed -n 2p | cut -f2");
-                        $recent_screen = rtrim($recent_screen);
+                        //$recent_screen = shell_exec("screen -list | sed -n 2p | cut -f2");
+                        //$recent_screen = rtrim($recent_screen);
 
-                        if ($recent_screen == "") {
-                            echo "<br>No process to stop";
+                        // if ($recent_screen == "") {
+                        //     echo "<br>No process to stop";
 
-                        } else {
+                        // } else {
 
-                            echo "<br>'$recent_screen'<br>";
-                            system("screen -XS $recent_screen quit");
-                            echo "<br>";
-                            system("screen -list");
-                        }
+                        //     echo "<br>'$recent_screen'<br>";
+                        //     system("screen -XS $recent_screen quit");
+                        //     echo "<br>";
+                        //     system("screen -list");
+                        // }
+
+                        system("pkill screen");
+                        echo "<br>";
+                        system("screen -list");
 
                     }
                 }
@@ -318,6 +323,6 @@
         </p>
         <!-- <script src="js/oldbutton.js"></script> -->
         <script src="js/disabled.js"></script>
-        <script src="js/button.js"></script>
+        <script src="js/button.js?31-01-2020:11 56"></script>
     </body>
 </html>

@@ -9,18 +9,22 @@
 
     <body>
         <div id='log'>
+            Jobs:
+            <br>
             <?php
-                $output = shell_exec("tac ../log.txt");
-                $dictionary = array(
-                    '[1;34m'    =>  '<span style="color:blue">',
-                    '[1;331m'   =>  '<span style="color:red">',
-                    '[1;33m'    =>  '<span style="color:yellow">',
-                    '[0m'       =>  '</span>',
-                );
+                $jobs_str = shell_exec("screen -list");
+
+                // $output = shell_exec("tac ../log.txt");
+                // $dictionary = array(
+                //     '[1;34m'    =>  '<span style="color:blue">',
+                //     '[1;331m'   =>  '<span style="color:red">',
+                //     '[1;33m'    =>  '<span style="color:yellow">',
+                //     '[0m'       =>  '</span>',
+                // );
                 
-                $output_color = str_replace(array_keys($dictionary), $dictionary, $output);
+                // $output_color = str_replace(array_keys($dictionary), $dictionary, $output);
                 
-                echo $output_color;
+                // echo $output_color;
             ?>
         </div>
     </body>
