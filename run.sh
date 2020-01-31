@@ -60,7 +60,6 @@
 #%        -hr [time], --hours=[time]                "---------------" hours
 #%        -a, --automatic                           Timeout calculated automatically to testing data
 #%
-#%
 #%    -8 [directory] [simulate_options],
 #%    --simul8=[directory] [simulate_options]       Simulate sequenced files for testing (or fun!)
 #%

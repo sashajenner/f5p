@@ -306,47 +306,54 @@ void sig_handler(int sig) {
 
 int main(int argc, char* argv[]) {
     signal(SIGSEGV, sig_handler);
-    printf("started\n"); // testing
-    fflush(stdout); // will now print everything in the stdout buffer // testing
+    fflush(stdout); // Flushing stdout buffer
+
+    char* help_msg=
+    "Acceptable formats:\n" // Help message for arguments
+    "   --778   [in_dir]\n"
+    "           |-- fast5/\n"
+    "               |-- [prefix].fast5.tar\n"
+    "           |-- fastq/\n"
+    "               |-- fastq_*.[prefix].fastq.gz\n\n"
+                                
+    "   --NA    [in_dir]\n"
+    "           |-- fast5/\n"
+    "               |-- [prefix].fast5\n"
+    "           |-- fastq/\n"
+    "               |-- [prefix]\n"
+    "                   |-- [prefix].fastq\n\n"
+                    
+    "   --zebra  [in_dir]\n"
+    "            |-- fast5/\n"
+    "                |-- [prefix].fast5\n"
+    "            |-- fastq/\n"
+    "                |-- [prefix].fastq\n";
 
     if (argc == 4 && 
         ( strcmp(argv[3], "--resume") || strcmp(argv[3], "-r") )
-        ) { // if there are 3 args and the 3rd is "--resume" or "-r"
-        core.resuming = true; // set resume option to true
+        ) { // If there are 3 args and the 3rd is "--resume" or "-r"
+        core.resuming = true; // Set resume option to true
+
+    } else if ( strcmp(argv[1], "-h") || strcmp(argv[1], "--help") ) { // If help option is set
+        printf("%s", help_msg);
+        fflush(stdout); // Flushing stdout buffer
+        return 0;
 
     } else if (argc != 3 ||
         ! ( strcmp(argv[1], "--778") || strcmp(argv[1], "--NA") || strcmp(argv[1], "--zebra") )
-        ) { // check there is at least 2 args
-        ERROR("Not enough arguments. Usage %s [format] [ip_list] [--resume | -r]\n"
-               "Acceptable formats:\n"
-                    "\t--778   [in_dir]\n"
-                                "\t\t|-- fast5/\n"
-                                    "\t\t\t|-- [prefix].fast5.tar\n"
-                                "\t\t|-- fastq/\n"
-                                    "\t\t\t|-- fastq_*.[prefix].fastq.gz\n\n"
-                                
-                    "\t--NA    [in_dir]\n"
-                                "\t\t|-- fast5/\n"
-                                    "\t\t\t|-- [prefix].fast5\n"
-                                "\t\t|-- fastq/\n"
-                                    "\t\t\t|-- [prefix]\n"
-                                        "\t\t\t\t|-- [prefix].fastq\n"
-                    
-                    "\t--zebra  [in_dir]\n"
-                                "\t\t|-- fast5/\n"
-                                    "\t\t\t|-- [prefix].fast5\n"
-                                "\t\t|-- fastq/\n"
-                                    "\t\t\t|-- [prefix].fastq\n",
-                argv[0]);
+        ) { // Check there is at least 2 args
+        ERROR("Not enough arguments. Usage %s [format] [ip_list] [--resume | -r]\n%s",
+                argv[0], help_msg);
         exit(EXIT_FAILURE);
 
-    } else { // if there is one arg
-        core.resuming = false; // set resume option to false
+    } else { // If there is one arg
+        core.resuming = false; // Set resume option to false
     }
 
-    initial_time = realtime(); // retrieving initial time
+    printf("Realtime pipeline started\n");
+    initial_time = realtime(); // Retrieving initial time
 
-    core.format = argv[1]; // set format string
+    core.format = argv[1]; // Set format string
 
 
         // read the list of ip addresses
