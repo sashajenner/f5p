@@ -173,6 +173,8 @@
             <input type="submit" class="button" name="logs" value="view jobs" />
         </form>
 
+
+
         <p><br>
             Options specified
             <br>
@@ -294,6 +296,8 @@
 
                         echo $cmd;
                         system($cmd);
+
+                        system("printf '$name\nFormat:$format Monitor_dir:$monitor_dir Analysis_script:$script Timeout_format:$timeout_format Timeout_time:$timeout_time Simulate:$simulate Simulate_dir:$simulate_dir Real_simulation:$real_sim Time_between_batches:$time_between_batches Num_batches:$no_batches' >> database.txt");
                     }
                     
                 } else if (isset($_POST['halt'])) {
@@ -316,7 +320,8 @@
                         system("pkill screen");
                         echo "<br>";
                         system("screen -list");
-
+                        
+                        system("cp /dev/null database.txt");
                     }
                 }
             ?>
