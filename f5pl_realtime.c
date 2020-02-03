@@ -1,9 +1,33 @@
 /* @f5pl_realtime.c
 **
-** realtime fast5_pipeline client
-** runs on the head node and assigns work to worker nodes in realtime
-** @author: Hasindu Gamaarachchi (hasindu@unsw.edu.au)
-** @coauthor: Sasha Jenner (jenner.sasha@gmail.com)
+** Realtime fast5_pipeline client.
+** Runs on the head node and assigns work to worker nodes in realtime.
+**
+** @authors: Hasindu Gamaarachchi (hasindu@unsw.edu.au),
+**           Sasha Jenner (jenner.sasha@gmail.com)
+**
+** MIT License
+** 
+** Copyright (c) 2019 Hasindu Gamaarachchi, 2020 Sasha Jenner
+** 
+** Permission is hereby granted, free of charge, to any person obtaining a copy
+** of this software and associated documentation files (the "Software"), to deal
+** in the Software without restriction, including without limitation the rights
+** to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+** copies of the Software, and to permit persons to whom the Software is
+** furnished to do so, subject to the following conditions:
+** 
+** The above copyright notice and this permission notice shall be included in all
+** copies or substantial portions of the Software.
+** 
+** THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+** IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+** FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+** AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+** LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+** OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+** SOFTWARE.
+**
 */
 
 // header imports
@@ -306,51 +330,50 @@ void sig_handler(int sig) {
 
 int main(int argc, char* argv[]) {
     signal(SIGSEGV, sig_handler);
-    fflush(stdout); // Flushing stdout buffer
 
-    char* help_msg=
-    "Acceptable formats:\n" // Help message for arguments
-    "   --778   [in_dir]\n"
-    "           |-- fast5/\n"
-    "               |-- [prefix].fast5.tar\n"
-    "           |-- fastq/\n"
-    "               |-- fastq_*.[prefix].fastq.gz\n\n"
+    char* help_msg= "Acceptable formats:\n" // Help message for arguments
+                    "   --778   [in_dir]\n"
+                    "           |-- fast5/\n"
+                    "               |-- [prefix].fast5.tar\n"
+                    "           |-- fastq/\n"
+                    "               |-- fastq_*.[prefix].fastq.gz\n\n"
                                 
-    "   --NA    [in_dir]\n"
-    "           |-- fast5/\n"
-    "               |-- [prefix].fast5\n"
-    "           |-- fastq/\n"
-    "               |-- [prefix]\n"
-    "                   |-- [prefix].fastq\n\n"
-                    
-    "   --zebra  [in_dir]\n"
-    "            |-- fast5/\n"
-    "                |-- [prefix].fast5\n"
-    "            |-- fastq/\n"
-    "                |-- [prefix].fastq\n";
+                    "   --NA    [in_dir]\n"
+                    "           |-- fast5/\n"
+                    "               |-- [prefix].fast5\n"
+                    "           |-- fastq/\n"
+                    "               |-- [prefix]\n"
+                    "                   |-- [prefix].fastq\n\n"
+                                    
+                    "   --zebra  [in_dir]\n"
+                    "            |-- fast5/\n"
+                    "                |-- [prefix].fast5\n"
+                    "            |-- fastq/\n"
+                    "                |-- [prefix].fastq\n";
 
     if (argc == 4 && 
-        ( strcmp(argv[3], "--resume") || strcmp(argv[3], "-r") )
+        ( strcmp(argv[3], "--resume") == 0 || strcmp(argv[3], "-r") == 0 )
         ) { // If there are 3 args and the 3rd is "--resume" or "-r"
         core.resuming = true; // Set resume option to true
 
-    } else if ( strcmp(argv[1], "-h") || strcmp(argv[1], "--help") ) { // If help option is set
+    } else if ( strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0 ) { // If help option is set
         printf("%s", help_msg);
         fflush(stdout); // Flushing stdout buffer
         return 0;
 
     } else if (argc != 3 ||
-        ! ( strcmp(argv[1], "--778") || strcmp(argv[1], "--NA") || strcmp(argv[1], "--zebra") )
+        ! ( strcmp(argv[1], "--778") == 0 || strcmp(argv[1], "--NA") == 0 || strcmp(argv[1], "--zebra") == 0 )
         ) { // Check there is at least 2 args
         ERROR("Not enough arguments. Usage %s [format] [ip_list] [--resume | -r]\n%s",
                 argv[0], help_msg);
         exit(EXIT_FAILURE);
 
-    } else { // If there is one arg
+    } else { // If there are 2 args and the formats are correct
         core.resuming = false; // Set resume option to false
     }
 
-    printf("Realtime pipeline started\n");
+    printf("[f5pl_realtime.c] starting\n");
+    fflush(stdout); // Flushing stdout buffer
     initial_time = realtime(); // Retrieving initial time
 
     core.format = argv[1]; // Set format string
