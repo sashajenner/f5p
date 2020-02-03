@@ -290,7 +290,7 @@
 
                         } else {
                             echo "Command being run:<br>";
-                            $cmd = sprintf("screen -S %s -L -d -m bash -c 'bash ../run.sh -f %s -m %s -t %s%s'", 
+                            $cmd = sprintf("screen -S %s -L -d -m bash -c 'echo y | bash ../run.sh -f %s -m %s -t %s%s'", 
                                             $name, $format, $monitor_dir, $timeout_format, $timeout_time);
                         }
 

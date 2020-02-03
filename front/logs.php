@@ -17,7 +17,6 @@
         <div id='log' style="margin: 0 20% 0 20%;">
             Jobs:
             <form id="job_buttons" method="POST">
-            <!-- <form id="job_buttons" action="logs.php" method="POST"> -->
                 <?php
 
                     $jobs_str = shell_exec("screen -list | tail -n +2 | head -n -1 | cut -f2"); // extract list of screen pids
@@ -46,7 +45,7 @@
                         echo "<br>";
                         echo "<div id='$job_name-options' class='hidden'>";
                         echo "<input type='submit' class='button' name='kill $job_name' value='kill job' style='float: left;' />";
-                        echo "<input type='submit' class='button' name='view job' value='show output' style='float: left;' />";
+                        echo "<input type='submit' class='button' id='$job_name-output' name='view job' value='show output' style='float: left;' />";
                         echo "</div>";
 
                         system("grep $job_name database.txt");
@@ -62,6 +61,15 @@
                                     } else {
                                         $('#$job_name-options').addClass('hidden');
                                     }
+                                });
+                            });
+                        </script>";
+
+                        echo "
+                        <script type='text/javascript'>
+                            $(document).ready(function() {
+                                $('#$job_name-output').click(function() {
+                                    
                                 });
                             });
                         </script>";
