@@ -6,8 +6,8 @@
 #+    ${SCRIPT_NAME} -f [format] -m [directory] [options ...]
 #%
 #% DESCRIPTION
-#%    Runs realtime (or not) sequenced genome analysis given input directory
-#%    and the expected file format.
+#%    Runs realtime (or not) analysis of sequenced genomes
+#%    given input directory and its expected format.
 #%
 #% OPTIONS
 #%    -a, --avail                                   Output available formats
@@ -82,8 +82,27 @@
 #- IMPLEMENTATION
 #-    authors         Hasindu GAMAARACHCHI (hasindu@unsw.edu.au),
 #-                    Sasha JENNER (jenner.sasha@gmail.com)
-#-    copyright       Copyright (c) ... (todo)
-#-    license         ... (todo)
+#-    license         MIT
+#-         
+#-    Copyright (c) 2019 Hasindu Gamaarachchi, 2020 Sasha Jenner
+#-
+#-    Permission is hereby granted, free of charge, to any person obtaining a copy
+#-    of this software and associated documentation files (the "Software"), to deal
+#-    in the Software without restriction, including without limitation the rights
+#-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#-    copies of the Software, and to permit persons to whom the Software is
+#-    furnished to do so, subject to the following conditions:
+#-
+#-    The above copyright notice and this permission notice shall be included in all
+#-    copies or substantial portions of the Software.
+#-
+#-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#-    SOFTWARE.
 #-
 #================================================================
 # END_OF_HEADER
@@ -390,10 +409,10 @@ test -d $SCRIPT_PATH/data/logs && rm -r $SCRIPT_PATH/data/logs
 mkdir -p $SCRIPT_PATH/data/logs || exit 1
 
 # Create folders to copy the results (SAM files, BAM files, logs and methylation calls)
-test -d $MONITOR_PARENT_DIR/sam || mkdir $MONITOR_PARENT_DIR/sam || exit 1
-test -d $MONITOR_PARENT_DIR/bam || mkdir $MONITOR_PARENT_DIR/bam || exit 1
-test -d $MONITOR_PARENT_DIR/log2 || mkdir $MONITOR_PARENT_DIR/log2 || exit 1
-test -d $MONITOR_PARENT_DIR/methylation || mkdir $MONITOR_PARENT_DIR/methylation || exit 1
+test -d $MONITOR_PARENT_DIR/sam         || mkdir $MONITOR_PARENT_DIR/sam            || exit 1
+test -d $MONITOR_PARENT_DIR/bam         || mkdir $MONITOR_PARENT_DIR/bam            || exit 1
+test -d $MONITOR_PARENT_DIR/log2        || mkdir $MONITOR_PARENT_DIR/log2           || exit 1
+test -d $MONITOR_PARENT_DIR/methylation || mkdir $MONITOR_PARENT_DIR/methylation    || exit 1
 
 # Copy the pipeline script to all worker nodes
 ansible all -m copy -a "src=$PIPELINE_SCRIPT dest=/nanopore/bin/fast5_pipeline.sh mode=0755" |& tee -a $LOG
@@ -404,9 +423,6 @@ if ! $realtime; then # If non-realtime option set
 
 else # Else assume realtime analysis is desired
     if $simulate; then # If the simulation option is on
-
-        # Check the existence of the simulation folder
-        test -d $FAST5FOLDER || exit 1
 
         # Create fast5 and fastq folders if they don't exist
         test -d $MONITOR_PARENT_DIR/fast5 || mkdir $MONITOR_PARENT_DIR/fast5 || exit 1
@@ -436,7 +452,9 @@ else # Else assume realtime analysis is desired
     fi
 fi
 
-mv *.cfg data/logs # Move all config files
+echo "[run.sh] handling logs" # testing
+
+mv $SCRIPT_PATH/*.cfg $SCRIPT_PATH/data/logs # Move all config files
 
 # Tar the logs
 ansible all -m shell -a "cd /nanopore/scratch && tar zcvf logs.tgz *.log"
@@ -452,3 +470,5 @@ cp $PIPELINE_SCRIPT $SCRIPT_PATH/data/logs/ # Copy pipeline script
 bash $SCRIPT_PATH/scripts/failed_device_logs.sh # Get the logs of the files where the pipeline crashed
 
 cp -r data $MONITOR_PARENT_DIR/f5pmaster # Copy entire data folder to local f5pmaster folder
+
+echo "[run.sh] exiting" # testing
