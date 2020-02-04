@@ -1,5 +1,5 @@
 var default_format = "--zebra";
-var default_monitor_dir = "/mnt/zebrafish/zebrafish_test";
+var default_monitor_dir = "/mnt/simulator_out";
 var default_script = "fast5_pipeline.sh";
 var default_timeout_time = "Hours";
 

@@ -21,6 +21,10 @@ form {
     text-align: center
 }
 
+form#logs_button { 
+    display: inline;
+}
+
 div#log {
     display: block;
     font-family: monospace;

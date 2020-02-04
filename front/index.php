@@ -7,10 +7,15 @@
     </head>
 
     <body>
-        <form id="analysis_form" method="POST">
-            <fieldset class="invisible">
-                <input type="submit" class="button" name="reset" value="reset to default options" />
-            </fieldset>
+        <fieldset class="invisible">
+            <form id="logs_button" action="manage_jobs.php" method="POST">
+                <input type="submit" class="button" name="logs" value="view jobs" />
+            </form>
+
+            <input type="submit" class="button" name="reset" value="reset to default options" />
+        </fieldset>
+        
+        <form id="analysis_form" method="POST">        
             <fieldset>
                 <label for="format" style="font-weight: bold;">Format</label>
                 <br>
@@ -136,7 +141,8 @@
                 <label for="sim-dir">Simulate Directory</label>
                 <select name="simulate dir" id="sim-dir">
                     <?php
-                        $mnt_dirs_str = shell_exec("ls -d /mnt/*/");
+                        $cmd = 'find /mnt/ -maxdepth 3 -type d | grep -v "/fast5\|/fastq\|/log2\|/logs\|/sam\|/methylation\|/bam"';
+                        $mnt_dirs_str = shell_exec($cmd);
                         $mnt_dirs_arr = explode("\n", $mnt_dirs_str);
                         if (empty($mnt_dirs_arr[count($mnt_dirs_arr)-1])) { // remove last element if empty
                             unset($mnt_dirs_arr[count($mnt_dirs_arr)-1]);
@@ -169,17 +175,10 @@
             </fieldset>
         </form>
 
-        <form id="logs_button" action="logs.php" method="POST">
-            <input type="submit" class="button" name="logs" value="view jobs" />
-        </form>
-
-
-
         <p><br>
             Options specified
             <br>
-            <?php
-                print_r(get_defined_vars());   
+            <?php   
                 if (isset($_POST['format'])) {
                     echo "<ul>Format: ", $_POST['format'], "</ul>";
                     $format = $_POST['format'];
@@ -246,7 +245,7 @@
                 }
                 if (isset($_POST['real_simulation'])) {
                     echo "<ul><ul>Realistic: ", $_POST['simulation'], "</ul></ul>";
-                    $real_sim = "--real ";
+                    $real_sim = " --real";
                 } else {
                     echo "<ul><ul>Realistic: off</ul></ul>";
                     $real_sim = "";
@@ -280,24 +279,34 @@
 
                 echo "<ul>Screen name: $name</ul>"; // testing
 
+                $log_name = "log_$name";
+
                 if (isset($_POST['execute'])) {
                     if ($_POST['execute'] == "start realtime analysis") {
 
                         if ($simulate) {
-                            echo "Command being run:<br>";
-                            $cmd = sprintf("screen -S %s -L -d -m bash -c 'echo y | bash ../run.sh -f %s -m %s -8 %s%s --t %s --n %s -t %s%s'", 
+                            $cmd = sprintf("screen -S %s -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y | bash run.sh -f %s -m %s -8 %s%s --t %s --n %s -t %s%s'", 
                                             $name, $format, $monitor_dir, $simulate_dir, $real_sim, $time_between_batches, $no_batches, $timeout_format, $timeout_time);
 
                         } else {
-                            echo "Command being run:<br>";
-                            $cmd = sprintf("screen -S %s -L -d -m bash -c 'echo y | bash ../run.sh -f %s -m %s -t %s%s'", 
+                            $cmd = sprintf("screen -S %s -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y | bash run.sh -f %s -m %s -t %s%s'", 
                                             $name, $format, $monitor_dir, $timeout_format, $timeout_time);
                         }
 
+                        echo "Command being run:<br>";
                         echo $cmd;
+
+                        if ( shell_exec("ls '$log_name'") == "$log_name\n") {
+                            system("rm '$log_name'");
+                        }
+
                         system($cmd);
 
-                        system("printf '$name\nFormat:$format Monitor_dir:$monitor_dir Analysis_script:$script Timeout_format:$timeout_format Timeout_time:$timeout_time Simulate:$simulate Simulate_dir:$simulate_dir Real_simulation:$real_sim Time_between_batches:$time_between_batches Num_batches:$no_batches' >> database.txt");
+                        if (shell_exec("cat database.csv") == "") {
+                            system("printf 'Name,Log_file,Format,Monitor_dir,Analysis_script,Timeout_format,Timeout_time,Simulate,Simulate_dir,Real_sim,Time_between_batches,Num_batches\n' >> database.csv");
+                        }
+
+                        system("printf '$name,$log_name,$format,$monitor_dir,$script,$timeout_format,$timeout_time,$simulate,$simulate_dir,$real_sim,$time_between_batches,$no_batches\n' >> database.csv");
                     }
                     
                 } else if (isset($_POST['halt'])) {
@@ -321,13 +330,14 @@
                         echo "<br>";
                         system("screen -list");
                         
-                        system("cp /dev/null database.txt");
+                        system("cp /dev/null database.csv");
+                        system("rm log_[^\.]*");
                     }
                 }
             ?>
         </p>
         <!-- <script src="js/oldbutton.js"></script> -->
         <script src="js/disabled.js"></script>
-        <script src="js/button.js?31-01-2020:11 56"></script>
+        <script src="js/button.js?04-02-2020:16 36"></script>
     </body>
 </html>
