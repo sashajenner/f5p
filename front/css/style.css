@@ -1,10 +1,12 @@
 * {
     font-family: 'Proxima Nova Soft';
+    margin: 0;
+    padding: 0;
 }
 
 @font-face {
     font-family: 'Proxima Nova Soft';
-    src: url("fonts/proxima-nova-soft.otf");
+    src: url("../fonts/proxima-nova-soft.otf") format("opentype");
     font-weight: normal;
     font-style: normal;
 }
@@ -12,7 +14,7 @@
 fieldset {
     background-color: rgb(216, 250, 227);
     width: 500px;
-    padding: 16px;
+    padding: 14px 16px 14px 16px;
     -moz-border-radius: 8px;
     -webkit-border-radius: 8px;	
     border-radius: 8px;	
@@ -78,14 +80,14 @@ div#log {
 
 /* Modal Header */
 .modal-header {
-    padding: 2px 16px;
+    padding: 16px 16px;
     background-color: lightskyblue;
     color: white;
 }
   
 /* Modal Body */
 .modal-body {
-    padding: 2px 16px;
+    padding: 16px 16px;
 }
 
 .modal-body-info-format {
@@ -123,6 +125,37 @@ div#log {
     to {top: -300px; opacity: 0}
 }
 
+.button {
+    background: silver;
+    width: auto;
+    padding: 6px;
+    border-radius: 3px;
+}
+
+.button:hover {
+    cursor: pointer;
+}
+
+.button#logs:hover,
+.button#logs:focus {
+    background-color: orange;
+}
+
+.button#reset:hover,
+.button#reset:focus {
+    background-color: rgb(159, 89, 224);
+}
+
+.button#start:hover,
+.button#start:focus {
+    background-color: rgb(0, 255, 76);
+}
+
+.button#kill:hover,
+.button#kill:focus {
+    background-color: orangered;
+}
+
 button.info {
     height: 13px;
     width: 13px;
@@ -140,7 +173,7 @@ button.info {
     margin: auto;
 }
 
-button.info:hover,
-button.info:focus {
-    background-color: #0068f0;
+button.info:focus,
+button.info:hover {
+    background-color: rgb(44, 44, 230);
 }

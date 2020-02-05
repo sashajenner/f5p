@@ -10,10 +10,10 @@
     <body>
         <fieldset class="invisible">
             <form id="logs_button" action="manage_jobs.php" method="POST">
-                <input type="submit" class="button" name="logs" value="view jobs" />
+                <input type="submit" class="button" id="logs" name="logs" value="view jobs" />
             </form>
 
-            <input type="submit" class="button" name="reset" value="reset to default options" />
+            <input type="submit" class="button" id="reset" name="reset" value="reset to default options" />
         </fieldset>
         
         <form id="analysis_form" method="POST">        
@@ -351,8 +351,8 @@ Specify folder & file format of the sequencer's output:<br><br>
             </fieldset>
 
             <fieldset class="invisible">
-                <input type="submit" class="button" name="execute" value="start realtime analysis" />
-                <input type="submit" class="button" name="halt" value="kill all jobs" />
+                <input type="submit" class="button" id="start" name="execute" value="start realtime analysis" />
+                <input type="submit" class="button" id="kill" name="halt" value="kill all jobs" />
             </fieldset>
         </form>
 
