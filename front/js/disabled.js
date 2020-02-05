@@ -1,21 +1,22 @@
 const sim_checkbox = document.getElementById("sim");
 const pipeline_script_upload = document.getElementById("script-new");
 var real_checkbox = document.getElementById("sim-real");
-var time_between_batches = document.getElementById("sim-time");
+var time_between_reads = document.getElementById("sim-time");
 const timeout_format = document.getElementById("timeout-format");
 
 function react_checkbox_change(event) {
 
     var real_checkbox = document.getElementById("sim-real");
     var time_input = document.getElementById("sim-time");
-    var batch_input = document.getElementById("sim-batch_num");
+    var read_input = document.getElementById("sim-read_num");
     var sim_dir = document.getElementById("sim-dir");
 
     if (!event.target.checked) {
         real_checkbox.disabled = "disabled";
         time_input.disabled = "disabled";
-        batch_input.disabled = "disabled";
+        read_input.disabled = "disabled";
         sim_dir.disabled = "disabled";
+        
     } else {
         if (real_checkbox.checked) {
             time_input.disabled = "disabled";
@@ -29,7 +30,7 @@ function react_checkbox_change(event) {
             real_checkbox.disabled = false;
         }
 
-        batch_input.disabled = false;
+        read_input.disabled = false;
         sim_dir.disabled = false;
     }
 }
@@ -38,14 +39,15 @@ function react_checkbox_load(event) {
 
     var real_checkbox = document.getElementById("sim-real");
     var time_input = document.getElementById("sim-time");
-    var batch_input = document.getElementById("sim-batch_num");
+    var read_input = document.getElementById("sim-read_num");
     var sim_dir = document.getElementById("sim-dir");
 
     if (!sim_checkbox.checked) {
         real_checkbox.disabled = "disabled";
         time_input.disabled = "disabled";
-        batch_input.disabled = "disabled";
+        read_input.disabled = "disabled";
         sim_dir.disabled = "disabled";
+
     } else {
 
         if (real_checkbox.checked) {
@@ -60,7 +62,7 @@ function react_checkbox_load(event) {
             real_checkbox.disabled = false;
         }
 
-        batch_input.disabled = false;
+        read_input.disabled = false;
         sim_dir.disabled = false;
     }
 }
@@ -78,24 +80,24 @@ function react_script(event) {
 
 function react_realistic_change(event) {
     if (event.target.checked) {
-        time_between_batches.value = "";
-        time_between_batches.disabled = "disabled";
+        time_between_reads.value = "";
+        time_between_reads.disabled = "disabled";
     } else {
-        time_between_batches.disabled = false;
+        time_between_reads.disabled = false;
     }
 }
 
 function react_realistic_load(event) {
     if (real_checkbox.checked) {
-        time_between_batches.value = "";
-        time_between_batches.disabled = "disabled";
+        time_between_reads.value = "";
+        time_between_reads.disabled = "disabled";
     } else {
-        time_between_batches.disabled = false;
+        time_between_reads.disabled = false;
     }
 }
 
-function react_time_batches(event) {
-    if (time_between_batches.value != "") {
+function react_time_reads(event) {
+    if (time_between_reads.value != "") {
         real_checkbox.checked = false;
         real_checkbox.disabled = "disabled";
     } else {
@@ -122,6 +124,6 @@ real_checkbox.addEventListener("load", react_realistic_load);
 
 sim_checkbox.addEventListener("change", react_checkbox_change);
 pipeline_script_upload.addEventListener("change", react_script);
-time_between_batches.addEventListener("change", react_time_batches);
+time_between_reads.addEventListener("change", react_time_reads);
 real_checkbox.addEventListener("change", react_realistic_change);
 timeout_format.addEventListener("change", react_timeout_format);

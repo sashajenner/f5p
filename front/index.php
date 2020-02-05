@@ -3,7 +3,7 @@
     <head>
         <title>Realtime Analysis - Home</title>
         <script src="js/jquery-3.4.1.min.js"></script>
-        <link rel="stylesheet" href="css/style.css?05-02-2020:11 34" />
+        <link rel="stylesheet" href="css/style.css?05-02-2020:16 08" />
         <link rel="icon" type="image/png" href="favicon.png?05-02-2020:11 53" sizes="32x32"/>
     </head>
 
@@ -19,41 +19,41 @@
         <form id="analysis_form" method="POST">        
             <fieldset>
                 <label for="format" style="font-weight: bold;">Format</label>
-                <button type='button' class="info" id="myBtn">i</button>
+                <button type='button' class="button info" id="info-format">i</button>
 
-                <div id="myModal" class="modal">
+                <div id="modal-info-format" class="modal">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <span class="close">&times;</span>
-                            <h2>Format Information</h2>
+                            <span class="close modal-close-info-format">&times;</span>
+                            <h2>Format - Information</h2>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body modal-body-info-format">
                             <p>
-        Specify folder & file format of the sequencer's output:<br><br>
-            &emsp;--778&emsp;[directory]&emsp;&emsp;(Old format that's not too bad)<br>
-                &emsp;&emsp;|-- fast5/<br>
-                &emsp;&emsp;&emsp;|-- [prefix].fast5.tar<br>
-                &emsp;&emsp;|-- fastq/<br>
-                &emsp;&emsp;&emsp;|-- fastq_*.[prefix].fastq.gz<br>
-                &emsp;&emsp;|-- logs/ (optional - for realistic testing<br>
-                &emsp;&emsp;&emsp;&emsp;or automatic timeout)<br>
-                &emsp;&emsp;|-- sequencing_summary.[prefix].txt.gz<br>
-            <br>
-            &emsp;--NA&emsp;[directory]&emsp;&emsp;(Newer format with terrible folders)<br>
-                &emsp;&emsp;|-- fast5/<br>
-                &emsp;&emsp;&emsp;|-- [prefix].fast5<br>
-                &emsp;&emsp;|-- fastq/<br>
-                &emsp;&emsp;&emsp;|-- [prefix]/<br>
-                &emsp;&emsp;&emsp;&emsp;|-- [prefix].fastq<br>
-                &emsp;&emsp;&emsp;&emsp;|-- sequencing_summary.txt (optional -<br>
-                &emsp;&emsp;&emsp;&emsp;&emsp;for realistic testing or automatic timeout)<br>
-            <br>
-            &emsp;--zebra&emsp;[directory]&emsp;&emsp;(Newest format)<br>
-                    &emsp;&emsp;|-- fast5/<br>
-                    &emsp;&emsp;&emsp;|-- [prefix].fast5<br>
-                    &emsp;&emsp;|-- fastq/<br>
-                    &emsp;&emsp;&emsp;|-- [prefix].fastq<br>
-                    &emsp;&emsp;|-- sequencing_summary.txt<br>
+Specify folder & file format of the sequencer's output:<br><br>
+&emsp;--zebra&emsp;[directory]&emsp;&emsp;(Newest format)<br>
+&emsp;&emsp;&emsp;&emsp;&emsp;|-- fast5/<br>
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;|-- [prefix].fast5<br>
+&emsp;&emsp;&emsp;&emsp;&emsp;|-- fastq/<br>
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;|-- [prefix].fastq<br>
+&emsp;&emsp;&emsp;&emsp;&emsp;|-- sequencing_summary.txt<br>
+<br>
+&emsp;--NA&emsp;[directory]&emsp;&emsp;(Newer format with terrible folders)<br>
+&emsp;&emsp;&emsp;&emsp;&nbsp;|-- fast5/<br>
+&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;|-- [prefix].fast5<br>
+&emsp;&emsp;&emsp;&emsp;&nbsp;|-- fastq/<br>
+&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;|-- [prefix]/<br>
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;|-- [prefix].fastq<br>
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;|-- sequencing_summary.txt (optional -<br>
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;for realistic testing or automatic timeout)<br>
+<br>
+&emsp;--778&emsp;[directory]&emsp;&emsp;(Old format that's not too bad)<br>
+&emsp;&emsp;&emsp;&emsp;&nbsp;|-- fast5/<br>
+&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;|-- [prefix].fast5.tar<br>
+&emsp;&emsp;&emsp;&emsp;&nbsp;|-- fastq/<br>
+&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;|-- fastq_*.[prefix].fastq.gz<br>
+&emsp;&emsp;&emsp;&emsp;&nbsp;|-- logs/ (optional - for realistic testing<br>
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;or automatic timeout)<br>
+&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;|-- sequencing_summary.[prefix].txt.gz<br>
                             
                             </p>
                         </div>
@@ -83,6 +83,19 @@
                 <br><br>
 
                 <label for="dir" style="font-weight: bold;">Monitor Directory</label>
+                <button type='button' class="button info" id="info-monitor-dir">i</button>
+
+                <div id="modal-info-monitor-dir" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <span class="close modal-close-info-monitor-dir">&times;</span>
+                            <h2>Monitor Directory - Information</h2>
+                        </div>
+                        <div class="modal-body">
+                            <p>The directory to be monitored for the sequencer's output.</p>
+                        </div>
+                    </div>      
+                </div>
                 <br>
                 <select name="dir" id="dir" required>
                     <?php
@@ -110,6 +123,19 @@
 
             <fieldset>
                 <strong>Analysis Script</strong>
+                <button type='button' class="button info" id="info-analysis-script">i</button>
+
+                <div id="modal-info-analysis-script" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <span class="close modal-close-info-analysis-script">&times;</span>
+                            <h2>Analysis Script - Information</h2>
+                        </div>
+                        <div class="modal-body">
+                            <p>The script used to analyse each sequenced read.</p>
+                        </div>
+                    </div>      
+                </div>
                 <br>
                 <label for="script-exist">1) Existing pipelines</label>
                 <select name="existing_script" id="script-exist">
@@ -142,6 +168,19 @@
                 <br><br>
 
                 <label for="timeout" style="font-weight: bold;">Timeout</label>
+                <button type='button' class="button info" id="info-timeout">i</button>
+
+                <div id="modal-info-timeout" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <span class="close modal-close-info-timeout">&times;</span>
+                            <h2>Timeout - Information</h2>
+                        </div>
+                        <div class="modal-body">
+                            <p>The time period after no new files have been received to then quit analysis.</p>
+                        </div>
+                    </div>      
+                </div>
                 <br>
                 <select name="timeout_format" id="timeout-format">
                     <?php
@@ -183,6 +222,19 @@
                         }
                         echo "<input type='checkbox' name='simulation' id='sim' $checked/>";
                     ?>
+                    <button type='button' class="button info" id="info-sim">i</button>
+
+                    <div id="modal-info-sim" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <span class="close modal-close-info-sim">&times;</span>
+                                <h2>Simulation - Information</h2>
+                            </div>
+                            <div class="modal-body">
+                                <p>Simulate a historical sequencing run for testing purposes.</p>
+                            </div>
+                        </div>      
+                    </div>
                 <br>
                 <label for="sim-real">Realistic</label>
                     <?php
@@ -193,6 +245,19 @@
                         }
                         echo "<input type='checkbox' name='real simulation' id='sim-real' $checked/>";
                     ?>
+                    <button type='button' class="button info" id="info-sim-real">i</button>
+
+                    <div id="modal-info-sim-real" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <span class="close modal-close-info-sim-real">&times;</span>
+                                <h2>Realistic Simulation - Information</h2>
+                            </div>
+                            <div class="modal-body">
+                                <p>Simulate a historical sequencing run realistically given sequencing summary files.</p>
+                            </div>
+                        </div>      
+                    </div>
                 <br>
                 <label for="sim-dir">Simulate Directory</label>
                 <select name="simulate dir" id="sim-dir">
@@ -216,28 +281,73 @@
                         }
                     ?>
                 </select>
+                <button type='button' class="button info" id="info-sim-dir">i</button>
+
+                    <div id="modal-info-sim-dir" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <span class="close modal-close-info-sim-dir">&times;</span>
+                                <h2>Simulation Directory - Information</h2>
+                            </div>
+                            <div class="modal-body">
+                                <p>The directory from which the historical sequencing run is held.</p>
+                            </div>
+                        </div>      
+                    </div>
                 <br>
-                <label for="sim-time">Time between batches</label>
-                    <?php
-                        if ($_POST["time_between_batches"] != "") {
-                            $time = $_POST["time_between_batches"];
-                            $value = "value='$time' ";
-                        } else {
-                            $value = "";
-                        }
-                        echo "<input type='text' name='time between batches' id='sim-time' placeholder='0' $value/>";
-                    ?>
+                <label for="sim-time">Time between reads</label>
+                <?php
+                    if ($_POST["time_between_reads"] != "") {
+                        $time = $_POST["time_between_reads"];
+                        $value = "value='$time' ";
+                    } else {
+                        $value = "";
+                    }
+                    echo "<input type='text' name='time between reads' id='sim-time' placeholder='0' $value/>";
+                ?>
+                <button type='button' class="button info" id="info-sim-time">i</button>
+
+                <div id="modal-info-sim-time" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <span class="close modal-close-info-sim-time">&times;</span>
+                            <h2>Simulation Time Between Reads - Information</h2>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                Simulate a consistent time delay between reads.<br>
+                                Default is seconds. Use letters with time for specificity.<br><br>
+                                E.g. For 30 seconds: enter "30s" or "30"<br>
+                                For 1 hour: enter "1h"<br><br>
+                                Cannot be concurrently set with realistic simulation option.
+                            </p>
+                        </div>
+                    </div>      
+                </div>
                 <br>
-                <label for="sim-batch_num">Number of batches</label>
-                    <?php
-                        if ($_POST["number_of_batches"] != "") {
-                            $prev_no_batches = $_POST["number_of_batches"];
-                            $value = "value='$prev_no_batches' ";
-                        } else {
-                            $value = "";
-                        }
-                        echo "<input type='number' name='number of batches' id='sim-batch_num' placeholder='all' min='0' $value/>";
-                    ?>
+                <label for="sim-read_num">Number of reads</label>
+                <?php
+                    if ($_POST["number_of_reads"] != "") {
+                        $prev_no_reads = $_POST["number_of_reads"];
+                        $value = "value='$prev_no_reads' ";
+                    } else {
+                        $value = "";
+                    }
+                    echo "<input type='number' name='number of reads' id='sim-read_num' placeholder='all' min='0' $value/>";
+                ?>
+                <button type='button' class="button info" id="info-sim-read-num">i</button>
+
+                <div id="modal-info-sim-read-num" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <span class="close modal-close-info-sim-read-num">&times;</span>
+                            <h2>Simulation Number of Reads - Information</h2>
+                        </div>
+                        <div class="modal-body">
+                            <p>The number of reads to simulate. Leave empty to simulate all reads.</p>
+                        </div>
+                    </div>      
+                </div>
             </fieldset>
 
             <fieldset class="invisible">
@@ -322,22 +432,22 @@
                     echo "<ul><ul>Realistic: off</ul></ul>";
                     $real_sim = "";
                 }
-                if (isset($_POST['time_between_batches'])) {
-                    if ($_POST['time_between_batches'] == "") {
-                        echo "<ul><ul>Time between batches: ", 0, "</ul></ul>";
-                        $time_between_batches = 0;
+                if (isset($_POST['time_between_reads'])) {
+                    if ($_POST['time_between_reads'] == "") {
+                        echo "<ul><ul>Time between reads: ", 0, "</ul></ul>";
+                        $time_between_reads = 0;
                     } else {
-                        echo "<ul><ul>Time between batches: ", $_POST['time_between_batches'], "</ul></ul>";
-                        $time_between_batches = $_POST['time_between_batches'];
+                        echo "<ul><ul>Time between reads: ", $_POST['time_between_reads'], "</ul></ul>";
+                        $time_between_reads = $_POST['time_between_reads'];
                     }
                 }
-                if (isset($_POST['number_of_batches'])) {
-                    if ($_POST['number_of_batches'] == "") {
-                        echo "<ul><ul>No. batches: all</ul></ul>";
-                        $no_batches = -1;
+                if (isset($_POST['number_of_reads'])) {
+                    if ($_POST['number_of_reads'] == "") {
+                        echo "<ul><ul>No. reads: all</ul></ul>";
+                        $no_reads = -1;
                     } else {
-                        echo "<ul><ul>No. batches: ", $_POST['number_of_batches'], "</ul></ul>";
-                        $no_batches = $_POST['number_of_batches'];
+                        echo "<ul><ul>No. reads: ", $_POST['number_of_reads'], "</ul></ul>";
+                        $no_reads = $_POST['number_of_reads'];
                     }
                 }
 
@@ -358,7 +468,7 @@
 
                         if ($simulate) {
                             $cmd = sprintf("screen -S %s -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y | bash run.sh -f %s -m %s -8 %s%s --t %s --n %s -t %s%s'", 
-                                            $name, $format, $monitor_dir, $simulate_dir, $real_sim, $time_between_batches, $no_batches, $timeout_format, $timeout_time);
+                                            $name, $format, $monitor_dir, $simulate_dir, $real_sim, $time_between_reads, $no_reads, $timeout_format, $timeout_time);
 
                         } else {
                             $cmd = sprintf("screen -S %s -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y | bash run.sh -f %s -m %s -t %s%s'", 
@@ -375,10 +485,10 @@
                         system($cmd);
 
                         if (shell_exec("cat database.csv") == "") {
-                            system("printf 'Name,Log_file,Format,Monitor_dir,Analysis_script,Timeout_format,Timeout_time,Simulate,Simulate_dir,Real_sim,Time_between_batches,Num_batches\n' >> database.csv");
+                            system("printf 'Name,Log_file,Format,Monitor_dir,Analysis_script,Timeout_format,Timeout_time,Simulate,Simulate_dir,Real_sim,Time_between_reads,Num_reads\n' >> database.csv");
                         }
 
-                        system("printf '$name,$log_name,$format,$monitor_dir,$script,$timeout_format,$timeout_time,$simulate,$simulate_dir,$real_sim,$time_between_batches,$no_batches\n' >> database.csv");
+                        system("printf '$name,$log_name,$format,$monitor_dir,$script,$timeout_format,$timeout_time,$simulate,$simulate_dir,$real_sim,$time_between_reads,$no_reads\n' >> database.csv");
                     }
                     
                 } else if (isset($_POST['halt'])) {
@@ -409,7 +519,7 @@
             ?>
         </p>
         <!-- <script src="js/oldbutton.js"></script> -->
-        <script src="js/disabled.js?05-02-2020:09 57"></script>
-        <script src="js/button.js?05-02-2020:10 16"></script>
+        <script src="js/button.js?05-02-2020:16 08"></script>
+        <script src="js/disabled.js?05-02-2020:16 08"></script>
     </body>
 </html>
