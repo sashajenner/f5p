@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Realtime Analysis</title>
+        <title>Realtime Analysis - Home</title>
         <script src="js/jquery-3.4.1.min.js"></script>
-        <link rel="stylesheet" href="css/style.css?29-01-2020:11 18" />
+        <link rel="stylesheet" href="css/style.css?05-02-2020:11 34" />
+        <link rel="icon" type="image/png" href="favicon.png?05-02-2020:11 53" sizes="32x32"/>
     </head>
 
     <body>
@@ -18,6 +19,47 @@
         <form id="analysis_form" method="POST">        
             <fieldset>
                 <label for="format" style="font-weight: bold;">Format</label>
+                <button type='button' class="info" id="myBtn">i</button>
+
+                <div id="myModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <span class="close">&times;</span>
+                            <h2>Format Information</h2>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+        Specify folder & file format of the sequencer's output:<br><br>
+            &emsp;--778&emsp;[directory]&emsp;&emsp;(Old format that's not too bad)<br>
+                &emsp;&emsp;|-- fast5/<br>
+                &emsp;&emsp;&emsp;|-- [prefix].fast5.tar<br>
+                &emsp;&emsp;|-- fastq/<br>
+                &emsp;&emsp;&emsp;|-- fastq_*.[prefix].fastq.gz<br>
+                &emsp;&emsp;|-- logs/ (optional - for realistic testing<br>
+                &emsp;&emsp;&emsp;&emsp;or automatic timeout)<br>
+                &emsp;&emsp;|-- sequencing_summary.[prefix].txt.gz<br>
+            <br>
+            &emsp;--NA&emsp;[directory]&emsp;&emsp;(Newer format with terrible folders)<br>
+                &emsp;&emsp;|-- fast5/<br>
+                &emsp;&emsp;&emsp;|-- [prefix].fast5<br>
+                &emsp;&emsp;|-- fastq/<br>
+                &emsp;&emsp;&emsp;|-- [prefix]/<br>
+                &emsp;&emsp;&emsp;&emsp;|-- [prefix].fastq<br>
+                &emsp;&emsp;&emsp;&emsp;|-- sequencing_summary.txt (optional -<br>
+                &emsp;&emsp;&emsp;&emsp;&emsp;for realistic testing or automatic timeout)<br>
+            <br>
+            &emsp;--zebra&emsp;[directory]&emsp;&emsp;(Newest format)<br>
+                    &emsp;&emsp;|-- fast5/<br>
+                    &emsp;&emsp;&emsp;|-- [prefix].fast5<br>
+                    &emsp;&emsp;|-- fastq/<br>
+                    &emsp;&emsp;&emsp;|-- [prefix].fastq<br>
+                    &emsp;&emsp;|-- sequencing_summary.txt<br>
+                            
+                            </p>
+                        </div>
+                    </div>      
+                </div>
+
                 <br>
                 <select name="format" id="format" required>
                     <?php
@@ -133,10 +175,24 @@
 
             <fieldset>
                 <label for="sim" style="font-weight: bold;">Simulate</label>
-                <input type="checkbox" name="simulation" id="sim" />
+                    <?php
+                        if ($_POST["simulation"] == "on") {
+                            $checked = "checked='checked' ";
+                        } else {
+                            $checked = "";
+                        }
+                        echo "<input type='checkbox' name='simulation' id='sim' $checked/>";
+                    ?>
                 <br>
                 <label for="sim-real">Realistic</label>
-                <input type="checkbox" name="real simulation" id="sim-real" />
+                    <?php
+                        if ($_POST["real_simulation"] == "on") {
+                            $checked = "checked='checked' ";
+                        } else {
+                            $checked = "";
+                        }
+                        echo "<input type='checkbox' name='real simulation' id='sim-real' $checked/>";
+                    ?>
                 <br>
                 <label for="sim-dir">Simulate Directory</label>
                 <select name="simulate dir" id="sim-dir">
@@ -150,7 +206,7 @@
 
                         foreach ($mnt_dirs_arr as $dir) {
 
-                            if ($dir == $_POST['sim-dir']) {
+                            if ($dir == $_POST['simulate_dir']) {
                                 $selected = " selected='selected'";
                             } else {
                                 $selected = "";
@@ -162,13 +218,28 @@
                 </select>
                 <br>
                 <label for="sim-time">Time between batches</label>
-                <input type="text" name="time between batches" id="sim-time" placeholder="0" />
+                    <?php
+                        if ($_POST["time_between_batches"] != "") {
+                            $time = $_POST["time_between_batches"];
+                            $value = "value='$time' ";
+                        } else {
+                            $value = "";
+                        }
+                        echo "<input type='text' name='time between batches' id='sim-time' placeholder='0' $value/>";
+                    ?>
                 <br>
                 <label for="sim-batch_num">Number of batches</label>
-                <input type="number" name="number of batches" id="sim-batch_num" placeholder="all" min="0" />
+                    <?php
+                        if ($_POST["number_of_batches"] != "") {
+                            $prev_no_batches = $_POST["number_of_batches"];
+                            $value = "value='$prev_no_batches' ";
+                        } else {
+                            $value = "";
+                        }
+                        echo "<input type='number' name='number of batches' id='sim-batch_num' placeholder='all' min='0' $value/>";
+                    ?>
             </fieldset>
 
-            <br>
             <fieldset class="invisible">
                 <input type="submit" class="button" name="execute" value="start realtime analysis" />
                 <input type="submit" class="button" name="halt" value="stop all" />
@@ -178,7 +249,8 @@
         <p><br>
             Options specified
             <br>
-            <?php   
+            <?php
+                print_r(get_defined_vars());
                 if (isset($_POST['format'])) {
                     echo "<ul>Format: ", $_POST['format'], "</ul>";
                     $format = $_POST['format'];
@@ -337,7 +409,7 @@
             ?>
         </p>
         <!-- <script src="js/oldbutton.js"></script> -->
-        <script src="js/disabled.js"></script>
-        <script src="js/button.js?04-02-2020:16 36"></script>
+        <script src="js/disabled.js?05-02-2020:09 57"></script>
+        <script src="js/button.js?05-02-2020:10 16"></script>
     </body>
 </html>
