@@ -242,7 +242,7 @@
 
             <fieldset class="invisible">
                 <input type="submit" class="button" name="execute" value="start realtime analysis" />
-                <input type="submit" class="button" name="halt" value="stop all" />
+                <input type="submit" class="button" name="halt" value="kill all jobs" />
             </fieldset>
         </form>
 
@@ -382,7 +382,7 @@
                     }
                     
                 } else if (isset($_POST['halt'])) {
-                    if ($_POST['halt'] == "stop all") {
+                    if ($_POST['halt'] == "kill all jobs") {
                         system("screen -list");
                         //$recent_screen = shell_exec("screen -list | sed -n 2p | cut -f2");
                         //$recent_screen = rtrim($recent_screen);
