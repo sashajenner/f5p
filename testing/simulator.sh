@@ -19,7 +19,7 @@
 #%                        |-- fastq/
 #%                            |-- fastq_*.[prefix].fastq.gz
 #%					      |-- logs/ (optional - for realistic sim)
-#%                            |-- sequencing_summary.<prefix>.txt.gz
+#%                            |-- sequencing_summary.[prefix].txt.gz
 #%        
 #%        --NA            [directory]               Newer format with terrible folders
 #%                        |-- fast5/
