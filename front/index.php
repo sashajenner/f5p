@@ -3,7 +3,7 @@
     <head>
         <title>Realtime Analysis - Home</title>
         <script src="js/jquery-3.4.1.min.js"></script>
-        <link rel="stylesheet" href="css/style.css?05-02-2020:16 08" />
+        <link rel="stylesheet" href="css/style.css?06-02-2020:11 38" />
         <link rel="icon" type="image/png" href="favicon.png?05-02-2020:11 53" sizes="32x32"/>
     </head>
 
@@ -16,7 +16,7 @@
             <input type="submit" class="button" id="reset" name="reset" value="reset to default options" />
         </fieldset>
         
-        <form id="analysis_form" method="POST">        
+        <form id="analysis_form" method="POST" enctype="multipart/form-data">        
             <fieldset>
                 <label for="format" style="font-weight: bold;">Format</label>
                 <button type='button' class="button info" id="info-format">i</button>
@@ -161,8 +161,8 @@ Specify folder & file format of the sequencer's output:<br><br>
                 <label for="script-new">2) Your own pipeline</label>
                 <input type="file" name="new_script" id="script-new" accept=".sh" />
                 <?php
-                    if ($_POST['new_script'] != "") {
-                        echo "<br>Previously: ", $_POST['new_script'];
+                    if ($_FILES['new_script']['name'] != "") {
+                        echo "Previously: ", $_FILES['new_script']['name'];
                     }
                 ?>
                 <br><br>
@@ -467,7 +467,7 @@ Specify folder & file format of the sequencer's output:<br><br>
                     if ($_POST['execute'] == "start realtime analysis") {
 
                         if ($simulate) {
-                            $cmd = sprintf("screen -S %s -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y | bash run.sh -f %s -m %s -8 %s%s --t %s --n %s -t %s%s'", 
+                            $cmd = sprintf("screen -S %s -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y | bash run.sh -f %s -m %s -8 %s%s --t=%s --n=%s -t %s%s'", 
                                             $name, $format, $monitor_dir, $simulate_dir, $real_sim, $time_between_reads, $no_reads, $timeout_format, $timeout_time);
 
                         } else {
@@ -517,9 +517,52 @@ Specify folder & file format of the sequencer's output:<br><br>
                     }
                 }
             ?>
+
+            <?php
+            
+            // Upload file
+
+            $target_dir = "uploads/";
+            $target_file = $target_dir . basename($_FILES["new_script"]["name"]);
+            $uploadOk = 1;
+            $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+            // Check if file is a script
+            if(isset($_POST["submit"])) {
+                $check = getimagesize($_FILES["new_script"]["tmp_name"]);
+                if ($check !== false) { // File is a script
+                    $uploadOk = 1;
+                } else {
+                    $uploadOk = 0;
+                }
+            }
+            // Check if file already exists
+            if (file_exists($target_file)) {
+                echo "File already exists";
+                $uploadOk = 0;
+            }
+            // Check file size
+            if ($_FILES["new_script"]["size"] > 500000) { // too large
+                echo "File to large";
+                $uploadOk = 0;
+            }
+            // Allow certain file formats
+            if ($fileType != "sh" ) {
+                $uploadOk = 0;
+            }
+            // Check if $uploadOk is set to 0 by an error
+            if ($uploadOk != 0) {
+                if (move_uploaded_file($_FILES["new_script"]["tmp_name"], $target_file)) {
+                    echo "Successful upload!";
+                    
+                } else {
+                    echo "Sorry, there was an error uploading your file.";
+                }
+            }
+
+            ?>
         </p>
         <!-- <script src="js/oldbutton.js"></script> -->
-        <script src="js/button.js?05-02-2020:16 08"></script>
+        <script src="js/button.js?06-02-2020:09 42"></script>
         <script src="js/disabled.js?05-02-2020:16 08"></script>
     </body>
 </html>

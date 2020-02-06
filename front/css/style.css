@@ -12,19 +12,21 @@
 }
 
 fieldset {
-    background-color: rgb(216, 250, 227);
+    background-color: rgb(156, 241, 183);
     width: 500px;
     padding: 14px 16px 14px 16px;
     -moz-border-radius: 8px;
     -webkit-border-radius: 8px;	
-    border-radius: 8px;	
+    border-radius: 8px;
+    border-width: 3px;
+    border-color: darkturquoise;
     margin: 0 auto;
 }
 
 fieldset.invisible {
     background-color: transparent;
     max-width: 500px;
-    padding: 16px;
+    padding: 13px;
     border: 0px;
     margin: 0 auto; 
     width:250px;
@@ -136,23 +138,19 @@ div#log {
     cursor: pointer;
 }
 
-.button#logs:hover,
-.button#logs:focus {
+.button#logs:hover {
     background-color: orange;
 }
 
-.button#reset:hover,
-.button#reset:focus {
+.button#reset:hover {
     background-color: rgb(159, 89, 224);
 }
 
-.button#start:hover,
-.button#start:focus {
+.button#start:hover {
     background-color: rgb(0, 255, 76);
 }
 
-.button#kill:hover,
-.button#kill:focus {
+.button#kill:hover {
     background-color: orangered;
 }
 

@@ -90,8 +90,6 @@ reset_default = function() {
     }
 }
 
-window.addEventListener("load", reset_default);
-
 $(document).ready(function() {
     $('.button').click(function() {
 
