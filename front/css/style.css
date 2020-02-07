@@ -175,3 +175,11 @@ button.info:focus,
 button.info:hover {
     background-color: rgb(44, 44, 230);
 }
+
+input#script-new {
+    width: 180px;
+}
+
+.grey {
+    color: grey;
+}

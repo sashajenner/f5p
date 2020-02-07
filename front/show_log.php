@@ -5,7 +5,7 @@
         <script src="js/jquery-3.4.1.min.js"></script>
         <link rel="stylesheet" href="css/style.css?31-01-2020:15 44" />
         <link rel="icon" type="image/png" href="favicon.png?05-02-2020:11 53" sizes="32x32"/>
-        <meta http-equiv="refresh" content="5" />
+        <meta http-equiv="refresh" content="5" /> <!-- refresh page every 5s -->
     </head>
 
     <body>
