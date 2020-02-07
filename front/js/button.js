@@ -1,6 +1,8 @@
 var default_format = "--zebra";
 var default_monitor_dir = "/mnt/simulator_out";
 var default_script = "fast5_pipeline.sh";
+var default_upload_script = "-- not selected --";
+var default_keep_new_script = "no";
 var default_timeout_time_format = "Hours";
 var default_timeout_time_value = "";
 var default_sim = "off";
@@ -31,6 +33,26 @@ reset_default = function() {
         }
     }
 
+    const select_script_upload = document.getElementById("script-upload");
+    for (var i = 0; i < select_script_upload.options.length; i ++) {
+        if (select_script_upload.options[i].text == default_upload_script) {
+            select_script_upload.selectedIndex = i;
+        }
+    }
+
+    if (default_upload_script == "-- not selected --") {
+        document.getElementById("script-new_label").classList.add("grey");
+        document.getElementById("script-exist_label").classList.remove("grey");
+    } else {
+        document.getElementById("script-new_label").classList.remove("grey");
+        document.getElementById("script-exist_label").classList.add("grey");
+    }
+
+    if (default_keep_new_script == "no") {
+        const upload_new_script = document.getElementById("script-new");
+        upload_new_script.value = upload_new_script.defaultValue;
+    }
+
     const select_timeout_format = document.getElementById("timeout-format");
     for (var i = 0; i < select_timeout_format.options.length; i ++) {
         if (select_timeout_format.options[i].text == default_timeout_time_format) {
@@ -42,6 +64,7 @@ reset_default = function() {
     value_timeout_time.value = default_timeout_time_value;
 
     const real_sim_checkbox = document.getElementById("sim-real");
+    const real_sim_checkbox_label = document.getElementById("sim-real_label");
     if (default_real_sim == "on") {
         real_sim_checkbox.checked = "checked";
     } else if (default_real_sim == "off") {
@@ -49,6 +72,7 @@ reset_default = function() {
     }
 
     const select_sim_dir = document.getElementById("sim-dir");
+    const select_sim_dir_label = document.getElementById("sim-dir_label");
     for (var i = 0; i < select_sim_dir.options.length; i ++) {
         if (select_sim_dir.options[i].text == default_sim_dir) {
             select_sim_dir.selectedIndex = i;
@@ -57,9 +81,11 @@ reset_default = function() {
 
     const value_time_between_reads = document.getElementById("sim-time");
     value_time_between_reads.value = default_time_between_reads;
+    const value_time_between_reads_label = document.getElementById("sim-time_label");
 
     const value_no_reads = document.getElementById("sim-read_num");
     value_no_reads.value = default_no_reads;
+    const value_no_reads_label = document.getElementById("sim-read_num_label");
 
     const sim_checkbox = document.getElementById("sim");
     if (default_sim == "on") {
@@ -67,28 +93,39 @@ reset_default = function() {
         
         if (real_sim_checkbox.checked) {
             value_time_between_reads.disabled = "disabled";
+            value_time_between_reads_label.classList.add("grey");
         } else {
             value_time_between_reads.disabled = false;
+            value_time_between_reads_label.classList.remove("grey");
         }
 
         if (value_time_between_reads.value != "") {
             real_sim_checkbox.disabled = "disabled";
+            real_sim_checkbox_label.classList.add("grey");
         } else {
             real_sim_checkbox.disabled = false;
+            real_sim_checkbox_label.classList.remove("grey");
         }
 
         value_no_reads.disabled = false;
+        value_no_reads_label.classList.remove("grey");
         select_sim_dir.disabled = false;
+        select_sim_dir_label.classList.remove("grey");
 
     } else if (default_sim == "off") {
         sim_checkbox.checked = false;
 
         real_sim_checkbox.disabled = "disabled";
+        real_sim_checkbox_label.classList.add("grey");
         value_time_between_reads.disabled = "disabled";
+        value_time_between_reads_label.classList.add("grey");
         value_no_reads.disabled = "disabled";
+        value_no_reads_label.classList.add("grey");
         select_sim_dir.disabled = "disabled";
+        select_sim_dir_label.classList.add("grey");
     }
 }
+
 
 $(document).ready(function() {
     $('.button').click(function() {

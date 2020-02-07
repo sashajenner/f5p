@@ -9,6 +9,57 @@
 
     <body>
 
+        <?php
+                   
+            
+        session_start();    
+        //echo "<br>" . $_COOKIE['PHPSESSID'] . "<br>";
+
+        
+        // Upload file
+        
+        $php_id = $_COOKIE['PHPSESSID'];
+
+        if ($_FILES["new_script"]["name"] != "") {
+            $target_dir = __DIR__ . "/uploads/$php_id/";
+            $target_file = $target_dir . basename($_FILES["new_script"]["name"]);
+            $__FILE_UPLOAD_STATUS__ = 0;
+            $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+            // Check if file already exists
+            if (file_exists($target_file)) {
+                //echo "File already exists";
+                $__FILE_UPLOAD_STATUS__ = -1;
+            }
+
+            // Check file size
+            if ($_FILES["new_script"]["size"] > 500000) { // too large
+                //echo "File to large";
+                $__FILE_UPLOAD_STATUS__ = 1;
+            }
+
+            // Allow certain file formats
+            if ($fileType != "sh" ) {
+                $__FILE_UPLOAD_STATUS__ = 2;
+            }
+
+            // Check if $uploadOk is set to 0 by an error
+            if ($__FILE_UPLOAD_STATUS__ == 0) {
+
+                system("mkdir -p $target_dir");
+
+                if (move_uploaded_file($_FILES["new_script"]["tmp_name"], $target_file)) {
+                    //echo "<br>Successful upload!";
+                    
+                } else {
+                    //echo "<br>Sorry, there was an error uploading your file.";
+                    $__FILE_UPLOAD_STATUS__ = 3;
+                }
+            }
+        }
+
+        ?>
+
         <fieldset class="invisible">
             <form id="logs_button" action="manage_jobs.php" method="POST">
                 <input type="submit" class="button" id="logs" name="logs" value="view jobs" />
@@ -139,15 +190,21 @@ Specify folder & file format of the sequencer's output:<br><br>
                 </div>
                 <br>
                 
-                <label for="script-exist">1) Existing pipelines</label>
+                <label for="script-exist" id="script-exist_label">1) Existing pipelines</label>
                 <select name="existing_script" id="script-exist">
                     <?php
                         $scripts_arr = explode("\n", shell_exec("ls -p ../scripts | grep -v / | grep fast5_pipeline"));
                         if (empty($scripts_arr[count($scripts_arr)-1])) { // remove last element if empty
                             unset($scripts_arr[count($scripts_arr)-1]);
                         }
-
+                        
+                        $first = TRUE;
                         foreach ($scripts_arr as $script) {
+
+                            if ($first) {
+                                echo "<option hidden disabled selected value='unselected'>-- not selected --</option>";
+                                $first = FALSE;
+                            }
 
                             if ($script == $_POST['existing_script']) {
                                 $selected = " selected='selected'";
@@ -160,19 +217,26 @@ Specify folder & file format of the sequencer's output:<br><br>
                     ?>
                 </select>
                 <br>
-                <label for="script-new">2) Your own pipeline</label>
+                <label for="script-new" id="script-new_label">2) Your own pipeline</label>
+                <select name="uploaded_script" class="hidden" id="script-upload">
                 <?php
                     $php_id = $_COOKIE['PHPSESSID'];
 
                     if (shell_exec("ls uploads/$php_id") != "") {
-                    
-                        echo '<select name="uploaded_script" id="script-upload">';
+                        echo "<script>document.getElementById('script-upload').classList.remove('hidden')</script>";
+                        
                         $uploaded_scripts_arr = explode("\n", shell_exec("ls -p uploads/$php_id"));
                         if (empty($uploaded_scripts_arr[count($uploaded_scripts_arr)-1])) { // remove last element if empty
                             unset($uploaded_scripts_arr[count($uploaded_scripts_arr)-1]);
                         }
 
+                        $first = TRUE;
                         foreach ($uploaded_scripts_arr as $script) {
+
+                            if ($first) {
+                                echo "<option hidden disabled selected value='unselected'>-- not selected --</option>";
+                                $first = FALSE;
+                            }
 
                             if ($script == $_POST['uploaded_script']) {
                                 $selected = " selected='selected'";
@@ -397,11 +461,15 @@ Specify folder & file format of the sequencer's output:<br><br>
                 echo "<ul>Scripts</ul>";
                 if (isset($_POST['existing_script'])) {
                     echo "<ul><ul>Analysis script (existing): ", $_POST['existing_script'], "</ul></ul>";
-                    $script = $_POST['existing_script'];
+                    $script = __DIR__ . "/../scripts/" . $_POST['existing_script'];
                 }
-                if (isset($_POST['new_script'])) {
-                    echo "<ul><ul>Analysis script (new): ", $_POST['new_script'], "</ul></ul>";
-                    $script = $_POST['new_script'];
+                if (isset($_POST['uploaded_script'])) {
+                    echo "<ul><ul>Analysis script (prev uploaded): ", $_POST['uploaded_script'], "</ul></ul>";
+                    $script = __DIR__ . "/uploads/$php_id/" . $_POST['uploaded_script'];
+                }
+                if (isset($_FILES['new_script']['name']) && $_FILES['new_script']['name'] != "") {
+                    echo "<ul><ul>Analysis script (new): ", $_FILES['new_script']['name'], "</ul></ul>";
+                    $script = __DIR__ . "/uploads/$php_id/" . $_POST['new_script']['name'];
                 }
 
                 echo "<ul>Timeout</ul>";
@@ -486,16 +554,28 @@ Specify folder & file format of the sequencer's output:<br><br>
 
                 $log_name = "log_$name";
 
-                if (isset($_POST['execute'])) {
+                if ($__FILE_UPLOAD_STATUS__ == -1) {
+                    echo "File already exists";
+
+                } else if ($__FILE_UPLOAD_STATUS__ == 1) {
+                    echo "File size is too large";
+                
+                } else if ($__FILE_UPLOAD_STATUS__ == 2) {
+                    echo "File is not of type .sh";
+                
+                } else if ($__FILE_UPLOAD_STATUS__ == 3) {
+                    echo "File failed during upload";
+
+                } else if (isset($_POST['execute'])) {
                     if ($_POST['execute'] == "start realtime analysis") {
 
                         if ($simulate) {
-                            $cmd = sprintf("screen -S %s -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y | bash run.sh -f %s -m %s -8 %s%s --t=%s --n=%s -t %s%s'", 
-                                            $name, $format, $monitor_dir, $simulate_dir, $real_sim, $time_between_reads, $no_reads, $timeout_format, $timeout_time);
+                            $cmd = sprintf("screen -S %s -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y | bash run.sh -f %s -m %s -8 %s%s --t=%s --n=%s -t %s%s -s %s'", 
+                                            $name, $format, $monitor_dir, $simulate_dir, $real_sim, $time_between_reads, $no_reads, $timeout_format, $timeout_time, $script);
 
                         } else {
-                            $cmd = sprintf("screen -S %s -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y | bash run.sh -f %s -m %s -t %s%s'", 
-                                            $name, $format, $monitor_dir, $timeout_format, $timeout_time);
+                            $cmd = sprintf("screen -S %s -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y | bash run.sh -f %s -m %s -t %s%s -s %s'", 
+                                            $name, $format, $monitor_dir, $timeout_format, $timeout_time, $script);
                         }
 
                         echo "Command being run:<br>";
@@ -540,66 +620,9 @@ Specify folder & file format of the sequencer's output:<br><br>
                     }
                 }
             ?>
-
-            <?php
-                   
-            
-            session_start();    
-            echo "<br>" . $_COOKIE['PHPSESSID'] . "<br>";
-
-            
-            // Upload file
-            
-            $php_id = $_COOKIE['PHPSESSID'];
-
-            $target_dir = __DIR__ . "/uploads/$php_id/";
-            $target_file = $target_dir . basename($_FILES["new_script"]["name"]);
-            $uploadOk = 1;
-            $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-            // Check if file is a script
-            if(isset($_POST["submit"])) {
-                $check = getimagesize($_FILES["new_script"]["tmp_name"]);
-                if ($check !== false) { // File is a script
-                    $uploadOk = 1;
-                } else {
-                    $uploadOk = 0;
-                }
-            }
-
-            // Check if file already exists
-            if (file_exists($target_file)) {
-                echo "File already exists";
-                $uploadOk = 0;
-            }
-
-            // Check file size
-            if ($_FILES["new_script"]["size"] > 500000) { // too large
-                echo "File to large";
-                $uploadOk = 0;
-            }
-
-            // Allow certain file formats
-            if ($fileType != "sh" ) {
-                $uploadOk = 0;
-            }
-
-            // Check if $uploadOk is set to 0 by an error
-            if ($uploadOk != 0) {
-
-                system("mkdir -p $target_dir");
-
-                if (move_uploaded_file($_FILES["new_script"]["tmp_name"], $target_file)) {
-                    echo "<br>Successful upload!";
-                    
-                } else {
-                    echo "<br>Sorry, there was an error uploading your file.";
-                }
-            }
-
-            ?>
         </p>
         <!-- <script src="js/oldbutton.js"></script> -->
-        <script src="js/button.js?07-02-2020:11 31"></script>
-        <script src="js/disabled.js?07-02-2020:11 58"></script>
+        <script src="js/button.js?07-02-2020:15 49"></script>
+        <script src="js/disabled.js?07-02-2020:15 43"></script>
     </body>
 </html>

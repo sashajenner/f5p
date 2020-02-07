@@ -128,10 +128,11 @@ div#log {
 }
 
 .button {
-    background: silver;
+    background: rgb(221, 221, 221);
     width: auto;
     padding: 6px;
     border-radius: 3px;
+    border-color: darkorange;
 }
 
 .button:hover {
@@ -182,4 +183,8 @@ input#script-new {
 
 .grey {
     color: grey;
+}
+
+.hidden {
+    display: none;
 }

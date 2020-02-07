@@ -3,6 +3,11 @@ const pipeline_script_upload = document.getElementById("script-new");
 var real_checkbox = document.getElementById("sim-real");
 var time_between_reads = document.getElementById("sim-time");
 const timeout_format = document.getElementById("timeout-format");
+var prev_script_upload = document.getElementById("script-upload");
+var pipeline_script_existing = document.getElementById("script-exist");
+
+var real_checkbox_label = document.getElementById("sim-real_label");
+var time_between_reads_label = document.getElementById("sim-time_label");
 
 function react_checkbox_change(event) {
 
@@ -11,7 +16,7 @@ function react_checkbox_change(event) {
     var read_input = document.getElementById("sim-read_num");
     var sim_dir = document.getElementById("sim-dir");
 
-    var real_checkbox_label = document.getElementById("sim-real_labell");
+    var real_checkbox_label = document.getElementById("sim-real_label");
     var time_input_label = document.getElementById("sim-time_label");
     var read_input_label = document.getElementById("sim-read_num_label");
     var sim_dir_label = document.getElementById("sim-dir_label");
@@ -57,7 +62,7 @@ function react_checkbox_load(event) {
     var read_input = document.getElementById("sim-read_num");
     var sim_dir = document.getElementById("sim-dir");
 
-    var real_checkbox_label = document.getElementById("sim-real_labell");
+    var real_checkbox_label = document.getElementById("sim-real_label");
     var time_input_label = document.getElementById("sim-time_label");
     var read_input_label = document.getElementById("sim-read_num_label");
     var sim_dir_label = document.getElementById("sim-dir_label");
@@ -91,7 +96,7 @@ function react_checkbox_load(event) {
         }
 
         read_input.disabled = false;
-        read_input_label.classList.remve("grey");
+        read_input_label.classList.remove("grey");
         sim_dir.disabled = false;
         sim_dir_label.classList.remove("grey");
     }
@@ -103,10 +108,24 @@ function react_script(event) {
     var pipeline_script_existing_label = document.getElementById("script-exist_label");
 
     if (pipeline_script_upload.value.length != "") {
-        pipeline_script_existing.disabled = "disabled";
-        pipeline_script_existing_label.classList
+
+        for (var i = 0; i < pipeline_script_existing.options.length; i ++) {
+            if (pipeline_script_existing.options[i].value == "unselected") {
+                pipeline_script_existing.selectedIndex = i;
+            }
+        }
+
+        for (var j = 0; j < prev_script_upload.options.length; j ++) {
+            if (prev_script_upload.options[j].value == "unselected") {
+                prev_script_upload.selectedIndex = j;
+            }
+        }
+
+        pipeline_script_existing_label.classList.add("grey");
+        document.getElementById("script-new_label").classList.remove("grey");
     } else {
         pipeline_script_existing.disabled = false;
+        pipeline_script_existing_label.classList.remove("grey");
     }
 }
 
@@ -114,8 +133,10 @@ function react_realistic_change(event) {
     if (event.target.checked) {
         time_between_reads.value = "";
         time_between_reads.disabled = "disabled";
+        time_between_reads_label.classList.add("grey");
     } else {
         time_between_reads.disabled = false;
+        time_between_reads_label.classList.remove("grey");
     }
 }
 
@@ -123,8 +144,10 @@ function react_realistic_load(event) {
     if (real_checkbox.checked) {
         time_between_reads.value = "";
         time_between_reads.disabled = "disabled";
+        time_between_reads_label.classList.add("grey");
     } else {
         time_between_reads.disabled = false;
+        time_between_reads_label.classList.remove("grey");
     }
 }
 
@@ -132,8 +155,10 @@ function react_time_reads(event) {
     if (time_between_reads.value != "") {
         real_checkbox.checked = false;
         real_checkbox.disabled = "disabled";
+        real_checkbox_label.classList.add("grey");
     } else {
         real_checkbox.disabled = false;
+        real_checkbox_label.classList.remove("grey");
     }
 }
 
@@ -149,13 +174,59 @@ function react_timeout_format(event) {
     }
 }
 
-window.addEventListener("load", react_checkbox_load);
+function react_upload_script(event) {
+
+    if (prev_script_upload[prev_script_upload.selectedIndex].value != "unselected") {
+        
+        document.getElementById("script-exist_label").classList.add("grey");
+        document.getElementById("script-new_label").classList.remove("grey");
+        
+        var upload_new_script = document.getElementById("script-new");
+        
+        upload_new_script.disabled = false;
+        upload_new_script.value = upload_new_script.defaultValue;
+
+        for (var i = 0; i < pipeline_script_existing.options.length; i ++) {
+            if (pipeline_script_existing.options[i].text == "-- not selected --") {
+                pipeline_script_existing.selectedIndex = i;
+            }
+        }
+
+    }
+}
+
+function react_existing_script(event) {
+
+    if (pipeline_script_existing[pipeline_script_existing.selectedIndex].value != "unselected") {
+
+        var pipeline_script_upload = document.getElementById("script-new");
+        var pipeline_script_upload_label = document.getElementById("script-new_label");
+
+        pipeline_script_upload.value = pipeline_script_upload.defaultValue;
+        pipeline_script_upload_label.classList.add("grey");
+
+        document.getElementById("script-exist_label").classList.remove("grey");
+
+        for (var i = 0; i < prev_script_upload.options.length; i ++) {
+            if (prev_script_upload.options[i].text == "-- not selected --") {
+                prev_script_upload.selectedIndex = i;
+            }
+        }
+    }
+}
+
+
 window.addEventListener("load", react_script);
 window.addEventListener("load", react_timeout_format);
-real_checkbox.addEventListener("load", react_realistic_load);
+window.addEventListener("load", react_realistic_load);
+window.addEventListener("load", react_checkbox_load);
+window.addEventListener("load", react_upload_script);
+window.addEventListener("load", react_existing_script);
 
 sim_checkbox.addEventListener("change", react_checkbox_change);
 pipeline_script_upload.addEventListener("change", react_script);
 time_between_reads.addEventListener("change", react_time_reads);
 real_checkbox.addEventListener("change", react_realistic_change);
 timeout_format.addEventListener("change", react_timeout_format);
+prev_script_upload.addEventListener("change", react_upload_script);
+pipeline_script_existing.addEventListener("change", react_existing_script);
