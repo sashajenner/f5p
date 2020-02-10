@@ -1,6 +1,6 @@
 # **realf5p** *(Real-time fast5 pipeline)*
 
-Lightweight job scheduler, daemon & user-friendly run script for realtime nanopore data processing on a mini-cluster.
+Lightweight job scheduler, daemon & user-friendly run script for real-time nanopore data processing on a mini-cluster.
 
 ## Pre-requisites
 
@@ -42,7 +42,7 @@ ansible all -m copy -a "src=./f5pd_realtime dest=/nanopore/bin/f5pd mode=0755"
 
   Note that this scripts should exit with a non-zero status if any thing went wrong. After modifying the script, copy it to the *worker nodes* to the location `/nanopore/bin/fast5_pipeline.sh`
 
-2. Execute `run.sh` to begin realtime analysis given the format and monitor directory.
+2. Execute `run.sh` to begin real-time analysis given the format and monitor directory.
 
 Specify the format of the nanopore output directory structure:</br>
   `-f [format]`, `--format=[format]`</br>
@@ -77,7 +77,7 @@ Specify the format of the nanopore output directory structure:</br>
 Allow the script to monitor the nanopore output for new files by specifying the path of the directory to monitor:</br>
   `-m [directory]`, `--monitor=[directory]`
 
-This call the realtime scheduling client `f5pl_realtime` by default, but non-realtime option is also available:
+This call the real-time scheduling client `f5pl_realtime` by default, but non-real-time option is also available:
   `--non-realtime=[directory]`
 
 See other options using help flag: `./run.sh -h`.
@@ -88,7 +88,7 @@ You may adapt the script to suit your purposes [scripts/run.sh](https://github.c
 
 ## Other Information
 
-There are two types of scheduling clients; one for realtime analysis (`f5pl_realtime`); one static (`f5pl`).
+There are two types of scheduling clients; one for real-time analysis (`f5pl_realtime`); one static (`f5pl`).
 
 ### `f5pl_realtime`
 
