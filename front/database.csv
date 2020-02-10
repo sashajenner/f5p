@@ -1,0 +1,2 @@
+Name,Log_file,Format,Monitor_dir,Analysis_script,Timeout_format,Timeout_time,Simulate,Simulate_dir,Real_sim,Time_between_reads,Num_reads
+0_-mnt-simulator_out,log_0_-mnt-simulator_out,--NA,/mnt/simulator_out,/var/www/html/sasha/realf5p/front/../scripts/fast5_pipeline.sh,-hr, 1,1,/mnt/NA12878_cq, --real,,-1

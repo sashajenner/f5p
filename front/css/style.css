@@ -11,6 +11,33 @@
     font-style: normal;
 }
 
+.outer_page_container {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+}
+
+.center {
+    display: inline-block;
+    text-align: center;
+}
+
+.left {
+    float: left;
+    width: 200px;
+}
+
+.right {
+    float: right;
+    overflow-wrap: break-word;
+    width: 200px;
+}
+
+pre {
+    white-space: pre-line;
+}
+
 fieldset {
     background-color: rgb(156, 241, 183);
     width: 500px;
@@ -44,7 +71,8 @@ div#log {
     display: block;
     font-family: monospace;
     margin: 1em 0;
-    font-size:150%;
+    font-size: 150%;
+    word-wrap: break-word;
 }
 
 .hidden {
