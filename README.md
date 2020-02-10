@@ -1,4 +1,4 @@
-# realf5p
+# **realf5p**
 
 Lightweight job scheduler, daemon & high-level run script for realtime nanopore data processing on a mini-cluster.
 
@@ -8,7 +8,7 @@ Lightweight job scheduler, daemon & high-level run script for realtime nanopore 
 - A computer-cluster composed of devices running Linux connected to each other preferably using Ethernet.
 - One of the devices will act as the *head node* to issue commands to other *worker nodes*.
 - A shared network mounted storage for storing data.
-- SSH key based access from *head node* to *worker nodes*.
+- SSH key based access from head node to worker nodes.
 - Optionally you may configure [ansible](https://docs.ansible.com/ansible/latest/index.html) to automate configuration tasks to all worker nodes.
 
 ## Getting Started
@@ -36,12 +36,12 @@ ansible all -m copy -a "src=./f5pd_realtime dest=/nanopore/bin/f5pd mode=0755"
 ### Running Analysis
 
 1. Modify the shell script [scripts/fast5_pipeline.sh](https://github.com/sashajenner/realf5p/blob/master/scripts/fast5_pipeline.sh) for your use-case. This script is to be called on *worker nodes* by `f5pd`, each time a nanopore read (*fast5* file) is assigned. The example script:
-  - uses the *fast5* file location to deduce the location of the *fastq* file on the network mount, and copies these locally
-  - runs a methylation-calling pipeline that uses the tools *minimap2*, *samtools* and *nanopolish* to copy the results back to the network mount
+    - uses the *fast5* file location to deduce the location of the *fastq* file on the network mount, and copies these locally
+    - runs a methylation-calling pipeline that uses the tools *minimap2*, *samtools* and *nanopolish* to copy the results back to the network mount
 
   Note that this scripts should exit with a non-zero status if any thing went wrong. After modifying the script, copy it to the *worker nodes* to the location `/nanopore/bin/fast5_pipeline.sh`
 
-2. Execute `run.sh` to begin realtime analysis given the format and monitor directory. 
+2. Execute `run.sh` to begin realtime analysis given the format and monitor directory.
 
 Specify the format of the nanopore output directory structure:</br>
   `-f [format]`, `--format=[format]`</br>
@@ -86,7 +86,7 @@ You may adapt the script to suit your purposes [scripts/run.sh](https://github.c
 
 There are two types of scheduling clients; one for realtime analysis (`f5pl_realtime`); one static (`f5pl`).
 
-## `f5pl_realtime`
+### `f5pl_realtime`
 
 ```sh
 [fast5_filenames] | ./f5pl_realtime [format] data/ip_list.cfg [-r | --resume]
@@ -99,7 +99,7 @@ There are two types of scheduling clients; one for realtime analysis (`f5pl_real
   
 The path to new *fast5* files is received through standard input.
 
-## `f5pl`
+### `f5pl`
 
 ```sh
 ./f5pl data/ip_list.cfg data/file_list.cfg
@@ -107,7 +107,9 @@ The path to new *fast5* files is received through standard input.
 
 See [forked repo](https://github.com/hasindu2008/f5p) for more information.
 
-## `monitor/monitor.sh`
+</br>
+
+### `monitor/monitor.sh`
 
 ```sh
 monitor/monitor.sh [options ...] [directories ...]
@@ -115,7 +117,7 @@ monitor/monitor.sh [options ...] [directories ...]
 
 Monitors any given directories for new files and prints the filepath of any new files.
 
-## `monitor/ensure.sh`
+### `monitor/ensure.sh`
 
 ```sh
 monitor/monitor.sh -f [fast5_dir] [fastq_dir] | monitor/ensure.sh -f [format]
@@ -123,7 +125,9 @@ monitor/monitor.sh -f [fast5_dir] [fastq_dir] | monitor/ensure.sh -f [format]
 
 Ensurse that corresponding *fast5* and *fastq* files have been created before printing *fast5* filename.
 
-## `testing/simulator.sh`
+</br>
+
+### `testing/simulator.sh`
 
 ```sh
 testing/simulator.sh -f [format] [options ...] [in_dir] [out_dir]
@@ -131,6 +135,8 @@ testing/simulator.sh -f [format] [options ...] [in_dir] [out_dir]
 
 Simulate the creation of an existing dataset from `[in_dir]` to `[out_dir]`.
 
-## `viz`
+</br>
+
+### `viz`
 
 This folder contains R & Bash scripts, and png output when graphing the results from testing.

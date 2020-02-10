@@ -10,7 +10,7 @@
 #%    once it is created in the monitored director(y/ies).
 #%
 #% OPTIONS
-#%    -e, --existing                                Print existing files in monitor director(y/ies)
+#%    -e, --existing                                Print pre-existing files in monitor director(y/ies)
 #%    -f, --flag                                    Print flag of -1 if exited due to completion
 #%    -h, --help                                    Print help message
 #%    -i, --info                                    Print script information
