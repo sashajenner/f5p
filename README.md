@@ -1,7 +1,6 @@
 # **realf5p**
 
-Lightweight job scheduler, daemon & high-level run script for realtime nanopore data processing on a mini-cluster.
-
+Lightweight job scheduler, daemon & user-friendly run script for realtime nanopore data processing on a mini-cluster.
 
 ## Pre-requisites
 
@@ -10,6 +9,8 @@ Lightweight job scheduler, daemon & high-level run script for realtime nanopore 
 - A shared network mounted storage for storing data.
 - SSH key based access from head node to worker nodes.
 - Optionally you may configure [ansible](https://docs.ansible.com/ansible/latest/index.html) to automate configuration tasks to all worker nodes.
+
+</br>
 
 ## Getting Started
 
@@ -76,11 +77,14 @@ Specify the format of the nanopore output directory structure:</br>
 Allow the script to monitor the nanopore output for new files by specifying the path of the directory to monitor:</br>
   `-m [directory]`, `--monitor=[directory]`
 
-This call the realtime scheduling client `f5pl_realtime` by default, but non-realtime option is available using the `--non-realtime=[directory]` flag.
+This call the realtime scheduling client `f5pl_realtime` by default, but non-realtime option is also available:
+  `--non-realtime=[directory]`
 
 See other options using help flag: `./run.sh -h`.
 
 You may adapt the script to suit your purposes [scripts/run.sh](https://github.com/sashajenner/realf5p/blob/master/run.sh).
+
+</br>
 
 ## Other Information
 
@@ -137,6 +141,5 @@ Simulate the creation of an existing dataset from `[in_dir]` to `[out_dir]`.
 
 </br>
 
-### `viz`
-
+### `viz` 
 This folder contains R & Bash scripts, and png output when graphing the results from testing.
