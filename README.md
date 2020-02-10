@@ -1,4 +1,4 @@
-# **realf5p**
+# **realf5p** *(Real-time fast5 pipeline)*
 
 Lightweight job scheduler, daemon & user-friendly run script for realtime nanopore data processing on a mini-cluster.
 
