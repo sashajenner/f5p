@@ -1,13 +1,23 @@
 const sim_checkbox = document.getElementById("sim");
 const pipeline_script_upload = document.getElementById("script-new");
 var real_checkbox = document.getElementById("sim-real");
+var sim_dir = document.getElementById("sim-dir");
 var time_between_reads = document.getElementById("sim-time");
+var num_reads = document.getElementById("sim-read_num");
 const timeout_format = document.getElementById("timeout-format");
+var timeout_time = document.getElementById("timeout-time");
 var prev_script_upload = document.getElementById("script-upload");
 var pipeline_script_existing = document.getElementById("script-exist");
+var non_realtime_checkbox = document.getElementById("non-real-time");
+var monior_dir = document.getElementById("dir");
 
 var real_checkbox_label = document.getElementById("sim-real_label");
+var sim_dir_label = document.getElementById("sim-dir_label");
 var time_between_reads_label = document.getElementById("sim-time_label");
+var sim_checkbox_label = document.getElementById("sim_label");
+var num_reads_label = document.getElementById("sim-read_num_label");
+var timeout_label = document.getElementById("timeout_label");
+var monior_dir_label = document.getElementById("dir_label");
 
 function react_checkbox_change(event) {
 
@@ -215,6 +225,73 @@ function react_existing_script(event) {
     }
 }
 
+function react_non_realtime_checkbox(event) {
+    if (non_realtime_checkbox.checked) {
+        sim_checkbox.disabled = "disabled";
+        sim_checkbox_label.classList.add("grey");
+
+        real_checkbox.disabled = "disabled";
+        real_checkbox_label.classList.add("grey");
+
+        sim_dir.disabled = "disabled";
+        sim_dir_label.classList.add("grey");
+
+        time_between_reads.disabled = "disabled";
+        time_between_reads_label.classList.add("grey");
+
+        num_reads.disabled = "disabled";
+        num_reads_label.classList.add("grey");
+
+
+        timeout_format.disabled = "disabled";
+        timeout_time.disabled = "disabled";
+        timeout_label.classList.add("grey");
+
+        monior_dir.disabled = "disabled";
+        monior_dir_label.classList.add("grey");
+        
+    } else {
+        sim_checkbox.disabled = false;
+        sim_checkbox_label.classList.remove("grey");
+
+        if (sim_checkbox.checked) {
+            real_checkbox.disabled = false;
+            real_checkbox_label.classList.remove("grey");
+
+            if (real_checkbox.checked) {
+                time_between_reads.disabled = "disabled";
+                time_between_reads_label.classList.add("grey");
+            } else {
+                time_between_reads.disabled = false;
+                time_between_reads_label.classList.remove("grey");
+            }
+
+            if (time_between_reads.value != "") {
+                real_checkbox.disabled = "disabled";
+                real_checkbox_label.classList.add("grey");
+            }
+
+            sim_dir.disabled = false;
+            sim_dir_label.classList.remove("grey");
+
+            num_reads.disabled = false;
+            num_reads_label.classList.remove("grey");
+        }
+
+
+        timeout_format.disabled = false;
+
+        if (timeout_format[timeout_format.selectedIndex].value != "Automatic") {
+            timeout_time.disabled = false;
+        }
+
+        timeout_label.classList.remove("grey");
+
+        monior_dir.disabled = false;
+        monior_dir_label.classList.remove("grey");
+    }
+}
+
 
 window.addEventListener("load", react_script);
 window.addEventListener("load", react_timeout_format);
@@ -222,6 +299,7 @@ window.addEventListener("load", react_realistic_load);
 window.addEventListener("load", react_checkbox_load);
 window.addEventListener("load", react_upload_script);
 window.addEventListener("load", react_existing_script);
+window.addEventListener("load", react_non_realtime_checkbox);
 
 sim_checkbox.addEventListener("change", react_checkbox_change);
 pipeline_script_upload.addEventListener("change", react_script);
@@ -230,3 +308,4 @@ real_checkbox.addEventListener("change", react_realistic_change);
 timeout_format.addEventListener("change", react_timeout_format);
 prev_script_upload.addEventListener("change", react_upload_script);
 pipeline_script_existing.addEventListener("change", react_existing_script);
+non_realtime_checkbox.addEventListener("change", react_non_realtime_checkbox);
