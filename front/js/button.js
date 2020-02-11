@@ -10,6 +10,7 @@ var default_real_sim = "off";
 var default_sim_dir = "/mnt/zebrafish/zebrafish_test";
 var default_time_between_reads = "";
 var default_no_reads = "";
+var default_non_realtime = "off";
 
 reset_default = function() {
     const select_format = document.getElementById("format");
@@ -123,6 +124,13 @@ reset_default = function() {
         value_no_reads_label.classList.add("grey");
         select_sim_dir.disabled = "disabled";
         select_sim_dir_label.classList.add("grey");
+    }
+
+    realtime_checkbox = document.getElementById("non-real-time");
+    if (default_non_realtime == "on") {
+        realtime_checkbox.checked = "checked";
+    } else {
+        realtime_checkbox.checked = false;
     }
 }
 

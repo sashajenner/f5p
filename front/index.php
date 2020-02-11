@@ -3,7 +3,7 @@
     <head>
         <title>Realtime Analysis - Home</title>
         <script src="js/jquery-3.4.1.min.js"></script>
-        <link rel="stylesheet" href="css/style.css?07-02-2020:10 42" />
+        <link rel="stylesheet" href="css/style.css?11-02-2020:11 43" />
         <link rel="icon" type="image/png" href="favicon.png?05-02-2020:11 53" sizes="32x32"/>
     </head>
 
@@ -15,15 +15,7 @@
 
             <div class="center">
 
-                <div class="container">
-                    <fieldset class="invisible">
-                        <!-- <form id="logs_button" action="manage_jobs.php" method="POST">
-                            <input type="submit" class="button" id="logs" name="logs" value="view jobs" />
-                        </form> -->
-
-                        <input type="submit" class="button" id="reset" name="reset" value="reset to default options" />
-                    </fieldset>
-                    
+                <div class="container">                 
                     <form id="analysis_form" method="POST" enctype="multipart/form-data">        
                         <fieldset>
                             <label for="format" style="font-weight: bold;">Format</label>
@@ -71,7 +63,7 @@
                             <br>
                             <select name="format" id="format" required>
                                 <?php
-                                    $formats = explode("\n", shell_exec("bash ../run.sh --avail"));
+                                    $formats = explode("\n", shell_exec("bash ../run_web.sh --avail"));
                                     if (empty($formats[count($formats)-1])) { // remove last element if empty
                                         unset($formats[count($formats)-1]);
                                     }
@@ -90,7 +82,7 @@
                             </select>
                             <br><br>
 
-                            <label for="dir" style="font-weight: bold;">Monitor Directory</label>
+                            <label for="dir" id="dir_label" style="font-weight: bold;">Monitor Directory</label>
                             <button type='button' class="button info" id="info-monitor-dir">i</button>
 
                             <div id="modal-info-monitor-dir" class="modal">
@@ -209,7 +201,7 @@
                             <input type="file" name="new_script" id="script-new" accept=".sh" />
                             <br><br>
 
-                            <label for="timeout" style="font-weight: bold;">Timeout</label>
+                            <label for="timeout" id="timeout_label" style="font-weight: bold;">Timeout</label>
                             <button type='button' class="button info" id="info-timeout">i</button>
 
                             <div id="modal-info-timeout" class="modal">
@@ -255,7 +247,7 @@
                         <br>
 
                         <fieldset>
-                            <label for="sim" style="font-weight: bold;">Simulate</label>
+                            <label for="sim" id="sim_label" style="font-weight: bold;">Simulate</label>
                                 <?php
                                     if ($_POST["simulation"] == "on") {
                                         $checked = "checked='checked' ";
@@ -390,253 +382,291 @@
                                     </div>
                                 </div>      
                             </div>
+
+                            <br><br>
+
+                            <label for="non-real-time" style="font-weight: bold;">Non-real-time Analysis</label>
+                            <?php
+                                if ($_POST["non-real-time"] == "on") {
+                                    $checked = "checked='checked' ";
+                                } else {
+                                    $checked = "";
+                                }
+                                echo "<input type='checkbox' name='non-real-time' id='non-real-time' $checked/>";
+                            ?>
+                            <button type='button' class="button info" id="info-non-real-time">i</button>
+
+                            <div id="modal-info-non-real-time" class="modal">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <span class="close modal-close-info-non-real-time">&times;</span>
+                                        <h2>Non-real-time Analysis - Information</h2>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>This analyses in the traditional static way. Assumes file_list.cfg is in data directory.</p>
+                                    </div>
+                                </div>      
+                            </div>
                         </fieldset>
 
                         <fieldset class="invisible">
-                            <input type="submit" class="button" id="start" name="execute" value="start realtime analysis" />
-                            <input type="submit" class="button" id="kill" name="halt" value="kill all jobs" />
+                            <input type="submit" class="button" id="start" name="execute" value="start real-time analysis" />
                         </fieldset>
+
                     </form>
                 </div>
 
             </div>
 
             <div class="right">
+                <div class="container-right">
+                    <h2 class="title">
+                        Extra
+                    </h2>
 
-                <p><br>
+                    <fieldset class="invisible">
+                        <input type="submit" class="button" id="reset" name="reset" value="reset to default options" />
+                    </fieldset>
 
-                    <?php
-                    
-                    // Upload file
-                    
-                    $php_id = $_COOKIE['PHPSESSID'];
+                    <p><br>
 
-                    if ($_FILES["new_script"]["name"] != "") {
-                        $target_dir = __DIR__ . "/uploads/$php_id/";
-                        $target_file = $target_dir . basename($_FILES["new_script"]["name"]);
-                        $__FILE_UPLOAD_STATUS__ = 0;
-                        $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+                        <?php
+                        
+                        // Upload file
+                        
+                        $php_id = $_COOKIE['PHPSESSID'];
 
-                        // Check if file already exists
-                        if (file_exists($target_file)) {
-                            //echo "File already exists";
-                            $__FILE_UPLOAD_STATUS__ = -1;
-                        }
+                        if ($_FILES["new_script"]["name"] != "") {
+                            $target_dir = __DIR__ . "/uploads/$php_id/";
+                            $target_file = $target_dir . basename($_FILES["new_script"]["name"]);
+                            $__FILE_UPLOAD_STATUS__ = 0;
+                            $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-                        // Check file size
-                        if ($_FILES["new_script"]["size"] > 500000) { // too large
-                            //echo "File to large";
-                            $__FILE_UPLOAD_STATUS__ = 1;
-                        }
-
-                        // Allow certain file formats
-                        if ($fileType != "sh" ) {
-                            $__FILE_UPLOAD_STATUS__ = 2;
-                        }
-
-                        // Check if $uploadOk is set to 0 by an error
-                        if ($__FILE_UPLOAD_STATUS__ == 0) {
-
-                            system("mkdir -p $target_dir");
-
-                            if (move_uploaded_file($_FILES["new_script"]["tmp_name"], $target_file)) {
-                                //echo "<br>Successful upload!";
-                                
-                            } else {
-                                //echo "<br>Sorry, there was an error uploading your file.";
-                                $__FILE_UPLOAD_STATUS__ = 3;
+                            // Check if file already exists
+                            if (file_exists($target_file)) {
+                                //echo "File already exists";
+                                $__FILE_UPLOAD_STATUS__ = -1;
                             }
-                        }
-                    }
 
-                    ?>
-
-                    Options specified
-                    <br>
-                    <?php
-                        echo "<pre>";
-                        print_r(get_defined_vars());
-                        if (isset($_POST['format'])) {
-                            echo "<ul>Format: ", $_POST['format'], "</ul>";
-                            $format = $_POST['format'];
-                        }
-
-                        if (isset($_POST['dir'])) {
-                            echo "<ul>Monitor dir: ", $_POST['dir'], "</ul>";
-                            $monitor_dir = $_POST['dir'];
-                        }
-
-                        echo "<ul>Scripts</ul>";
-                        if (isset($_POST['existing_script'])) {
-                            echo "<ul><ul>Analysis script (existing): ", $_POST['existing_script'], "</ul></ul>";
-                            $script = __DIR__ . "/../scripts/" . $_POST['existing_script'];
-                        }
-                        if (isset($_POST['uploaded_script'])) {
-                            echo "<ul><ul>Analysis script (prev uploaded): ", $_POST['uploaded_script'], "</ul></ul>";
-                            $script = __DIR__ . "/uploads/$php_id/" . $_POST['uploaded_script'];
-                        }
-                        if (isset($_FILES['new_script']['name']) && $_FILES['new_script']['name'] != "") {
-                            echo "<ul><ul>Analysis script (new): ", $_FILES['new_script']['name'], "</ul></ul>";
-                            $script = __DIR__ . "/uploads/$php_id/" . $_POST['new_script']['name'];
-                        }
-
-                        echo "<ul>Timeout</ul>";
-                        if (isset($_POST['timeout_format'])) {
-                            echo "<ul><ul>Timeout format: ", $_POST['timeout_format'], "</ul></ul>";
-
-                            switch ($_POST['timeout_format']) {
-                                case "Seconds":
-                                    $timeout_format = "-s";
-                                    break;
-                                case "Minutes":
-                                    $timeout_format = "-m";
-                                    break;
-                                case "Hours":
-                                    $timeout_format = "-hr";
-                                    break;
-                                case "Automatic":
-                                    $timeout_format = "-a";
-                                    break;
+                            // Check file size
+                            if ($_FILES["new_script"]["size"] > 500000) { // too large
+                                //echo "File to large";
+                                $__FILE_UPLOAD_STATUS__ = 1;
                             }
-                        }
-                        if (isset($_POST['timeout_time'])) {
-                            if ($_POST['timeout_time'] == "") {
-                                if ($timeout_format == "Automatic") {
-                                    $timeout_time = "";
+
+                            // Allow certain file formats
+                            if ($fileType != "sh" ) {
+                                $__FILE_UPLOAD_STATUS__ = 2;
+                            }
+
+                            // Check if $uploadOk is set to 0 by an error
+                            if ($__FILE_UPLOAD_STATUS__ == 0) {
+
+                                system("mkdir -p $target_dir");
+
+                                if (move_uploaded_file($_FILES["new_script"]["tmp_name"], $target_file)) {
+                                    //echo "<br>Successful upload!";
+                                    
                                 } else {
-                                    echo "<ul><ul>Timeout format: ", 1, "</ul></ul>";
-                                    $timeout_time = " 1";
+                                    //echo "<br>Sorry, there was an error uploading your file.";
+                                    $__FILE_UPLOAD_STATUS__ = 3;
                                 }
-                            } else {
-                                echo "<ul><ul>Timeout format: ", $_POST['timeout_time'], "</ul></ul>";
-                                $timeout_time = " " . $_POST['timeout_time'];
                             }
                         }
 
-                        if (isset($_POST['simulation'])) {
-                            echo "<ul>Simulation: ", $_POST['simulation'], "</ul>";
-                            $simulate = true;
-                        } else {
-                            echo "<ul>Simulation: off</ul>";
-                            $simulate = false;
-                        }
-                        if (isset($_POST['simulate_dir'])) {
-                            echo "<ul><ul>Simulate dir: ", $_POST['simulate_dir'], "</ul></ul>";
-                            $simulate_dir = $_POST['simulate_dir'];
-                        }
-                        if (isset($_POST['real_simulation'])) {
-                            echo "<ul><ul>Realistic: ", $_POST['simulation'], "</ul></ul>";
-                            $real_sim = " --real";
-                        } else {
-                            echo "<ul><ul>Realistic: off</ul></ul>";
-                            $real_sim = "";
-                        }
-                        if (isset($_POST['time_between_reads'])) {
-                            if ($_POST['time_between_reads'] == "") {
-                                echo "<ul><ul>Time between reads: ", 0, "</ul></ul>";
-                                $time_between_reads = 0;
-                            } else {
-                                echo "<ul><ul>Time between reads: ", $_POST['time_between_reads'], "</ul></ul>";
-                                $time_between_reads = $_POST['time_between_reads'];
-                            }
-                        }
-                        if (isset($_POST['number_of_reads'])) {
-                            if ($_POST['number_of_reads'] == "") {
-                                echo "<ul><ul>No. reads: all</ul></ul>";
-                                $no_reads = -1;
-                            } else {
-                                echo "<ul><ul>No. reads: ", $_POST['number_of_reads'], "</ul></ul>";
-                                $no_reads = $_POST['number_of_reads'];
-                            }
-                        }
+                        ?>
 
-                        $num_screens = shell_exec("ls log_*- | wc -l");
-                        $num_screens = str_replace("\n", "", $num_screens);
-                        echo "<br>No. screens: $num_screens";
-                        if ($num_screens == "" || $num_screens < 0) {
+                        <h3>Options specified</h3>
+                        <br>
+                        <?php
+                            echo "<pre>";
+
+                            if (isset($_POST['format'])) {
+                                echo "<ul>Format: ", $_POST['format'], "</ul>";
+                                $format = $_POST['format'];
+                            }
+
+                            if (isset($_POST['dir'])) {
+                                echo "<ul>Monitor dir: ", $_POST['dir'], "</ul>";
+                                $monitor_dir = $_POST['dir'];
+                            }
+
+                            echo "<ul>Scripts</ul>";
+                            if (isset($_POST['existing_script'])) {
+                                echo "<ul><ul>Analysis script (existing): ", $_POST['existing_script'], "</ul></ul>";
+                                $analysis_script = __DIR__ . "/../scripts/" . $_POST['existing_script'];
+                            }
+                            if (isset($_POST['uploaded_script'])) {
+                                echo "<ul><ul>Analysis script (prev uploaded): ", $_POST['uploaded_script'], "</ul></ul>";
+                                $analysis_script = __DIR__ . "/uploads/$php_id/" . $_POST['uploaded_script'];
+                            }
+                            if (isset($_FILES['new_script']['name']) && $_FILES['new_script']['name'] != "") {
+                                echo "<ul><ul>Analysis script (new): ", $_FILES['new_script']['name'], "</ul></ul>";
+                                $analysis_script = __DIR__ . "/uploads/$php_id/" . $_POST['new_script']['name'];
+                            }
+
+                            if ($analysis_script == "") {
+                                echo "No script chosen :(";
+                            }
+
+                            echo "<ul>Timeout</ul>";
+                            if (isset($_POST['timeout_format'])) {
+                                echo "<ul><ul>Timeout format: ", $_POST['timeout_format'], "</ul></ul>";
+
+                                switch ($_POST['timeout_format']) {
+                                    case "Seconds":
+                                        $timeout_format = "-s";
+                                        break;
+                                    case "Minutes":
+                                        $timeout_format = "-m";
+                                        break;
+                                    case "Hours":
+                                        $timeout_format = "-hr";
+                                        break;
+                                    case "Automatic":
+                                        $timeout_format = "-a";
+                                        break;
+                                }
+                            }
+                            if (isset($_POST['timeout_time'])) {
+                                if ($_POST['timeout_time'] == "") {
+                                    if ($timeout_format == "Automatic") {
+                                        $timeout_time = "";
+                                    } else {
+                                        echo "<ul><ul>Timeout format: ", 1, "</ul></ul>";
+                                        $timeout_time = " 1";
+                                    }
+                                } else {
+                                    echo "<ul><ul>Timeout format: ", $_POST['timeout_time'], "</ul></ul>";
+                                    $timeout_time = " " . $_POST['timeout_time'];
+                                }
+                            }
+
+                            if (isset($_POST['simulation'])) {
+                                echo "<ul>Simulation: ", $_POST['simulation'], "</ul>";
+                                $simulate = true;
+                            } else {
+                                echo "<ul>Simulation: off</ul>";
+                                $simulate = false;
+                            }
+                            if (isset($_POST['simulate_dir'])) {
+                                echo "<ul><ul>Simulate dir: ", $_POST['simulate_dir'], "</ul></ul>";
+                                $simulate_dir = $_POST['simulate_dir'];
+                            }
+                            if (isset($_POST['real_simulation'])) {
+                                echo "<ul><ul>Realistic: ", $_POST['simulation'], "</ul></ul>";
+                                $real_sim = " --real";
+                            } else {
+                                echo "<ul><ul>Realistic: off</ul></ul>";
+                                $real_sim = "";
+                            }
+                            if (isset($_POST['time_between_reads'])) {
+                                if ($_POST['time_between_reads'] == "") {
+                                    echo "<ul><ul>Time between reads: ", 0, "</ul></ul>";
+                                    $time_between_reads = 0;
+                                } else {
+                                    echo "<ul><ul>Time between reads: ", $_POST['time_between_reads'], "</ul></ul>";
+                                    $time_between_reads = $_POST['time_between_reads'];
+                                }
+                            }
+                            if (isset($_POST['number_of_reads'])) {
+                                if ($_POST['number_of_reads'] == "") {
+                                    echo "<ul><ul>No. reads: all</ul></ul>";
+                                    $no_reads = -1;
+                                } else {
+                                    echo "<ul><ul>No. reads: ", $_POST['number_of_reads'], "</ul></ul>";
+                                    $no_reads = $_POST['number_of_reads'];
+                                }
+                            }
+
                             $num_screens = 0;
-                        }
-                        $name = $num_screens . "_" . str_replace("/", "-", $monitor_dir);
+                            $header = true;
+                            if (($handle = fopen("database.csv", "r")) !== FALSE) {
+                                while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                                    if ($header) {
+                                        $header = false;
+                                        continue;
+                                    }
 
-                        echo "<ul>Screen name: $name</ul>"; // testing
-
-                        $log_name = "log_$name";
-
-                        if ($__FILE_UPLOAD_STATUS__ == -1) {
-                            echo "File already exists";
-
-                        } else if ($__FILE_UPLOAD_STATUS__ == 1) {
-                            echo "File size is too large";
-                        
-                        } else if ($__FILE_UPLOAD_STATUS__ == 2) {
-                            echo "File is not of type .sh";
-                        
-                        } else if ($__FILE_UPLOAD_STATUS__ == 3) {
-                            echo "File failed during upload";
-
-                        } else if (isset($_POST['execute'])) {
-                            if ($_POST['execute'] == "start realtime analysis") {
-
-                                if ($simulate) {
-                                    $cmd = sprintf("screen -S %s -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y | bash run.sh -f %s -m %s -8 %s%s --t=%s --n=%s -t %s%s -s %s'", 
-                                                    $name, $format, $monitor_dir, $simulate_dir, $real_sim, $time_between_reads, $no_reads, $timeout_format, $timeout_time, $script);
-
-                                } else {
-                                    $cmd = sprintf("screen -S %s -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y | bash run.sh -f %s -m %s -t %s%s -s %s'", 
-                                                    $name, $format, $monitor_dir, $timeout_format, $timeout_time, $script);
+                                    $val = intval(substr($data[0], 0));
+                                    if ($val >= $num_screens) {
+                                        $num_screens = $val + 1;
+                                    }
                                 }
 
-                                echo "Command being run:<br>";
-                                echo $cmd;
-
-                                if ( shell_exec("ls '$log_name'") == "$log_name\n") {
-                                    system("rm '$log_name'");
-                                }
-
-                                system($cmd);
-
-                                if (shell_exec("cat database.csv") == "") {
-                                    system("printf 'Name,Log_file,Format,Monitor_dir,Analysis_script,Timeout_format,Timeout_time,Simulate,Simulate_dir,Real_sim,Time_between_reads,Num_reads\n' >> database.csv");
-                                }
-
-                                system("printf '$name,$log_name,$format,$monitor_dir,$script,$timeout_format,$timeout_time,$simulate,$simulate_dir,$real_sim,$time_between_reads,$no_reads\n' >> database.csv");
+                                fclose($handle);
                             }
+
+                            echo "<br>No. screens: $num_screens";
+                            if ($num_screens == "" || $num_screens < 0) {
+                                $num_screens = 0;
+                            }
+                            $name = $num_screens . "_" . str_replace("/", "-", $monitor_dir);
+
+                            echo "<ul>Screen name: $name</ul>"; // testing
+
+                            $log_name = "log_$name";
+
+                            if ($__FILE_UPLOAD_STATUS__ == -1) {
+                                echo "File already exists";
+
+                            } else if ($__FILE_UPLOAD_STATUS__ == 1) {
+                                echo "File size is too large";
                             
-                        } else if (isset($_POST['halt'])) {
-                            if ($_POST['halt'] == "kill all jobs") {
-                                system("screen -list");
-                                //$recent_screen = shell_exec("screen -list | sed -n 2p | cut -f2");
-                                //$recent_screen = rtrim($recent_screen);
+                            } else if ($__FILE_UPLOAD_STATUS__ == 2) {
+                                echo "File is not of type .sh";
+                            
+                            } else if ($__FILE_UPLOAD_STATUS__ == 3) {
+                                echo "File failed during upload";
 
-                                // if ($recent_screen == "") {
-                                //     echo "<br>No process to stop";
+                            } else if (isset($_POST['execute'])) {
+                                if ($_POST['execute'] == "start real-time analysis") {
 
-                                // } else {
+                                    if ($analysis_script == "") {
+                                        echo "<script>alert('No script was chosen. Analysis uninitiated.')</script>";
+                                    } else {
 
-                                //     echo "<br>'$recent_screen'<br>";
-                                //     system("screen -XS $recent_screen quit");
-                                //     echo "<br>";
-                                //     system("screen -list");
-                                // }
+                                        if ($simulate) {
+                                            $cmd = sprintf("screen -S $name -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y | " .
+                                            "bash run_web.sh -f $format -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $script'");
 
-                                system("pkill screen");
-                                echo "<br>";
-                                system("screen -list");
+                                        } else {
+                                            $cmd = sprintf("screen -S $name -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y | " . 
+                                            "bash run_web.sh -f $format -m $monitor_dir -t $timeout_format$timeout_time -s $script'");
+                                        }
+
+                                        echo "Command being run:<br>";
+                                        echo $cmd;
+
+                                        if ( shell_exec("ls '$log_name'") == "$log_name\n") {
+                                            system("rm '$log_name'");
+                                        }
+
+                                        system($cmd);
+
+                                        if (shell_exec("cat database.csv") == "") {
+                                            system("printf 'Name,Log_file,Format,Monitor_dir,Analysis_script,Timeout_format,Timeout_time,Simulate,Simulate_dir,Real_sim,Time_between_reads,Num_reads\n' >> database.csv");
+                                        }
+
+                                        system("printf '$name,$log_name,$format,$monitor_dir,$script,$timeout_format,$timeout_time,$simulate,$simulate_dir,$real_sim,$time_between_reads,$no_reads\n' >> database.csv");
+                                    }
+                                }
                                 
-                                system("cp /dev/null database.csv");
-                                system("rm log_[^\.]*");
                             }
-                        }
-                    ?>
-                </p>
+
+                            echo "<br>";
+                            print_r(get_defined_vars());
+                        ?>
+                    </p>
+                </div>
 
             </div>
 
             <div class="left">
-                <div id='log' style="margin: 0 20% 0 20%;">
-                    <p>Jobs:</p>
-                    <form id="job_buttons" method="POST">
-                        <input type='submit' class='button' name='kill all' value='kill all jobs' style='float: left;' />
+                <div id='log'>
+                    <h2 class="title">Jobs</h2>
+                    <form id="job_buttons" method="POST" onSubmit="return confirm('Are you sure? This action is irreversible.');">
+                        <input type='submit' class='button kill' name='kill all' value='kill all jobs' />
                         <br><br>
                         <?php
 
@@ -684,13 +714,32 @@
                             foreach ($jobs_arr as $job) {
                                 $job_name = $job;
 
-                                echo "<button type='button' class='button' id='$job_name' style='float: left;'>$job_name</button>";
+                                echo "<button type='button' class='button log-info' id='$job_name' style='float: left; position: relative'>$job_name</button>";
                                 echo "<br>";
-                                echo "<div id='$job_name-options' class='hidden'>";
-                                echo "<input type='submit' class='button' name='kill $job_name' value='kill job' style='float: left;' />";
-                                echo "<button type='button' class='button' id='$job_name-output' style='float: left;'>show output</button>";
+                                echo "<div id='$job_name-options' class='hidden options'>";
+                                echo "<input type='submit' class='button kill' name='kill $job_name' value='kill job' />";
+                                echo "<button type='button' class='button show-log' id='$job_name-output'>show output</button>";
                                 echo "<br>";
-                                system("grep $job_name, database.csv");
+
+                                if (($file = fopen("database.csv", "r")) != FALSE) {
+
+                                    $first = true;
+                                    while (($data = fgetcsv($file)) != FALSE) {
+
+                                        if ($first) {
+                                            $header = $data;
+                                            $first = false;
+
+                                        } else if ($data[0] == $job_name) {
+                                            for ($x = 0; $x < count($data); $x ++) {
+                                                echo $header[$x] . ": " . $data[$x] . "<br>";
+                                            }
+                                        }
+                                    }
+
+                                    fclose($file);
+                                }
+
                                 echo "</div>";
                                 echo "<br>";
 
@@ -701,8 +750,10 @@
                                             element = document.getElementById('$job_name-options');
                                             if (element.classList.contains('hidden')) {
                                                 $('#$job_name-options').removeClass('hidden');
+                                                $('#$job_name').addClass('js-dark-turquoise');
                                             } else {
                                                 $('#$job_name-options').addClass('hidden');
+                                                $('#$job_name').removeClass('js-dark-turquoise');
                                             }
                                         });
                                     });
@@ -726,7 +777,7 @@
         </div>
 
         <!-- <script src="js/oldbutton.js"></script> -->
-        <script src="js/button.js?07-02-2020:15 49"></script>
-        <script src="js/disabled.js?07-02-2020:15 43"></script>
+        <script src="js/button.js?11-02-2020:16 55"></script>
+        <script src="js/disabled.js?11-02-2020:16 13"></script>
     </body>
 </html>

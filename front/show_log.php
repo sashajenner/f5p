@@ -9,7 +9,7 @@
     </head>
 
     <body>
-        <div id="log">
+        <div class="log">
             <?php
                 if (isset($_GET["log_filename"])) {
                     $log_filename = $_GET["log_filename"];
