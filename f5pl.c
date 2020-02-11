@@ -64,13 +64,14 @@ typedef struct {
     int32_t file_list_cnt; //the number of filled entires in file_list
     char** ip_list;        //the list of IP addresses
     int32_t failed
-        [MAX_FILES]; //the indices (of file_list) for completely failed tar files due to device hangs (todo : malloc later)
-    int32_t failed_cnt; //the number of such failures
+        [MAX_FILES];       //the indices (of file_list) for completely failed tar files due to device hangs (todo : malloc later)
+    int32_t failed_cnt;    //the number of such failures
     int32_t num_hangs
-        [MAX_IPS]; //number of times a node disconnected (todo : malloc later)
-    int32_t failed_other //failed due to another reason. See the logs.
+        [MAX_IPS];         //number of times a node disconnected (todo : malloc later)
+    int32_t failed_other   //failed due to another reason. See the logs.
         [MAX_FILES];
     int32_t failed_other_cnt; //the number of other failures
+    char* format;          //the format of fast5 and fastq files
 } node_global_args_t;
 
 node_global_args_t core; //remember that core is used throughout
@@ -93,6 +94,8 @@ void* node_handler(void* arg) {
     sprintf(report_fname, "dev%d.cfg", tid+1);
     FILE* report = fopen(report_fname, "w");
     NULL_CHK(report);
+
+    char msg[MAX_PATH_SIZE + 1 + MAX_FLAG_SIZE]; // declare message pointer for sending to daemon
 
     while (1) {
         pthread_mutex_lock(&file_list_mutex);
@@ -124,8 +127,8 @@ void* node_handler(void* arg) {
 
         fprintf(stderr, "[t%d(%s)::INFO] Assigning %s (%d of %d) to %s.\n", tid,
                 core.ip_list[tid], core.file_list[fidx], fidx+1 , core.file_list_cnt, core.ip_list[tid]);
-        send_full_msg(socketfd, core.file_list[fidx],
-                      strlen(core.file_list[fidx]));
+        sprintf(msg, "--format=%s %s", core.format, core.file_list[fidx]);
+        send_full_msg(socketfd, msg, strlen(msg)); // send filename and format to thread
 
         //receive the ''done' message (will block until done)
         int received = recv_full_msg_try(socketfd, buffer, MAX_PATH_SIZE, RECEIVE_TIME_OUT);
@@ -172,8 +175,8 @@ void* node_handler(void* arg) {
             }            
             fprintf(stderr, "[t%d(%s)::INFO] Assigning %s (%d of %d) to %s\n", tid,
                     core.ip_list[tid], core.file_list[fidx],  fidx+1 , core.file_list_cnt, core.ip_list[tid]);
-            send_full_msg(socketfd, core.file_list[fidx],
-                          strlen(core.file_list[fidx]));
+            sprintf(msg, "--format %s %s", core.format, core.file_list[fidx]);
+            send_full_msg(socketfd, msg, strlen(msg)); // send filename and format to thread
             received = recv_full_msg_try(socketfd, buffer, MAX_PATH_SIZE, 5);
         }
 
@@ -228,14 +231,42 @@ void sig_handler(int sig) {
 int main(int argc, char* argv[]) {
     signal(SIGSEGV, sig_handler);
 
-    //argument check check
-    if (argc != 3) {
-        ERROR("Not enough arguments. Usage %s <ip_list> <file_list>\n",
-              argv[0]);
+    char* help_msg= "Acceptable formats:\n" // Help message for arguments
+                    "   --778   [in_dir]\n"
+                    "           |-- fast5/\n"
+                    "               |-- [prefix].fast5.tar\n"
+                    "           |-- fastq/\n"
+                    "               |-- fastq_*.[prefix].fastq.gz\n\n"
+                                
+                    "   --NA    [in_dir]\n"
+                    "           |-- fast5/\n"
+                    "               |-- [prefix].fast5\n"
+                    "           |-- fastq/\n"
+                    "               |-- [prefix]\n"
+                    "                   |-- [prefix].fastq\n\n"
+                                    
+                    "   --zebra  [in_dir]\n"
+                    "            |-- fast5/\n"
+                    "                |-- [prefix].fast5\n"
+                    "            |-- fastq/\n"
+                    "                |-- [prefix].fastq\n";
+
+    if ( strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0 ) { // If help option is set
+        printf("%s", help_msg);
+        fflush(stdout); // Flushing stdout buffer
+        return 0;
+
+    } else if (argc != 4 ||
+        ! ( strcmp(argv[1], "--778") == 0 || strcmp(argv[1], "--NA") == 0 || strcmp(argv[1], "--zebra") == 0 )
+        ) { // Check there is at least 2 args
+        ERROR("Not enough arguments or incorrect format. Usage %s <format> <ip_list> <file_list>\n%s",
+                argv[0], help_msg);
         exit(EXIT_FAILURE);
     }
 
     realtime0=realtime();
+
+    core.format = argv[1]; // Set format string
 
     //read the list of tar files
     char** file_list = (char**)malloc(sizeof(char*) * (MAX_FILES));
