@@ -45,7 +45,7 @@
 #%        default log.txt                           
 #%
 #%    -m [directory], --monitor=[directory]         Monitor a specific directory
-#%    --non-realtime=[directory]                    Specify non-realtime analysis
+#%    --non-realtime                                Specify non-realtime analysis
 #%    -r, --resume                                  Resumes from last processing position
 #%    -s [file], --script=[file]                    Custom script for processing files on the cluster
 #%        default scripts/fast5_pipeline.sh             - Default script which calls minimap, f5c & samtools
@@ -221,9 +221,9 @@ while [ ! $# -eq 0 ]; do # while there are arguments
             monitor_dir_specified=true
             ;;
 
-        --non-realtime=*)
+        --non-realtime)
             realtime=false
-            MONITOR_PARENT_DIR="${1#*=}"
+            MONITOR_PARENT_DIR=$SCRIPT_PATH # Place results in current path directory
             ;;
 
         --resume | -r)
@@ -418,7 +418,7 @@ test -d $MONITOR_PARENT_DIR/methylation || mkdir $MONITOR_PARENT_DIR/methylation
 ansible all -m copy -a "src=$PIPELINE_SCRIPT dest=/nanopore/bin/fast5_pipeline.sh mode=0755" |& tee -a $LOG
 
 if ! $realtime; then # If non-realtime option set
-    /usr/bin/time -v $SCRIPT_PATH/f5pl $SCRIPT_PATH/data/ip_list.cfg $SCRIPT_PATH/data/dev.cfg |& # Redirect all stderr to stdout
+    /usr/bin/time -v $SCRIPT_PATH/f5pl $FORMAT $SCRIPT_PATH/data/ip_list.cfg $SCRIPT_PATH/data/file_list.cfg |& # Redirect all stderr to stdout
     tee $LOG
 
 else # Else assume realtime analysis is desired
