@@ -75,10 +75,10 @@ Specify the format of the nanopore output directory structure:</br>
               |-- sequencing_summary.txt
               
 Allow the script to monitor the nanopore output for new files by specifying the path of the directory to monitor:</br>
-  `-m [directory]`, `--monitor=[directory]`
+`-m [directory]`, `--monitor=[directory]`
 
-This call the real-time scheduling client `f5pl_realtime` by default, but non-real-time option is also available:
-  `--non-realtime`
+This call the real-time scheduling client `f5pl_realtime` by default, but non-real-time option is also available:</br>
+`--non-realtime`
 
 See other options using help flag: `./run.sh -h`.
 
