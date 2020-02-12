@@ -164,3 +164,16 @@ Simulate the creation of files in an output directory from an input directory. S
     -r, --real-sim                          Realistic simulation of fast5 and fastq files given log
                                             file in input directory.
                                            
+### Examples
+
+Normal simulation with 30s between fast5/q batches:
+</br>
+`testing/simulator.sh -f [format] -t 30s [in_dir] [out_dir]`
+</br></br>
+Normal simulation of 10 files:
+</br>
+`testing/simulator.sh -n 10 [in_dir] [out_dir]`
+</br></br>
+Realistic simulation:
+</br>
+`testing/simulator.sh -f [format] -r [in_dir] [out_dir]`
