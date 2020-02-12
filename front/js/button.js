@@ -11,6 +11,7 @@ var default_sim_dir = "/mnt/zebrafish/zebrafish_test";
 var default_time_between_reads = "";
 var default_no_reads = "";
 var default_non_realtime = "off";
+var default_resuming = "off";
 
 reset_default = function() {
     const select_format = document.getElementById("format");
@@ -132,6 +133,13 @@ reset_default = function() {
     } else {
         realtime_checkbox.checked = false;
     }
+
+    resuming_checkbox = document.getElementById("resume");
+    if (default_non_realtime == "on") {
+        resuming_checkbox.checked = "checked";
+    } else {
+        resuming_checkbox.checked = false;
+    }
 }
 
 
@@ -141,7 +149,7 @@ $(document).ready(function() {
         if ($(this).val() == "reset to default options") {
             reset_default();
 
-        } else if ($(this).html() == "i") {
+        } else if ($(this).html() == "i"|| $(this).html() == "?") {
             var id = $(this).attr("id");
 
             // Get the modal

@@ -213,7 +213,7 @@ div.log {
     background-color: darkturquoise;
 }
 
-button.info {
+.info {
     height: 13px;
     width: 13px;
     border-radius: 50%;
@@ -230,9 +230,28 @@ button.info {
     margin: auto;
 }
 
-button.info:focus,
-button.info:hover {
-    background-color: rgb(44, 44, 230);
+button.question {
+    height: 26px;
+    width: 26px;
+    font-size: 20px;
+}
+
+.question {
+    background-color: rgb(250, 210, 79);
+}
+
+.div-question {
+    float: right;
+}
+
+.info:focus,
+.info:hover {
+    background-color: rgb(57, 110, 255);
+}
+
+button.question:focus,
+button.question:hover {
+    background-color: lightsalmon;/*rgb(250, 97, 79);*/
 }
 
 input#script-new {
@@ -256,4 +275,8 @@ input#script-new {
 .title {
     padding: 13px 0;
     text-decoration: underline;
+}
+
+#resuming {
+    position: absolute;
 }

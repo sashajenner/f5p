@@ -3,7 +3,7 @@
     <head>
         <title>Realtime Analysis - Home</title>
         <script src="js/jquery-3.4.1.min.js"></script>
-        <link rel="stylesheet" href="css/style.css?11-02-2020:11 43" />
+        <link rel="stylesheet" href="css/style.css?12-02-2020:12 04" />
         <link rel="icon" type="image/png" href="favicon.png?05-02-2020:11 53" sizes="32x32"/>
     </head>
 
@@ -18,68 +18,131 @@
                 <div class="container">                 
                     <form id="analysis_form" method="POST" enctype="multipart/form-data">        
                         <fieldset>
-                            <label for="format" style="font-weight: bold;">Format</label>
-                            <button type='button' class="button info" id="info-format">i</button>
 
-                            <div id="modal-info-format" class="modal">
+                            <div class="div-question">
+                                <button type='button' class="button question info" id="info-page">?</button>
+                            </div>
+
+                            <div id="modal-info-page" class="modal">
                                 <div class="modal-content">
-                                    <div class="modal-header">
-                                        <span class="close modal-close-info-format">&times;</span>
-                                        <h2>Format - Information</h2>
+                                    <div class="question modal-header">
+                                        <span class="close modal-close-info-page">&times;</span>
+                                        <h2>What is this page?</h2>
                                     </div>
-                                    <div class="modal-body modal-body-info-format">
+                                    <div class="modal-body">
                                         <p>
-            Specify folder & file format of the sequencer's output:<br><br>
-            &emsp;--zebra&emsp;[directory]&emsp;&emsp;(Newest format)<br>
-            &emsp;&emsp;&emsp;&emsp;&emsp;|-- fast5/<br>
-            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;|-- [prefix].fast5<br>
-            &emsp;&emsp;&emsp;&emsp;&emsp;|-- fastq/<br>
-            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;|-- [prefix].fastq<br>
-            &emsp;&emsp;&emsp;&emsp;&emsp;|-- sequencing_summary.txt<br>
-            <br>
-            &emsp;--NA&emsp;[directory]&emsp;&emsp;(Newer format with terrible folders)<br>
-            &emsp;&emsp;&emsp;&emsp;&nbsp;|-- fast5/<br>
-            &emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;|-- [prefix].fast5<br>
-            &emsp;&emsp;&emsp;&emsp;&nbsp;|-- fastq/<br>
-            &emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;|-- [prefix]/<br>
-            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;|-- [prefix].fastq<br>
-            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;|-- sequencing_summary.txt (optional -<br>
-            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;for realistic testing or automatic timeout)<br>
-            <br>
-            &emsp;--778&emsp;[directory]&emsp;&emsp;(Old format that's not too bad)<br>
-            &emsp;&emsp;&emsp;&emsp;&nbsp;|-- fast5/<br>
-            &emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;|-- [prefix].fast5.tar<br>
-            &emsp;&emsp;&emsp;&emsp;&nbsp;|-- fastq/<br>
-            &emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;|-- fastq_*.[prefix].fastq.gz<br>
-            &emsp;&emsp;&emsp;&emsp;&nbsp;|-- logs/ (optional - for realistic testing<br>
-            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;or automatic timeout)<br>
-            &emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;|-- sequencing_summary.[prefix].txt.gz<br>
-                                        
+                                            This is intended to run analysis of nanopore sequenced DNA.<br>
+                                            If you want to run a job just pick your options and click the "i" button beside them if you're unsure of their purpose.<br>
+                                            Press "start real-time analysis" to start a job.<br>
+                                            <br>
+                                            The command-tools that are the backend of this website and the website code itself can be accessed <a href="https://github.com/sashajenner/realf5p" target="_blank">on GitHub</a>.<br>
+                                            Enjoy saving hours of wait-time with realtime analysis!
+                                            <br>
                                         </p>
+                                        <p style="float: left;">
+                                            Author: Sasha Jenner
+                                        </p>
+                                        <p style="float: right">
+                                            Date: 12/02/2020
+                                        </p>
+                                        <br>
                                     </div>
                                 </div>      
                             </div>
 
-                            <br>
-                            <select name="format" id="format" required>
+                            <div id="resuming">
+                                <label for="resume" id="resume_label" style="font-weight: bold;">Resuming</label>
                                 <?php
-                                    $formats = explode("\n", shell_exec("bash ../run_web.sh --avail"));
-                                    if (empty($formats[count($formats)-1])) { // remove last element if empty
-                                        unset($formats[count($formats)-1]);
+                                    if ($_POST["resuming"] == "on") {
+                                        $checked = "checked='checked' ";
+                                    } else {
+                                        $checked = "";
                                     }
+                                    echo "<input type='checkbox' name='resuming' id='resume' $checked/>";
+                                ?>
+                                <button type='button' class="button info" id="info-resume">i</button>
 
-                                    foreach ($formats as $format) {
+                                <div id="modal-info-resume" class="modal">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <span class="close modal-close-info-resume">&times;</span>
+                                            <h2>Resuming - Information</h2>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>
+                                                If analysis halted or failed irrecoverably, but the run has not been completely sequenced.
+                                                <br>Resuming will try to begin from where analysis ended.
+                                                <br>Note: this option only works for realtime analysis.
+                                            </p>
+                                        </div>
+                                    </div>      
+                                </div>
+                            </div>
 
-                                        if ($format == $_POST['format']) {
-                                            $selected = " selected='selected'";
-                                        } else {
-                                            $selected = "";
+                                <label for="format" style="font-weight: bold;">Format</label>
+                                <button type='button' class="button info" id="info-format">i</button>
+
+                                <div id="modal-info-format" class="modal">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <span class="close modal-close-info-format">&times;</span>
+                                            <h2>Format - Information</h2>
+                                        </div>
+                                        <div class="modal-body modal-body-info-format">
+                                            <p>
+                Specify folder & file format of the sequencer's output:<br><br>
+                &emsp;--zebra&emsp;[directory]&emsp;&emsp;(Newest format)<br>
+                &emsp;&emsp;&emsp;&emsp;&emsp;|-- fast5/<br>
+                &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;|-- [prefix].fast5<br>
+                &emsp;&emsp;&emsp;&emsp;&emsp;|-- fastq/<br>
+                &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;|-- [prefix].fastq<br>
+                &emsp;&emsp;&emsp;&emsp;&emsp;|-- sequencing_summary.txt<br>
+                <br>
+                &emsp;--NA&emsp;[directory]&emsp;&emsp;(Newer format with terrible folders)<br>
+                &emsp;&emsp;&emsp;&emsp;&nbsp;|-- fast5/<br>
+                &emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;|-- [prefix].fast5<br>
+                &emsp;&emsp;&emsp;&emsp;&nbsp;|-- fastq/<br>
+                &emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;|-- [prefix]/<br>
+                &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;|-- [prefix].fastq<br>
+                &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;|-- sequencing_summary.txt (optional -<br>
+                &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;for realistic testing or automatic timeout)<br>
+                <br>
+                &emsp;--778&emsp;[directory]&emsp;&emsp;(Old format that's not too bad)<br>
+                &emsp;&emsp;&emsp;&emsp;&nbsp;|-- fast5/<br>
+                &emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;|-- [prefix].fast5.tar<br>
+                &emsp;&emsp;&emsp;&emsp;&nbsp;|-- fastq/<br>
+                &emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;|-- fastq_*.[prefix].fastq.gz<br>
+                &emsp;&emsp;&emsp;&emsp;&nbsp;|-- logs/ (optional - for realistic testing<br>
+                &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;or automatic timeout)<br>
+                &emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;|-- sequencing_summary.[prefix].txt.gz<br>
+                                            
+                                            </p>
+                                        </div>
+                                    </div>      
+                                </div>
+
+                                <br>
+
+
+                                <select name="format" id="format" required>
+                                    <?php
+                                        $formats = explode("\n", shell_exec("bash ../run_web.sh --avail"));
+                                        if (empty($formats[count($formats)-1])) { // remove last element if empty
+                                            unset($formats[count($formats)-1]);
                                         }
 
-                                        echo "<option value='$format'$selected>$format</option>";
-                                    }
-                                ?>
-                            </select>
+                                        foreach ($formats as $format) {
+
+                                            if ($format == $_POST['format']) {
+                                                $selected = " selected='selected'";
+                                            } else {
+                                                $selected = "";
+                                            }
+
+                                            echo "<option value='$format'$selected>$format</option>";
+                                        }
+                                    ?>
+                                </select>
                             <br><br>
 
                             <label for="dir" id="dir_label" style="font-weight: bold;">Monitor Directory</label>
@@ -385,7 +448,7 @@
 
                             <br><br>
 
-                            <label for="non-real-time" style="font-weight: bold;">Non-real-time Analysis</label>
+                            <label for="non-real-time" id="non-real-time_label" style="font-weight: bold;">Non-real-time Analysis</label>
                             <?php
                                 if ($_POST["non-real-time"] == "on") {
                                     $checked = "checked='checked' ";
@@ -578,6 +641,25 @@
                                     $no_reads = $_POST['number_of_reads'];
                                 }
                             }
+                            $realtime = true;
+                            if (isset($_POST["non-real-time"])) {
+                                if ($_POST["non-real-time"] == "on") {
+                                    echo "Non-real-time: on";
+                                    $realtime = false;
+                                } else {
+                                    echo "Non-real-time: off";
+                                }
+                            }
+
+                            $resuming = false;
+                            if (isset($_POST["resuming"])) {
+                                if ($_POST["resuming"] == "on") {
+                                    echo "Resuming: on";
+                                    $resuming = true;
+                                } else {
+                                    echo "Resuming: off";
+                                }
+                            }
 
                             $num_screens = 0;
                             $header = true;
@@ -626,13 +708,27 @@
                                         echo "<script>alert('No script was chosen. Analysis uninitiated.')</script>";
                                     } else {
 
-                                        if ($simulate) {
-                                            $cmd = sprintf("screen -S $name -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y | " .
-                                            "bash run_web.sh -f $format -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $script'");
+                                        if ($realtime) {
+
+                                            if ($simulate) {
+                                                $cmd = sprintf("screen -S $name -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y | " .
+                                                "bash run_web.sh -f $format -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $script'");
+
+                                            } else {
+
+                                                if ($resuming) {
+                                                    $resume="-r ";
+                                                } else {
+                                                    $resume="";
+                                                }
+                                                
+                                                $cmd = sprintf("screen -S $name -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y | " . 
+                                                "bash run_web.sh -f $format $resume-m $monitor_dir -t $timeout_format$timeout_time -s $script'");
+                                            }
 
                                         } else {
-                                            $cmd = sprintf("screen -S $name -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y | " . 
-                                            "bash run_web.sh -f $format -m $monitor_dir -t $timeout_format$timeout_time -s $script'");
+                                            $cmd = sprintf("screen -S $name -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y |" .
+                                            "bash run_web.sh -f $format --non-real-time -s $script");
                                         }
 
                                         echo "Command being run:<br>";
@@ -645,10 +741,10 @@
                                         system($cmd);
 
                                         if (shell_exec("cat database.csv") == "") {
-                                            system("printf 'Name,Log_file,Format,Monitor_dir,Analysis_script,Timeout_format,Timeout_time,Simulate,Simulate_dir,Real_sim,Time_between_reads,Num_reads\n' >> database.csv");
+                                            system("printf 'Name,Resuming,Log_file,Format,Monitor_dir,Analysis_script,Timeout_format,Timeout_time,Simulate,Simulate_dir,Real_sim,Time_between_reads,Num_reads,Real-time\n' >> database.csv");
                                         }
 
-                                        system("printf '$name,$log_name,$format,$monitor_dir,$script,$timeout_format,$timeout_time,$simulate,$simulate_dir,$real_sim,$time_between_reads,$no_reads\n' >> database.csv");
+                                        system("printf '$name,$resuming,$log_name,$format,$monitor_dir,$script,$timeout_format,$timeout_time,$simulate,$simulate_dir,$real_sim,$time_between_reads,$no_reads,$realtime\n' >> database.csv");
                                     }
                                 }
                                 
@@ -777,7 +873,7 @@
         </div>
 
         <!-- <script src="js/oldbutton.js"></script> -->
-        <script src="js/button.js?11-02-2020:16 55"></script>
-        <script src="js/disabled.js?11-02-2020:16 13"></script>
+        <script src="js/button.js?12-02-2020:12 04"></script>
+        <script src="js/disabled.js?12-02-2020:12 04"></script>
     </body>
 </html>
