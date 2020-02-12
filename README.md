@@ -166,7 +166,7 @@ Simulate the creation of files in an output directory from an input directory. S
                                            
 ### Examples
 
-*Normal simulation with 30s between fast5/q batches:*
+Normal simulation with 30s between fast5/q batches:
 </br>
 
 ```sh
@@ -174,7 +174,7 @@ testing/simulator.sh -f [format] -t 30s [in_dir] [out_dir]
 ```
 </br>
 
-*Normal simulation of 10 files:*
+Normal simulation of 10 files:
 </br>
 
 ```sh
@@ -183,7 +183,7 @@ testing/simulator.sh -n 10 [in_dir] [out_dir]
 
 </br>
 
-*Realistic simulation:*
+Realistic simulation:
 </br>
 
 ```sh
