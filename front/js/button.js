@@ -14,6 +14,7 @@ var default_non_realtime = "off";
 var default_resuming = "off";
 
 reset_default = function() {
+
     const select_format = document.getElementById("format");
     for (var i = 0; i < select_format.options.length; i ++) {
         if (select_format.options[i].text == default_format) {
@@ -63,6 +64,9 @@ reset_default = function() {
     }
 
     const value_timeout_time = document.getElementById("timeout-time");
+    if (default_timeout_time_format == "Hours") {
+        value_timeout_time.disabled = false;
+    }
     value_timeout_time.value = default_timeout_time_value;
 
     const real_sim_checkbox = document.getElementById("sim-real");
@@ -127,18 +131,36 @@ reset_default = function() {
         select_sim_dir_label.classList.add("grey");
     }
 
-    realtime_checkbox = document.getElementById("non-real-time");
+    resuming_checkbox = document.getElementById("resume");
+    resuming_checkbox_label = document.getElementById("resume_label");
+
+    non_realtime_checkbox = document.getElementById("non-real-time");
+    non_realtime_checkbox_label = document.getElementById("non-real-time_label");
+
     if (default_non_realtime == "on") {
-        realtime_checkbox.checked = "checked";
+        non_realtime_checkbox.checked = "checked";
+        non_realtime_checkbox.disabled = false;
+        non_realtime_checkbox_label.classList.remove("grey");
+
+        resuming_checkbox.disabled = true;
+        resuming_checkbox_label.classList.add("grey");
     } else {
-        realtime_checkbox.checked = false;
+        non_realtime_checkbox.checked = false;
+        non_realtime_checkbox.disabled = false;
+        non_realtime_checkbox_label.classList.remove("grey");
     }
 
-    resuming_checkbox = document.getElementById("resume");
     if (default_non_realtime == "on") {
         resuming_checkbox.checked = "checked";
+        resuming_checkbox.disabled = false;
+        resuming_checkbox_label.classList.remove("grey");
+
+        non_realtime_checkbox.disabled = true;
+        non_realtime_checkbox_label.classList.add("grey");
     } else {
         resuming_checkbox.checked = false;
+        resuming_checkbox.disabled = false;
+        resuming_checkbox_label.classList.remove("grey");
     }
 }
 
@@ -174,6 +196,18 @@ $(document).ready(function() {
                     modal.style.display = "none";
                 }
             }
+        } else if ($(this).attr("id") == "toggle-refresh") {
+
+            var js_refresh = document.getElementById("js-refresh");
+
+            if (!$(this).hasClass("toggle-green")) {
+                this.classList.add("toggle-green");
+                this.innerHTML = "Auto Refresh: ON";
+                
+            } else {
+                this.classList.remove("toggle-green");
+                this.innerHTML = "Auto Refresh: OFF";
+            }
         }
 
         // var oReq = new XMLHttpRequest(); // New request object
@@ -187,3 +221,11 @@ $(document).ready(function() {
         // oReq.send();
     });
 });
+
+var timeout = setInterval(function() {
+    if (document.getElementById("toggle-refresh").innerHTML == "Auto Refresh: ON") {
+        location.reload();
+    }
+
+    return false;
+}, 5000);

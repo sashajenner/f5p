@@ -80,7 +80,7 @@
                             </div>
 
                                 <label for="format" style="font-weight: bold;">Format</label>
-                                <button type='button' class="button info" id="info-format">i</button>
+                                <button type='button' class="button info" id="info-format" style="margin-right: 20%">i</button>
 
                                 <div id="modal-info-format" class="modal">
                                     <div class="modal-content">
@@ -873,7 +873,7 @@
         </div>
 
         <!-- <script src="js/oldbutton.js"></script> -->
-        <script src="js/button.js?12-02-2020:12 04"></script>
+        <script src="js/button.js?12-02-2020:13 24"></script>
         <script src="js/disabled.js?12-02-2020:12 04"></script>
     </body>
 </html>
