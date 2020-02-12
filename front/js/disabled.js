@@ -22,19 +22,14 @@ var monior_dir_label = document.getElementById("dir_label");
 var non_realtime_checkbox_label = document.getElementById("non-real-time_label")
 var resuming_checkbox_label = document.getElementById("resume_label");
 
-function react_checkbox_change(event) {
+function react_checkbox(event) {
 
-    var real_checkbox = document.getElementById("sim-real");
     var time_input = document.getElementById("sim-time");
-    var read_input = document.getElementById("sim-read_num");
-    var sim_dir = document.getElementById("sim-dir");
-
-    var real_checkbox_label = document.getElementById("sim-real_label");
     var time_input_label = document.getElementById("sim-time_label");
+    var read_input = document.getElementById("sim-read_num");
     var read_input_label = document.getElementById("sim-read_num_label");
-    var sim_dir_label = document.getElementById("sim-dir_label");
 
-    if (!event.target.checked) {
+    if (!sim_checkbox.checked) {
         real_checkbox.disabled = "disabled";
         real_checkbox_label.classList.add("grey");
         time_input.disabled = "disabled";
@@ -43,6 +38,16 @@ function react_checkbox_change(event) {
         read_input_label.classList.add("grey");
         sim_dir.disabled = "disabled";
         sim_dir_label.classList.add("grey");
+
+        if (!non_realtime_checkbox.checked) {
+            resuming_checkbox.disabled = false
+            resuming_checkbox_label.classList.remove("grey");
+        }
+        
+        if (!resuming_checkbox.checked) {
+            non_realtime_checkbox.disabled = false
+            non_realtime_checkbox_label.classList.remove("grey");
+        }
         
     } else {
         if (real_checkbox.checked) {
@@ -65,53 +70,12 @@ function react_checkbox_change(event) {
         read_input_label.classList.remove("grey");
         sim_dir.disabled = false;
         sim_dir_label.classList.remove("grey");
-    }
-}
 
-function react_checkbox_load(event) {
-
-    var real_checkbox = document.getElementById("sim-real");
-    var time_input = document.getElementById("sim-time");
-    var read_input = document.getElementById("sim-read_num");
-    var sim_dir = document.getElementById("sim-dir");
-
-    var real_checkbox_label = document.getElementById("sim-real_label");
-    var time_input_label = document.getElementById("sim-time_label");
-    var read_input_label = document.getElementById("sim-read_num_label");
-    var sim_dir_label = document.getElementById("sim-dir_label");
-
-    if (!sim_checkbox.checked) {
-        real_checkbox.disabled = "disabled";
-        real_checkbox_label.classList.add("grey");
-        time_input.disabled = "disabled";
-        time_input_label.classList.add("grey");
-        read_input.disabled = "disabled";
-        read_input_label.classList.add("grey");
-        sim_dir.disabled = "disabled";
-        sim_dir_label.classList.add("grey");
-
-    } else {
-
-        if (real_checkbox.checked) {
-            time_input.disabled = "disabled";
-            time_input_label.classList.add("grey");
-        } else {
-            time_input.disabled = false;
-            time_input_label.classList.remove("grey");
-        }
-
-        if (time_input.value != "") {
-            real_checkbox.disabled = "disabled";
-            real_checkbox_label.classList.add("grey");
-        } else {
-            real_checkbox.disabled = false;
-            real_checkbox_label.classList.remove("grey");
-        }
-
-        read_input.disabled = false;
-        read_input_label.classList.remove("grey");
-        sim_dir.disabled = false;
-        sim_dir_label.classList.remove("grey");
+        non_realtime_checkbox.disabled = "disabled";
+        non_realtime_checkbox_label.classList.add("grey");
+        resuming_checkbox.disabled = "disabled";
+        resuming_checkbox_label.classList.add("grey");
+        
     }
 }
 
@@ -357,13 +321,13 @@ function react_resuming_checkbox(event) {
 window.addEventListener("load", react_script);
 window.addEventListener("load", react_timeout_format);
 window.addEventListener("load", react_realistic_load);
-window.addEventListener("load", react_checkbox_load);
+window.addEventListener("load", react_checkbox);
 window.addEventListener("load", react_upload_script);
 window.addEventListener("load", react_existing_script);
 window.addEventListener("load", react_non_realtime_checkbox);
 window.addEventListener("load", react_resuming_checkbox);
 
-sim_checkbox.addEventListener("change", react_checkbox_change);
+sim_checkbox.addEventListener("change", react_checkbox);
 pipeline_script_upload.addEventListener("change", react_script);
 time_between_reads.addEventListener("change", react_time_reads);
 real_checkbox.addEventListener("change", react_realistic_change);

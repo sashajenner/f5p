@@ -711,8 +711,8 @@
                                         if ($realtime) {
 
                                             if ($simulate) {
-                                                $cmd = sprintf("screen -S $name -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y | " .
-                                                "bash run_web.sh -f $format -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $script'");
+                                                $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y | " .
+                                                "bash run_web.sh -f $format -l front/$log_name-run -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $script'");
 
                                             } else {
 
@@ -722,20 +722,21 @@
                                                     $resume="";
                                                 }
                                                 
-                                                $cmd = sprintf("screen -S $name -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y | " . 
-                                                "bash run_web.sh -f $format $resume-m $monitor_dir -t $timeout_format$timeout_time -s $script'");
+                                                $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y | " . 
+                                                "bash run_web.sh -f $format -l front/$log_name-run $resume-m $monitor_dir -t $timeout_format$timeout_time -s $script'");
                                             }
 
                                         } else {
-                                            $cmd = sprintf("screen -S $name -L -Logfile $log_name -d -m bash -c 'cd ../ && echo y |" .
-                                            "bash run_web.sh -f $format --non-real-time -s $script");
+                                            $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y |" .
+                                            "bash run_web.sh -f $format -l front/$log_name-log --non-real-time -s $script");
                                         }
 
                                         echo "Command being run:<br>";
                                         echo $cmd;
 
-                                        if ( shell_exec("ls '$log_name'") == "$log_name\n") {
-                                            system("rm '$log_name'");
+                                        if ( shell_exec("ls '$log_name*'") != "\n") {
+                                            echo "waddup";
+                                            system("rm '$log_name*'");
                                         }
 
                                         system($cmd);
@@ -794,7 +795,7 @@
 
                                         fclose($file);
 
-                                        system("rm $log_filename");
+                                        system("rm $log_filename*");
                                     }
 
                                     system("grep -vwE '($job_name)' database.csv > temp && mv temp database.csv");
@@ -874,6 +875,6 @@
 
         <!-- <script src="js/oldbutton.js"></script> -->
         <script src="js/button.js?12-02-2020:13 24"></script>
-        <script src="js/disabled.js?12-02-2020:12 04"></script>
+        <script src="js/disabled.js?13-02-2020:10 33"></script>
     </body>
 </html>
