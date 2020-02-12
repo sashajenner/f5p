@@ -76,7 +76,7 @@
 #%    realtime simulation
 #%        ${SCRIPT_NAME} -f [format] -m [directory] -8 [directory] --real -t -a
 #%    non realtime
-#%        ${SCRIPT_NAME} --non-realtime=[directory]
+#%        ${SCRIPT_NAME} -f [format] --non-realtime
 #%
 #================================================================
 #- IMPLEMENTATION
@@ -442,12 +442,12 @@ else # Else assume realtime analysis is desired
     if $resuming; then # If resuming option set
         bash $SCRIPT_PATH/monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
         bash $SCRIPT_PATH/monitor/ensure.sh -r -f $FORMAT 2>> $LOG |
-        /usr/bin/time -v $SCRIPT_PATH/f5pl_realtime $FORMAT $SCRIPT_PATH/data/ip_list.cfg -r |& # Redirect all stderr to stdout
+        /usr/bin/time -v $SCRIPT_PATH/f5pl_realtime $FORMAT $SCRIPT_PATH/data/ip_list.cfg -r |&
         tee -a $LOG
     else
         bash $SCRIPT_PATH/monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
         bash $SCRIPT_PATH/monitor/ensure.sh -f $FORMAT 2>> $LOG |
-        /usr/bin/time -v $SCRIPT_PATH/f5pl_realtime $FORMAT $SCRIPT_PATH/data/ip_list.cfg |& # Redirect all stderr to stdout
+        /usr/bin/time -v $SCRIPT_PATH/f5pl_realtime $FORMAT $SCRIPT_PATH/data/ip_list.cfg |&
         tee -a $LOG
     fi
 fi
