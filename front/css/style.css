@@ -283,10 +283,12 @@ input#script-new {
 
 .toggle {
     margin: 2%;
+    background-color: lightsalmon;
 }
 
 .toggle-green {
     border-color: rgb(0, 255, 76);
+    background-color: lightgreen;
 }
 
 .button_container {
