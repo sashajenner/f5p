@@ -48,7 +48,7 @@ Specify the format of the nanopore output directory structure:</br>
   `-f [format]`, `--format=[format]`</br>
 
   Available formats include `--778`, `--NA` and `--zebra`.
-  
+      
     --778     [directory]               Old format that's not too bad
               |-- fast5/
                   |-- [prefix].fast5.tar
@@ -137,9 +137,30 @@ Ensurse that corresponding *fast5* and *fastq* files have been created before pr
 testing/simulator.sh -f [format] [options ...] [in_dir] [out_dir]
 ```
 
-Simulate the creation of an existing dataset from `[in_dir]` to `[out_dir]`.
+Simulate the creation of an existing dataset from `[in_dir]` to `[out_dir]`. See end section for details.
 
 </br>
 
 ### `viz` 
 This folder contains R & Bash scripts, and png output when graphing the results from testing.
+
+</br>
+
+## Simulator
+
+Simulate the creation of files in an output directory from an input directory. See `testing/simulator.sh` for script.
+
+### Options
+
+    -f [format], --format=[format]          Follow a specified format of fast5 and fastq files. 
+                                            See step 2 of "Running Analyis" above for available formats.
+                                            No format copies generically from input directory.
+                                            
+    -n [num], --num-batches=[num]           Copy a given number of fast5/q batches.
+                                            Or a fixed number of files if no format is given.
+                                            
+    -t [time], --time-between=[time]        Time to wait in between copying batches/files.
+    
+    -r, --real-sim                          Realistic simulation of fast5 and fastq files given log
+                                            file in input directory.
+                                           
