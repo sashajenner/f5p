@@ -278,5 +278,5 @@ input#script-new {
 }
 
 #resuming {
-    position: absolute;
+    float: left;    
 }
