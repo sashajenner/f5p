@@ -276,7 +276,7 @@ else {
 		file=$1;
 	
 		# If fast5 file copying fails
-		if [ "$(mkdir -p "$OUTPUT_DIR" && cp $file "$_")" = 0 ]; then
+		if $(mkdir -p "$OUTPUT_DIR" && cp $file "$_"); then
 			echo -e $RED"- failed copy $i"$NORMAL
 		else # Else copying worked
 			echo -e $GREEN"+ finished copy $i"$NORMAL
