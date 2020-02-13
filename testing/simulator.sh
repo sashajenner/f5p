@@ -273,7 +273,7 @@ else {
 	copy_generic_files() {
 		echo -e $GREEN"copying $i"$NORMAL # Set font colour to green and then back to normal
 
-		$file = $1;
+		file=$1;
 	
 		# If fast5 file copying fails
 		if [ "$(mkdir -p "$OUTPUT_DIR" && cp $file "$_")" = 0 ]; then
@@ -288,7 +288,11 @@ else {
 	}
 }
 
+fi
+
+
 if $format_specified; then
+
 	if [ "$FORMAT" = "--778" ]; then
 
 		if $REAL_SIM; then # If the realistic simulation option is set
