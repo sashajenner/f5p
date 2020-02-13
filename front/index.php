@@ -4,7 +4,7 @@
         <title>Realtime Analysis - Home</title>
         <script src="js/jquery-3.4.1.min.js"></script>
         <link rel="stylesheet" href="css/style.css?12-02-2020:12 04" />
-        <link rel="icon" type="image/png" href="favicon.png?05-02-2020:11 53" sizes="32x32"/>
+        <link rel="icon" type="image/png" href="favicon.png?13-02-2020:13 02" sizes="32x32"/>
     </head>
 
     <body>

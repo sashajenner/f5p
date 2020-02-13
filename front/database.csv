@@ -1,2 +1,0 @@
-Name,Resuming,Log_file,Format,Monitor_dir,Analysis_script,Timeout_format,Timeout_time,Simulate,Simulate_dir,Real_sim,Time_between_reads,Num_reads,Real-time
-0_-mnt-simulator_out,,log_0_-mnt-simulator_out,--zebra,/mnt/simulator_out,fast5_pipeline_nas.sh,-m, 5,1,/mnt/zebrafish/zebrafish_test,,0,10,1

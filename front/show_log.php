@@ -4,7 +4,8 @@
         <title>Realtime Analysis - Log Viewer</title>
         <script src="js/jquery-3.4.1.min.js"></script>
         <link rel="stylesheet" href="css/style.css?13-02-2020:12 00" />
-        <link rel="icon" type="image/png" href="favicon.png?05-02-2020:11 53" sizes="32x32"/>
+        <link rel="icon" type="image/png" href="favicon.png?13-02-2020:13 02" sizes="32x32"/>
+        <meta name="google" content="notranslate">
     </head>
 
     <body>
