@@ -566,7 +566,7 @@ int main(int argc, char* argv[]) {
         fprintf(failed_report, "# Files that failed due to devices that consecutively hanged.\n");
         for (i = 0; i < core.failed_cnt; i ++) {
             int id = core.failed[i];
-            //ERROR("%s was skipped due to a device retire", core.file_list[id]);
+            ERROR("%s was skipped due to a device retire", core.file_list[id]);
             fprintf(failed_report, "%s\n", core.file_list[id]);
         }
 
@@ -585,7 +585,7 @@ int main(int argc, char* argv[]) {
                 "# Files that failed with a software crash or exited with non 0 status. Please inspect the device log for more info.\n");
         for (i = 0; i < core.failed_other_cnt; i ++) {
             int id = core.failed_other[i];
-            //WARNING("%s was skipped due to a software crash or a non 0 exit status. Please see the log for more info.", core.file_list[id]);
+            WARNING("%s was skipped due to a software crash or a non 0 exit status. Please see the log for more info.", core.file_list[id]);
             fprintf(other_failed_report, "%s\n", core.file_list[id]);
         }
 
