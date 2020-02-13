@@ -146,6 +146,11 @@ This folder contains R & Bash scripts, and png output when graphing the results 
 
 </br>
 
+#### Note:
+Go <a href="https://docs.google.com/document/d/1-2RCcfGXeqRvT5TlAIgXEg3VJ8hkq5JAGduU6x45RF0/edit" target="_blank">here</a> for even further information!
+
+</br>
+
 ## Simulator
 
 Simulate the creation of files in an output directory from an input directory. See `testing/simulator.sh` for script.
