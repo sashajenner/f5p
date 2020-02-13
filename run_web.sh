@@ -464,7 +464,7 @@ mv $SCRIPT_PATH/*.cfg $SCRIPT_PATH/data/logs # Move all config files
 ansible all -m shell -a "cd /nanopore/scratch && tar zcvf logs.tgz *.log"
 
 # Copy log files from each node locally
-$SCRIPT_PATH/scripts/gather.sh /nanopore/scratch/logs.tgz $SCRIPT_PATH/data/logs/log tgz
+$SCRIPT_PATH/scripts/gather.sh nanojet@10.40.19 /nanopore/scratch/logs.tgz $SCRIPT_PATH/data/logs/log tgz
 
 # Copy files to logs folder
 cp $LOG $SCRIPT_PATH/data/logs/ # Copy log file

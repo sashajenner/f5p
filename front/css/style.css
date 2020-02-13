@@ -295,6 +295,6 @@ input#script-new {
 .button_container {
     position: absolute;
     width: 100%;
-    height: 30%;
+    height: 0px;
     text-align: right;
 }

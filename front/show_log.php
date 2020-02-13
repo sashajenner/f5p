@@ -20,9 +20,13 @@
                     $output = shell_exec("tac $log_filename");
                     $dictionary = array(
                         '[34m'    =>  '<span style="color:rgba(62, 194, 10, 1)">',
-                        '[1;331m'   =>  '<span style="color:red">',
-                        '[1;33m'    =>  '<span style="color:yellow">',
-                        '[0;39m'       =>  '</span>',
+                        '[0;31m'  =>  '<span style="color:red">',
+                        '[1;31m'  =>  '<span style="color:red">',
+                        '[1;33m'  =>  '<span style="color:orange">',
+                        '[1;34m'  =>  '<span style="color:magenta">',
+                        '[1;35m'  =>  '<span style="color:yellow">',
+                        '[0m'     =>  '</span>',
+                        '[0;39m'  =>  '</span>',
                     );
 
                     $output_color = str_replace(array_keys($dictionary), $dictionary, $output);

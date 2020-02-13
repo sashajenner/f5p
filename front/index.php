@@ -712,7 +712,7 @@
 
                                             if ($simulate) {
                                                 $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y | " .
-                                                "bash run_web.sh -f $format -l front/$log_name-run -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $script'");
+                                                "bash run_web.sh -f $format -l front/$log_name-run -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $analysis_script'");
 
                                             } else {
 
@@ -723,12 +723,12 @@
                                                 }
                                                 
                                                 $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y | " . 
-                                                "bash run_web.sh -f $format -l front/$log_name-run $resume-m $monitor_dir -t $timeout_format$timeout_time -s $script'");
+                                                "bash run_web.sh -f $format -l front/$log_name-run $resume-m $monitor_dir -t $timeout_format$timeout_time -s $analysis_script'");
                                             }
 
                                         } else {
                                             $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y |" .
-                                            "bash run_web.sh -f $format -l front/$log_name-run --non-real-time -s $script");
+                                            "bash run_web.sh -f $format -l front/$log_name-run --non-real-time -s $analysis_script");
                                         }
 
                                         echo "Command being run:<br>";
@@ -745,7 +745,7 @@
                                             system("printf 'Name,Resuming,Log_file,Format,Monitor_dir,Analysis_script,Timeout_format,Timeout_time,Simulate,Simulate_dir,Real_sim,Time_between_reads,Num_reads,Real-time\n' >> database.csv");
                                         }
 
-                                        system("printf '$name,$resuming,$log_name,$format,$monitor_dir,$script,$timeout_format,$timeout_time,$simulate,$simulate_dir,$real_sim,$time_between_reads,$no_reads,$realtime\n' >> database.csv");
+                                        system("printf '$name,$resuming,$log_name,$format,$monitor_dir,$analysis_script,$timeout_format,$timeout_time,$simulate,$simulate_dir,$real_sim,$time_between_reads,$no_reads,$realtime\n' >> database.csv");
                                     }
                                 }
                                 
@@ -777,7 +777,7 @@
                                 $job_name = $job;
 
                                 if (isset($_POST["kill_all"])) {
-                                    shell_exec("pkill screen");
+                                    system("pkill screen");
                                     system("cp /dev/null database.csv");
                                     system("rm log_*");
                                 
