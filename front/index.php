@@ -728,15 +728,16 @@
 
                                         } else {
                                             $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y |" .
-                                            "bash run_web.sh -f $format -l front/$log_name-log --non-real-time -s $script");
+                                            "bash run_web.sh -f $format -l front/$log_name-run --non-real-time -s $script");
                                         }
 
                                         echo "Command being run:<br>";
                                         echo $cmd;
 
-                                        if ( shell_exec("ls '$log_name*'") != "\n") {
+                                        if ( shell_exec("ls '$log_name*'") != "") {
                                             echo "waddup";
-                                            system("rm '$log_name*'");
+                                            system("rm '$log_name-run' -f");
+                                            system("rm '$log_name-screen' -f");
                                         }
 
                                         system($cmd);
@@ -779,7 +780,7 @@
                                 if (isset($_POST["kill_all"])) {
                                     shell_exec("pkill screen");
                                     system("cp /dev/null database.csv");
-                                    system("rm log_[^\.]*");
+                                    system("rm log_*");
                                 
                                 } else if (isset($_POST["kill_$job_name"])) {
                                     system('for session in $(screen -ls | ' . 
@@ -787,15 +788,33 @@
                                     'do screen -S "${session}" -X quit; done');
 
                                     if (($file = fopen("database.csv", "r")) != FALSE) {
+
+                                        $header = true;
                                         while (($data = fgetcsv($file)) != FALSE) {
-                                            if ($data[0] == $job_name) {
-                                                $log_filename = $data[1];
+                                            if ($header) {
+                                                for ($x = 0; $x < count($data); $x ++) {
+                                                    if ($data[$x] == "Log_file") {
+                                                        $col_log = $x;
+
+                                                    } else if ($data[$x] == "Name") {
+                                                        $col_name = $x;
+                                                    }
+
+                                                }
+
+                                                $header = false;
+
+                                            } else if ($data[$col_name] == $job_name) {
+                                                $log_filename = $data[$col_log];
                                             }
                                         }
 
                                         fclose($file);
-
-                                        system("rm $log_filename*");
+                                        
+                                        if ($log_filename != "") {
+                                            system("rm $log_filename-run");
+                                            system("rm $log_filename-screen");
+                                        }
                                     }
 
                                     system("grep -vwE '($job_name)' database.csv > temp && mv temp database.csv");
@@ -860,7 +879,7 @@
                                 <script type='text/javascript'>
                                     $(document).ready(function() {
                                         $('#$job_name-output').click(function() {
-                                            window.open('show_log.php?log_filename=log_$job_name', '_blank');
+                                            window.open('show_log.php?log_filename=log_$job_name-screen', '_blank');
                                         });
                                     });
                                 </script>";
