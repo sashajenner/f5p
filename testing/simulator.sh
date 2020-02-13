@@ -208,7 +208,7 @@ if $format_specified; then
 			FQ_FILE=$FQ_DIR/fastq_*.$1.fastq.gz
 		
 			# If fast5 file copying fails
-			if [ "$(mkdir -p $OUTPUT_DIR/fast5 && cp $F5_FILE "$_")" = 0 ]; then
+			if "$(mkdir -p $OUTPUT_DIR/fast5 && cp $F5_FILE "$_")"; then
 				echo -e $RED"- fast5: failed copy $i"$NORMAL
 			else # Else copying worked
 				echo -e $GREEN"+ fast5: finished copy $i"$NORMAL
@@ -217,7 +217,7 @@ if $format_specified; then
 			echo -e $GREEN"fastq: copying $i"$NORMAL
 
 			# If fastq file copying fails
-			if [ "$(mkdir -p $OUTPUT_DIR/fastq && cp $FQ_FILE "$_")" = 0 ]; then
+			if "$(mkdir -p $OUTPUT_DIR/fastq && cp $FQ_FILE "$_")"; then
 				echo -e $RED"- fastq: failed copy $i"$NORMAL
 			else # Else copying worked
 				echo -e $GREEN"+ fastq: finished copy $i"$NORMAL
@@ -228,7 +228,7 @@ if $format_specified; then
 			FQ_FILE=$FQ_DIR/$1/$1.fastq
 
 			# If fast5 file copying fails
-			if [ "$(mkdir -p $OUTPUT_DIR/fast5 && cp $F5_FILE "$_")" == 0 ]; then
+			if "$(mkdir -p $OUTPUT_DIR/fast5 && cp $F5_FILE "$_")"; then
 				echo -e $RED"- fast5: failed copy $i"$NORMAL
 			else # Else copying worked
 				echo -e $GREEN"+ fast5: finished copy $i"$NORMAL
@@ -237,7 +237,7 @@ if $format_specified; then
 			echo -e $GREEN"fastq: copying $i"$NORMAL
 
 			# If fastq file copying fails
-			if [ "$(mkdir -p $OUTPUT_DIR/fastq/$1 && cp $FQ_FILE "$_")" == 0 ]; then
+			if "$(mkdir -p $OUTPUT_DIR/fastq/$1 && cp $FQ_FILE "$_")"; then
 				echo -e $RED"- fastq: failed copy $i"$NORMAL
 			else # Else copying worked
 				echo -e $GREEN"+ fastq: finished copy $i"$NORMAL
@@ -248,7 +248,7 @@ if $format_specified; then
 			FQ_FILE=$FQ_DIR/$1.fastq
 
 			# If fast5 file copying fails
-			if [ "$(mkdir -p $OUTPUT_DIR/fast5 && cp $F5_FILE "$_")" == 0 ]; then
+			if "$(mkdir -p $OUTPUT_DIR/fast5 && cp $F5_FILE "$_")"; then
 				echo -e $RED"- fast5: failed copy $i"$NORMAL
 			else # Else copying worked
 				echo -e $GREEN"+ fast5: finished copy $i"$NORMAL
@@ -257,7 +257,7 @@ if $format_specified; then
 			echo -e $GREEN"fastq: copying $i"$NORMAL
 
 			# If fastq file copying fails
-			if [ "$(mkdir -p $OUTPUT_DIR/fastq && cp $FQ_FILE "$_")" == 0 ]; then
+			if "$(mkdir -p $OUTPUT_DIR/fastq && cp $FQ_FILE "$_")"; then
 				echo -e $RED"- fastq: failed copy $i"$NORMAL
 			else # Else copying worked
 				echo -e $GREEN"+ fastq: finished copy $i"$NORMAL
