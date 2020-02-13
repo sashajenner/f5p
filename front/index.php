@@ -31,7 +31,7 @@
                                     </div>
                                     <div class="modal-body">
                                         <p>
-                                            This is intended to run analysis of nanopore sequenced DNA.<br>
+                                            This is intended to run analysis of Nanopore-sequenced DNA.<br>
                                             If you want to run a job just pick your options and click the "i" button beside them if you're unsure of their purpose.<br>
                                             Press "start real-time analysis" to start a job.<br>
                                             <br>
@@ -735,7 +735,6 @@
                                         echo $cmd;
 
                                         if ( shell_exec("ls '$log_name*'") != "") {
-                                            echo "waddup";
                                             system("rm '$log_name-run' -f");
                                             system("rm '$log_name-screen' -f");
                                         }
