@@ -1,12 +1,13 @@
-if [ $# -ne 3 ]; then
-	echo "usage $0 sourcefile dest_path_and_prefix extension"
+if [ $# -ne 4 ]; then
+	echo "usage $0 ip_prefix file_prefix sourcefile dest_path_and_prefix extension"
 	exit 1
 fi
 
-source=$1
-prefix=$2
-suffix=$3
+ip_prefix=$1
+source=$2
+file_prefix=$3
+suffix=$4
 
 for i in $(seq 1 16); do
-	scp rock64@10.40.18.$i:$source $prefix$i.$suffix; 
+	scp $ip_prefix.$i:$source $prefix$i.$suffix; 
 done
