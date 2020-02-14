@@ -9,5 +9,5 @@ file_prefix=$3
 suffix=$4
 
 for i in $(seq 1 16); do
-	scp $ip_prefix.$i:$source $prefix$i.$suffix; 
+	scp $ip_prefix.$i:$source $file_prefix$i.$suffix; 
 done
