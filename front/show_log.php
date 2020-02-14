@@ -17,7 +17,7 @@
                 if (isset($_GET["log_filename"])) {
                     $log_filename = $_GET["log_filename"];
 
-                    $output = shell_exec("tac $log_filename");
+                    $output = shell_exec("cat -n $log_filename | awk '{ x = $0 " . '"\n" x } END { printf "%s", x }' ."'");
                     $dictionary = array(
                         '[34m'    =>  '<span style="color:rgba(62, 194, 10, 1)">',
                         '[0;31m'  =>  '<span style="color:red">',
