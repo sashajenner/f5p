@@ -202,11 +202,11 @@ testing/simulator.sh -f [format] -r [in_dir] [out_dir]
 
 ## Maximum Time Between Batches
 
+Find the maximum wait time in seconds between reads completing. Also see the time of completion of each read in order if `-l, --loud` option is set. See `max_time_between_files.sh` for the script.
+
 ```sh
 max_time_between_files.sh -f [format] [options ...] [directory]
 ```
-
-Find the maximum wait time in seconds between reads completing. Also see the time of completion of each read in order if `-l, --loud` option is set. See `max_time_between_files.sh` for the script.
 
 ### Options
 
