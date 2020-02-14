@@ -42,12 +42,12 @@ ansible all -m copy -a "src=./f5pd_realtime dest=/nanopore/bin/f5pd mode=0755"
 
   Note that this scripts should exit with a non-zero status if any thing went wrong. After modifying the script, copy it to the *worker nodes* to the location `/nanopore/bin/fast5_pipeline.sh`
 
-2. Execute `run.sh` to begin real-time analysis given the format and monitor directory.
+2. Execute `run.sh` to begin real-time analysis given the format (specific directory and filename structure of the sequencer's output) and monitor directory (the directory where the sequencer's output is continually being created).
 
 Specify the format of the nanopore output directory structure:</br>
   `-f [format]`, `--format=[format]`</br>
-
-  Available formats include `--778`, `--NA` and `--zebra`.
+  
+  This is provided to support backwards compatibility. Available formats include `--778`, `--NA` and `--zebra`.
       
     --778     [directory]               Old format that's not too bad
               |-- fast5/
@@ -77,7 +77,7 @@ Specify the format of the nanopore output directory structure:</br>
 Allow the script to monitor the nanopore output for new files by specifying the path of the directory to monitor:</br>
 `-m [directory]`, `--monitor=[directory]`
 
-This call the real-time scheduling client `f5pl_realtime` by default, but non-real-time option is also available:</br>
+This calls the real-time scheduling client `f5pl_realtime` by default, but non-real-time option is also available:</br>
 `--non-realtime`
 
 See other options using help flag: `./run.sh -h`.
@@ -119,7 +119,7 @@ See [forked repo](https://github.com/hasindu2008/f5p) for more information.
 monitor/monitor.sh [options ...] [directories ...]
 ```
 
-Monitors any given directories for new files and prints the filepath of any new files.
+Monitors any given directories for new files and prints the filepath of any new files. 
 
 ### `monitor/ensure.sh`
 
@@ -153,25 +153,28 @@ Go <a href="https://docs.google.com/document/d/1-2RCcfGXeqRvT5TlAIgXEg3VJ8hkq5JA
 
 ## Simulator
 
-Simulate the creation of files in an output directory from an input directory. See `testing/simulator.sh` for script.
+Simulate the creation of files in an output directory from an input directory. 
+</br></br>
+This copies files from a given input directory to the output directory and is useful for simulating a Nanopore sequencer by specifying the format structure of the sequencer's output. Rather than testing on a real run, one can instead simulate the creation of fast5 and fastq files. This can also be done realistically given the sequencing summary file of the historical run and by setting the `-r, --real-sim` option. See `testing/simulator.sh` for the script.
 
 ### Options
 
     -f [format], --format=[format]          Follow a specified format of fast5 and fastq files. 
                                             See step 2 of "Running Analyis" above for available formats.
-                                            No format copies generically from input directory.
+                                            If no format is given, copying is done generically from the
+                                            input directory.
                                             
-    -n [num], --num-batches=[num]           Copy a given number of fast5/q batches.
+    -n [num], --num-batches=[num]           Copy a given number of fast5/q reads.
                                             Or a fixed number of files if no format is given.
                                             
-    -t [time], --time-between=[time]        Time to wait in between copying batches/files.
+    -t [time], --time-between=[time]        Time to wait in between copying reads/files.
     
     -r, --real-sim                          Realistic simulation of fast5 and fastq files given log
                                             file in input directory.
                                            
 ### Examples
 
-Normal simulation with 30s between *fast5/q* batches:
+Normal simulation with 30s between *fast5/q* reads:
 </br>
 
 ```sh
@@ -194,3 +197,23 @@ Realistic simulation:
 ```sh
 testing/simulator.sh -f [format] -r [in_dir] [out_dir]
 ```
+
+</br>
+
+## Maximum Time Between Batches
+
+```sh
+max_time_between_files.sh -f [format] [options ...] [directory]
+```
+
+Find the maximum wait time in seconds between reads completing. Also see the time of completion of each read in order if `-l, --loud` option is set. See `max_time_between_files.sh` for the script.
+
+### Options
+
+    -f [format], --format=[format]          Follow a specified format of fast5 and fastq files. 
+                                            See step 2 of "Running Analyis" above for available formats.
+    
+    -l, --loud                              Print more verbosely. Output the time completed with the 
+                                            corresponding read, ordered by time. 
+                                            If left unset, just the maximum time between reads
+                                            in seconds is printed.
