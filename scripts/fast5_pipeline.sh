@@ -25,7 +25,7 @@
 # SOFTWARE.
 ###############################################################################
 
-USAGE="Usage: $0 -f [format] [options ...] [filepath]"
+USAGE="Usage: $0 -f [format] [options ...] [fast5_filepath]"
 : ${2?$USAGE} # require at least 2 args else give usage message
 
 HELP=$"Flags:
