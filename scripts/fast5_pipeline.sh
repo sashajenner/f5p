@@ -125,7 +125,7 @@ SAMTOOLS=/nanopore/bin/samtools
 
 if [ "$FORMAT" = "--zebra" ]; then # Zebrafish reference genome
     REF_FA=/mnt/zebrafish/zebrafish_genome.fa # reference fasta for methylation call
-    REF_IDX=/mnt/zebrafish/zebrafish_genome.fa.fai # reference index for minimap2
+    REF_IDX=/mnt/zebrafish/zebrafish_genome.idx # reference index for minimap2
 
 else # Human reference genome
     REF_FA=/nanopore/reference/hg38noAlt.fa # reference fasta for methylation call
@@ -241,17 +241,37 @@ fi
 exit_status=0 # assume success
 
 # index
-/usr/bin/time -v $METHCALL index -d $F5_DIR_LOCAL $FQ_LOCAL 2> $LOG_LOCAL || (exit_status=1; echo "index failed")
+/usr/bin/time -v $METHCALL index -d $F5_DIR_LOCAL $FQ_LOCAL 2> $LOG_LOCAL
+if [$? -ne 0]; then
+    exit_status=1
+    echo "index failed" >> $LOG_LOCAL
+fi
 
 # minimap
-/usr/bin/time -v $MINIMAP -x map-ont -a -t4 -K5M --secondary=no --multi-prefix=$MINIMAP_LOCAL $REF_IDX $FQ_LOCAL > $SAM_LOCAL 2>> $LOG_LOCAL || (exit_status=1; echo "minimap failed")
+/usr/bin/time -v $MINIMAP -x map-ont -a -t4 -K5M --secondary=no --multi-prefix=$MINIMAP_LOCAL $REF_IDX $FQ_LOCAL > $SAM_LOCAL 2>> $LOG_LOCAL
+if [$? -ne 0]; then
+    exit_status=1
+    echo "minimap failed" >> $LOG_LOCAL
+fi
 
 # sorting
-/usr/bin/time -v $SAMTOOLS sort -@3 $SAM_LOCAL > $BAM_LOCAL 2>> $LOG_LOCAL || (exit_status=1; echo "samtools sorting failed")
-/usr/bin/time -v $SAMTOOLS index $BAM_LOCAL 2>> $LOG_LOCAL || (exit_status=1; echo "samtools index failed")
+/usr/bin/time -v $SAMTOOLS sort -@3 $SAM_LOCAL > $BAM_LOCAL 2>> $LOG_LOCAL
+if [$? -ne 0]; then
+    exit_status=1
+    echo "samtools sorting failed" >> $LOG_LOCAL
+fi
+/usr/bin/time -v $SAMTOOLS index $BAM_LOCAL 2>> $LOG_LOCAL
+if [$? -ne 0]; then
+    exit_status=1
+    echo "samtools index failed" >> $LOG_LOCAL
+fi
 
 # methylation
-/usr/bin/time -v $METHCALL call-methylation -t 4 -r $FQ_LOCAL -g $REF_FA -b $BAM_LOCAL -K 256 > $METH_LOCAL  2>> $LOG_LOCAL || (exit_status=1; echo "methylation failed")
+/usr/bin/time -v $METHCALL call-methylation -t 4 -r $FQ_LOCAL -g $REF_FA -b $BAM_LOCAL -K 256 > $METH_LOCAL  2>> $LOG_LOCAL
+if [$? -ne 0]; then
+    exit_status=1
+    echo "methylation failed" >> $LOG_LOCAL
+fi
 
 # copy results to the correct place and create directories first if they do not exist
 mkdir -p $METH_DIR && cp $METH_LOCAL "$_"
@@ -264,5 +284,7 @@ rm -rf $F5_DIR_LOCAL # remove all from the local fast5 directory
 # remove all fastq files
 rm -f $FQ_LOCAL $FQ_LOCAL.index $FQ_LOCAL.index.fai $FQ_LOCAL.index.gzi $FQ_LOCAL.index.readdb
 rm -f $SAM_LOCAL $BAM_LOCAL $BAM_LOCAL.bai $METH_LOCAL # remove SAM, BAM and methylation files
+
+echo $exit_status >> $LOG_LOCAL
 
 exit $exit_status # return the exit status
