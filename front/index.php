@@ -731,7 +731,7 @@
                                             "bash run_web.sh -f $format -l front/$log_name-run --non-real-time -s $analysis_script");
                                         }
 
-                                        echo "Command being run:<br>";
+                                        echo "\nCommand being run:<br>";
                                         echo $cmd;
 
                                         if ( shell_exec("ls '$log_name*'") != "") {
@@ -739,7 +739,17 @@
                                             system("rm '$log_name-screen' -f");
                                         }
 
-                                        system($cmd);
+                                        // Sending cmd to cluster head node
+                                        $fp = fsockopen("http://129.94.15.98/", 20022, $errno, $errstr, 30); // 30s timeout
+                                        if (!$fp) {
+                                            echo "$errstr ($errno)<br />\n";
+                                        } else {
+                                            fwrite($fp, $cmd);
+                                            while (!feof($fp)) {
+                                                echo fgets($fp, 128);
+                                            }
+                                            fclose($fp);
+                                        }
 
                                         if (shell_exec("cat database.csv") == "") {
                                             system("printf 'Name,Resuming,Log_file,Format,Monitor_dir,Analysis_script,Timeout_format,Timeout_time,Simulate,Simulate_dir,Real_sim,Time_between_reads,Num_reads,Real-time\n' >> database.csv");
