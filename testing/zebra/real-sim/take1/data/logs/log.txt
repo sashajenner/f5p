@@ -1,0 +1,351 @@
+10.40.18.13 | SUCCESS | rc=0 >>
+
+10.40.18.3 | SUCCESS | rc=0 >>
+
+10.40.18.5 | SUCCESS | rc=0 >>
+
+10.40.18.4 | SUCCESS | rc=0 >>
+
+10.40.18.7 | SUCCESS | rc=0 >>
+
+10.40.18.6 | SUCCESS | rc=0 >>
+
+10.40.18.15 | SUCCESS | rc=0 >>
+
+10.40.18.14 | SUCCESS | rc=0 >>
+
+10.40.18.16 | SUCCESS | rc=0 >>
+
+10.40.18.2 | SUCCESS | rc=0 >>
+
+10.40.18.10 | SUCCESS | rc=0 >>
+
+10.40.18.9 | SUCCESS | rc=0 >>
+
+10.40.18.12 | SUCCESS | rc=0 >>
+
+10.40.18.8 | SUCCESS | rc=0 >>
+
+10.40.18.11 | SUCCESS | rc=0 >>
+
+10.40.18.1 | SUCCESS | rc=0 >>
+
+10.40.18.1 | SUCCESS => {
+    "changed": false, 
+    "checksum": "d864946ca4d8f43543371f655d16c0ed3ac1bd56", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 7970, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.2 | SUCCESS => {
+    "changed": false, 
+    "checksum": "d864946ca4d8f43543371f655d16c0ed3ac1bd56", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 7970, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.5 | SUCCESS => {
+    "changed": false, 
+    "checksum": "d864946ca4d8f43543371f655d16c0ed3ac1bd56", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 7970, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.3 | SUCCESS => {
+    "changed": false, 
+    "checksum": "d864946ca4d8f43543371f655d16c0ed3ac1bd56", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 7970, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.4 | SUCCESS => {
+    "changed": false, 
+    "checksum": "d864946ca4d8f43543371f655d16c0ed3ac1bd56", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 7970, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.7 | SUCCESS => {
+    "changed": false, 
+    "checksum": "d864946ca4d8f43543371f655d16c0ed3ac1bd56", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 7970, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.10 | SUCCESS => {
+    "changed": false, 
+    "checksum": "d864946ca4d8f43543371f655d16c0ed3ac1bd56", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 7970, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.11 | SUCCESS => {
+    "changed": false, 
+    "checksum": "d864946ca4d8f43543371f655d16c0ed3ac1bd56", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 7970, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.6 | SUCCESS => {
+    "changed": false, 
+    "checksum": "d864946ca4d8f43543371f655d16c0ed3ac1bd56", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 7970, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.12 | SUCCESS => {
+    "changed": false, 
+    "checksum": "d864946ca4d8f43543371f655d16c0ed3ac1bd56", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 7970, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.13 | SUCCESS => {
+    "changed": false, 
+    "checksum": "d864946ca4d8f43543371f655d16c0ed3ac1bd56", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 7970, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.8 | SUCCESS => {
+    "changed": false, 
+    "checksum": "d864946ca4d8f43543371f655d16c0ed3ac1bd56", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 7970, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.14 | SUCCESS => {
+    "changed": false, 
+    "checksum": "d864946ca4d8f43543371f655d16c0ed3ac1bd56", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 7970, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.9 | SUCCESS => {
+    "changed": false, 
+    "checksum": "d864946ca4d8f43543371f655d16c0ed3ac1bd56", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 7970, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.15 | SUCCESS => {
+    "changed": false, 
+    "checksum": "d864946ca4d8f43543371f655d16c0ed3ac1bd56", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 7970, 
+    "state": "file", 
+    "uid": 1000
+}
+10.40.18.16 | SUCCESS => {
+    "changed": false, 
+    "checksum": "d864946ca4d8f43543371f655d16c0ed3ac1bd56", 
+    "dest": "/nanopore/bin/fast5_pipeline.sh", 
+    "gid": 1000, 
+    "group": "rock64", 
+    "mode": "0755", 
+    "owner": "rock64", 
+    "path": "/nanopore/bin/fast5_pipeline.sh", 
+    "size": 7970, 
+    "state": "file", 
+    "uid": 1000
+}
+started
+Setting up watches.  Beware: since -r was given, this may take a while!
+Watches established.
+file completed: 8529.71s | file: /mnt/zebrafish/zebrafish_test//fast5//PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_74.fast5
+[34mfast5: copying 1[0;39m
+[34m+ fast5: finished copy 1[0;39m
+[34mfastq: copying 1[0;39m
+[34m+ fastq: finished copy 1[0;39m
+creating thread 1
+creating thread 2
+creating thread 3
+[t1(10.40.18.1)::INFO] Connecting to 10.40.18.1
+creating thread 4
+creating thread 5
+creating thread 6
+creating thread 7
+creating thread 8
+creating thread 9
+creating thread 10
+creating thread 11
+creating thread 12
+creating thread 13
+creating thread 14
+creating thread 15
+creating thread 16
+[t1(10.40.18.1)::INFO] Assigning /mnt/simulator_out/fast5/PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_74.fast5 (1) to 10.40.18.1
+[t1(10.40.18.1)::INFO] Received message 'done.' at time 8573.083152 sec | file /mnt/simulator_out/fast5/PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_74.fast5 (1).
+file completed: 28650.5s | file: /mnt/zebrafish/zebrafish_test//fast5//PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_274.fast5
+[34mfast5: copying 2[0;39m
+[34m+ fast5: finished copy 2[0;39m
+[34mfastq: copying 2[0;39m
+[34m+ fastq: finished copy 2[0;39m
+[t11(10.40.18.11)::INFO] Connecting to 10.40.18.11
+[t11(10.40.18.11)::INFO] Assigning /mnt/simulator_out/fast5/PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_274.fast5 (2) to 10.40.18.11
+[t11(10.40.18.11)::INFO] Received message 'done.' at time 28698.747114 sec | file /mnt/simulator_out/fast5/PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_274.fast5 (2).
+file completed: 33493.5s | file: /mnt/zebrafish/zebrafish_test//fast5//PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_322.fast5
+[34mfast5: copying 3[0;39m
+[34m+ fast5: finished copy 3[0;39m
+[34mfastq: copying 3[0;39m
+[34m+ fastq: finished copy 3[0;39m
+[t5(10.40.18.5)::INFO] Connecting to 10.40.18.5
+[t5(10.40.18.5)::INFO] Assigning /mnt/simulator_out/fast5/PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_322.fast5 (3) to 10.40.18.5
+[t5(10.40.18.5)::INFO] Received message 'done.' at time 33541.543403 sec | file /mnt/simulator_out/fast5/PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_322.fast5 (3).
+file completed: 68013.6s | file: /mnt/zebrafish/zebrafish_test//fast5//PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_652.fast5
+[34mfast5: copying 4[0;39m
+[34m+ fast5: finished copy 4[0;39m
+[34mfastq: copying 4[0;39m
+[34m+ fastq: finished copy 4[0;39m
+[t12(10.40.18.12)::INFO] Connecting to 10.40.18.12
+[t12(10.40.18.12)::INFO] Assigning /mnt/simulator_out/fast5/PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_652.fast5 (4) to 10.40.18.12
+[t12(10.40.18.12)::INFO] Received message 'done.' at time 68060.090400 sec | file /mnt/simulator_out/fast5/PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_652.fast5 (4).
+file completed: 78083.2s | file: /mnt/zebrafish/zebrafish_test//fast5//PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_744.fast5
+[34mfast5: copying 5[0;39m
+[34m+ fast5: finished copy 5[0;39m
+[34mfastq: copying 5[0;39m
+[34m+ fastq: finished copy 5[0;39m
+[t13(10.40.18.13)::INFO] Connecting to 10.40.18.13
+[t13(10.40.18.13)::INFO] Assigning /mnt/simulator_out/fast5/PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_744.fast5 (5) to 10.40.18.13
+[t13(10.40.18.13)::INFO] Received message 'done.' at time 78130.108146 sec | file /mnt/simulator_out/fast5/PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_744.fast5 (5).
+file completed: 81491.5s | file: /mnt/zebrafish/zebrafish_test//fast5//PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_775.fast5
+[34mfast5: copying 6[0;39m
+[34m+ fast5: finished copy 6[0;39m
+[34mfastq: copying 6[0;39m
+[34m+ fastq: finished copy 6[0;39m
+[t10(10.40.18.10)::INFO] Connecting to 10.40.18.10
+[t10(10.40.18.10)::INFO] Assigning /mnt/simulator_out/fast5/PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_775.fast5 (6) to 10.40.18.10
+[t10(10.40.18.10)::INFO] Received message 'done.' at time 81544.537683 sec | file /mnt/simulator_out/fast5/PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_775.fast5 (6).
+file completed: 122301s | file: /mnt/zebrafish/zebrafish_test//fast5//PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_1149.fast5
+[34mfast5: copying 7[0;39m
+[34m+ fast5: finished copy 7[0;39m
+[34mfastq: copying 7[0;39m
+[34m+ fastq: finished copy 7[0;39m
+[t9(10.40.18.9)::INFO] Connecting to 10.40.18.9
+[t9(10.40.18.9)::INFO] Assigning /mnt/simulator_out/fast5/PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_1149.fast5 (7) to 10.40.18.9
+[t9(10.40.18.9)::INFO] Received message 'done.' at time 122349.198203 sec | file /mnt/simulator_out/fast5/PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_1149.fast5 (7).
+file completed: 138659s | file: /mnt/zebrafish/zebrafish_test//fast5//PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_1298.fast5
+[34mfast5: copying 8[0;39m
+[34m+ fast5: finished copy 8[0;39m
+[34mfastq: copying 8[0;39m
+[34m+ fastq: finished copy 8[0;39m
+[t11(10.40.18.11)::INFO] Connecting to 10.40.18.11
+[t11(10.40.18.11)::INFO] Assigning /mnt/simulator_out/fast5/PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_1298.fast5 (8) to 10.40.18.11
+[t11(10.40.18.11)::INFO] Received message 'done.' at time 138710.866133 sec | file /mnt/simulator_out/fast5/PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_1298.fast5 (8).
+file completed: 145677s | file: /mnt/zebrafish/zebrafish_test//fast5//PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_1361.fast5
+[34mfast5: copying 9[0;39m
+[34m+ fast5: finished copy 9[0;39m
+[34mfastq: copying 9[0;39m
+[34m+ fastq: finished copy 9[0;39m
+[t6(10.40.18.6)::INFO] Connecting to 10.40.18.6
+[t6(10.40.18.6)::INFO] Assigning /mnt/simulator_out/fast5/PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_1361.fast5 (9) to 10.40.18.6
+[t6(10.40.18.6)::INFO] Received message 'done.' at time 145734.008029 sec | file /mnt/simulator_out/fast5/PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_1361.fast5 (9).
+file completed: 157990s | file: /mnt/zebrafish/zebrafish_test//fast5//PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_1462.fast5
+[34mfast5: copying 10[0;39m
+[34m+ fast5: finished copy 10[0;39m
+[34mfastq: copying 10[0;39m
+[34m+ fastq: finished copy 10[0;39m
+[t2(10.40.18.2)::INFO] Connecting to 10.40.18.2
+[t2(10.40.18.2)::INFO] Assigning /mnt/simulator_out/fast5/PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_1462.fast5 (10) to 10.40.18.2
+[t2(10.40.18.2)::INFO] Received message 'done.' at time 158040.002745 sec | file /mnt/simulator_out/fast5/PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_1462.fast5 (10).
+/home/tmp1/realf5p/monitor/monitor.sh: line 1: 19023 Hangup                  ( while read path action file; do
+    if $timeout; then
+        reset_timer;
+    fi; echo "$path$file"; ((i++)); if [ "$NO_FILES" = "$i" ]; then
+        echo -1 > $SCRIPT_PATH/$TEMP_FILE; while :; do
+            sleep 1;
+        done;
+    fi;
+done < <(inotifywait -r -m ${monitor_dirs[@]} -e close_write -e moved_to) )
+/home/tmp1/realf5p/monitor/monitor.sh: line 147: 31744 Hangup                  [ $((SECONDS/TIME_FACTOR)) = "$TIME_INACTIVE" -o "$(cat $SCRIPT_PATH/$TEMP_FILE)" = "-1" ]
+/home/tmp1/realf5p/monitor/monitor.sh: line 151: echo: write error: Broken pipe
+[monitor.sh] exiting
