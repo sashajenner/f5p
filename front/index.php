@@ -740,16 +740,17 @@
                                         }
 
                                         // Sending cmd to cluster head node
-                                        // $fp = fsockopen("127.0.0.1", 20022, $errno, $errstr, 30); // 30s timeout
-                                        // if (!$fp) {
-                                        //     echo "$errstr ($errno)<br />\n";
-                                        // } else {
-                                        //     fwrite($fp, $cmd);
-                                        //     while (!feof($fp)) {
-                                        //         echo fgets($fp, 128);
-                                        //     }
-                                        //     fclose($fp);
-                                        // }
+                                        $fp = fsockopen("127.0.0.1", 20022, $errno, $errstr, 30); // 30s timeout
+                                        if (!$fp) {
+                                            echo "$errstr ($errno)<br />\n";
+                                        } else {
+                                            fputs($fp, strlen($cmd));
+                                            fputs($fp, $cmd);
+                                            while (!feof($fp)) {
+                                                echo fgets($fp, 4096);
+                                            }
+                                            fclose($fp);
+                                        }
 
                                         if (shell_exec("cat database.csv") == "") {
                                             system("printf 'Name,Resuming,Log_file,Format,Monitor_dir,Analysis_script,Timeout_format,Timeout_time,Simulate,Simulate_dir,Real_sim,Time_between_reads,Num_reads,Real-time\n' >> database.csv");
