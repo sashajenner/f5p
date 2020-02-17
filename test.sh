@@ -2,15 +2,15 @@
 
 cp /dev/null screenlog.0 # Empty previous log file
 
-# Run NA normal simulation in the background    :::Failure | gather.sh failed:::
-screen -S normal_NA -L -d -m bash -c "
-   echo y | 
-   bash run.sh -f --NA -m /mnt/simulator_out -8 /mnt/NA12878_cq --n=10 -t -m 10" # 10 batches, 5 min timeout
+# Run NA normal simulation in the background    :::Success:::
+# screen -S normal_NA -L -d -m bash -c "
+#    echo y | 
+#    bash run.sh -f --NA -m /mnt/simulator_out -8 /mnt/NA12878_cq --n=10 -t -m 10" # 10 batches, 5 min timeout
 
 # Run NA realtime simulation in the background  :::Failure | some analysis failures:::
-# screen -S sim_NA -L -d -m bash -c "
-#     echo y | 
-#     bash run.sh -f --NA -m /mnt/simulator_out -8 /mnt/NA12878_cq --real -t -a"
+screen -S sim_NA -L -d -m bash -c "
+    echo y | 
+    bash run.sh -f --NA -m /mnt/simulator_out -8 /mnt/NA12878_cq --real -t -a"
 
 # Run 778-1500 realtime simulation in the background  :::Success:::
 # screen -S sim_778-1500 -L -d -m bash -c "
