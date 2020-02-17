@@ -126,7 +126,7 @@
 
                                 <select name="format" id="format" required>
                                     <?php
-                                        $formats = explode("\n", shell_exec("bash ../run_web.sh --avail"));
+                                        $formats = explode("\n", shell_exec("bash ../run.sh --avail"));
                                         if (empty($formats[count($formats)-1])) { // remove last element if empty
                                             unset($formats[count($formats)-1]);
                                         }
@@ -712,7 +712,7 @@
 
                                             if ($simulate) {
                                                 $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y | " .
-                                                "bash run_web.sh -f $format -l front/$log_name-run -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $analysis_script'");
+                                                "bash run.sh -f $format -l front/$log_name-run -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $analysis_script'");
 
                                             } else {
 
@@ -723,12 +723,12 @@
                                                 }
                                                 
                                                 $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y | " . 
-                                                "bash run_web.sh -f $format -l front/$log_name-run $resume-m $monitor_dir -t $timeout_format$timeout_time -s $analysis_script'");
+                                                "bash run.sh -f $format -l front/$log_name-run $resume-m $monitor_dir -t $timeout_format$timeout_time -s $analysis_script'");
                                             }
 
                                         } else {
                                             $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y |" .
-                                            "bash run_web.sh -f $format -l front/$log_name-run --non-real-time -s $analysis_script");
+                                            "bash run.sh -f $format -l front/$log_name-run --non-real-time -s $analysis_script");
                                         }
 
                                         echo "\nCommand being run:<br>";
@@ -740,16 +740,16 @@
                                         }
 
                                         // Sending cmd to cluster head node
-                                        $fp = fsockopen("http://129.94.15.98/", 20022, $errno, $errstr, 30); // 30s timeout
-                                        if (!$fp) {
-                                            echo "$errstr ($errno)<br />\n";
-                                        } else {
-                                            fwrite($fp, $cmd);
-                                            while (!feof($fp)) {
-                                                echo fgets($fp, 128);
-                                            }
-                                            fclose($fp);
-                                        }
+                                        // $fp = fsockopen("127.0.0.1", 20022, $errno, $errstr, 30); // 30s timeout
+                                        // if (!$fp) {
+                                        //     echo "$errstr ($errno)<br />\n";
+                                        // } else {
+                                        //     fwrite($fp, $cmd);
+                                        //     while (!feof($fp)) {
+                                        //         echo fgets($fp, 128);
+                                        //     }
+                                        //     fclose($fp);
+                                        // }
 
                                         if (shell_exec("cat database.csv") == "") {
                                             system("printf 'Name,Resuming,Log_file,Format,Monitor_dir,Analysis_script,Timeout_format,Timeout_time,Simulate,Simulate_dir,Real_sim,Time_between_reads,Num_reads,Real-time\n' >> database.csv");
@@ -902,7 +902,7 @@
         </div>
 
         <!-- <script src="js/oldbutton.js"></script> -->
-        <script src="js/button.js?12-02-2020:13 24"></script>
+        <script src="js/button.js?17-02-2020:11 55"></script>
         <script src="js/disabled.js?13-02-2020:10 33"></script>
     </body>
 </html>
