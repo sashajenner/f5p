@@ -126,7 +126,6 @@ scriptinfo() { head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#-" | sed -e "s/^#-
 PIPELINE_SCRIPT="$SCRIPT_PATH/scripts/fast5_pipeline.sh"
 
 LOG=$SCRIPT_PATH/log.txt # Default log file
-IP_LIST=$SCRIPT_PATH/data/ip_list.cfg # Define file path of IP list
 
 # Set options off by default
 resuming=false
@@ -419,7 +418,7 @@ test -d $MONITOR_PARENT_DIR/methylation || mkdir $MONITOR_PARENT_DIR/methylation
 ansible all -m copy -a "src=$PIPELINE_SCRIPT dest=/nanopore/bin/fast5_pipeline.sh mode=0755" |& tee -a $LOG
 
 if ! $realtime; then # If non-realtime option set
-    /usr/bin/time -v $SCRIPT_PATH/f5pl $FORMAT $IP_LIST $SCRIPT_PATH/data/file_list.cfg |& # Redirect all stderr to stdout
+    /usr/bin/time -v $SCRIPT_PATH/f5pl $FORMAT $SCRIPT_PATH/data/ip_list.cfg $SCRIPT_PATH/data/file_list.cfg |& # Redirect all stderr to stdout
     tee $LOG
 
 else # Else assume realtime analysis is desired
@@ -443,12 +442,12 @@ else # Else assume realtime analysis is desired
     if $resuming; then # If resuming option set
         bash $SCRIPT_PATH/monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
         bash $SCRIPT_PATH/monitor/ensure.sh -r -f $FORMAT 2>> $LOG |
-        /usr/bin/time -v $SCRIPT_PATH/f5pl_realtime $FORMAT $IP_LIST -r |&
+        /usr/bin/time -v $SCRIPT_PATH/f5pl_realtime $FORMAT $SCRIPT_PATH/data/ip_list.cfg -r |&
         tee -a $LOG
     else
         bash $SCRIPT_PATH/monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
         bash $SCRIPT_PATH/monitor/ensure.sh -f $FORMAT 2>> $LOG |
-        /usr/bin/time -v $SCRIPT_PATH/f5pl_realtime $FORMAT $IP_LIST |&
+        /usr/bin/time -v $SCRIPT_PATH/f5pl_realtime $FORMAT $SCRIPT_PATH/data/ip_list.cfg |&
         tee -a $LOG
     fi
 fi
@@ -461,7 +460,7 @@ mv $SCRIPT_PATH/*.cfg $SCRIPT_PATH/data/logs # Move all config files
 ansible all -m shell -a "cd /nanopore/scratch && tar zcvf logs.tgz *.log"
 
 # Copy log files from each node locally
-$SCRIPT_PATH/scripts/gather.sh rock64 $IP_LIST /nanopore/scratch/logs.tgz $SCRIPT_PATH/data/logs/log tgz
+$SCRIPT_PATH/scripts/gather.sh /nanopore/scratch/logs.tgz $SCRIPT_PATH/data/logs/log tgz
 
 # Copy files to logs folder
 cp $LOG $SCRIPT_PATH/data/logs/ # Copy log file
