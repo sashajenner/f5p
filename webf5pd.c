@@ -41,13 +41,56 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <assert.h>
 
 #define PATH_MAX 4096 // maximum limit for a file path
 #define BUFFER_SIZE 4096 // upper limit for the communication buffer
 #define MAIN_DIR "/var/www/html/sasha/realf5p/" // main directory of files
-#define SCRIPT "screen -S %s -L " + MAIN_DIR + "%s " + \
-                "-d -m bash -c '" + MAIN_DIR + "run.sh %s" // command to run
 #define PORT 20022 // port in which the daemon will listen
+
+char** str_split(char* a_str, const char a_delim) {
+    char** result    = 0;
+    size_t count     = 0;
+    char* tmp        = a_str;
+    char* last_comma = 0;
+    char delim[2];
+    delim[0] = a_delim;
+    delim[1] = 0;
+
+    /* Count how many elements will be extracted. */
+    while (*tmp) {
+        if (a_delim == *tmp) {
+            count ++;
+            last_comma = tmp;
+        }
+        tmp ++;
+    }
+
+    /* Add space for trailing token. */
+    count += last_comma < (a_str + strlen(a_str) - 1);
+
+    /* Add space for terminating null string so caller
+       knows where the list of returned strings ends. */
+    count++;
+
+    result = malloc(sizeof(char*) * count);
+
+    if (result) {
+        size_t idx  = 0;
+        char* token = strtok(a_str, delim);
+
+        while (token)
+        {
+            assert(idx < count);
+            *(result + idx++) = strdup(token);
+            token = strtok(0, delim);
+        }
+        assert(idx == count - 1);
+        *(result + idx) = 0;
+    }
+
+    return result;
+}
 
 void sig_handler(int sig) {
     void* array[100];
@@ -82,31 +125,15 @@ int main(int argc, char* argv[]) {
             return 0;
         }
 
-        int count = 0;
-        char screen_name[BUFFER_SIZE];
-        char log_name[BUFFER_SIZE];
-        char options[BUFFER_SIZE];
-
-        char* token;
-        while ((token = strsep(&buffer, "\n"))) {
-            switch (count) {
-                case 0:
-                    screen_name = token;
-                    break;
-
-                case 1:
-                    log_name = token;
-                    break;
-
-                case 2:
-                    options = token;
-                    break;
-            }
-        }
+        char** tokens = str_split(buffer, '\n');
+        char* screen_name = *tokens;
+        char* log_name = *(tokens + 1);
+        char* options = *(tokens + 2);
 
         // execute the script
         char command[PATH_MAX * 2 + 2]; // declare a string to pass command
-        sprintf(command, SCRIPT, screen_name, log_name, options); // define the command
+        sprintf(command, "screen -S %s -L %s%s -d -m bash -c '%srun.sh %s'", // define command to run
+                screen_name, MAIN_DIR, log_name, MAIN_DIR, options);
         INFO("Command to be run %s.", command);
         system_async(command); // execute command
 
