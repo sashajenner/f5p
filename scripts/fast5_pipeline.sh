@@ -48,10 +48,14 @@ HELP=$"Flags:
                             |-- [prefix].fast5
                         |-- fastq/
                             |-- [prefix].fastq
+
+--results-dir-name=[directory_name]
                                 
 -h, --help          help message"
 
-format_specified=false # assume no format specified
+# Assume necessary options not specified
+format_specified=false
+results_dir_name_specified=false
 
 ## Handle flags
 while [ ! $# -eq 0 ]; do # while there are arguments
@@ -100,6 +104,11 @@ while [ ! $# -eq 0 ]; do # while there are arguments
             echo "$HELP"
             exit 0
             ;;
+
+        --results-dir-name=*)
+            results_dir_name_specified=true
+            RESULTS_DIR_NAME="${1#*=}"
+            ;;
         
         *)
             FILE=$1
@@ -109,9 +118,12 @@ while [ ! $# -eq 0 ]; do # while there are arguments
     shift
 done
 
-if ! $format_specified; then # exit if no format specified
-	echo "No format specified!"
-	echo $USAGE
+if ! ($format_specified && $results_dir_name_specified); then # exit if no format specified
+
+    if ! $format_specified; then echo "No format specified!"; fi
+    if ! $results_dir_name_specified; then echo "No results directory name specified!"; fi
+
+	echo "$USAGE"
 	echo "$HELP"
 	exit 1
 fi
@@ -133,7 +145,8 @@ else # Human reference genome
 fi
 
 # temporary space on the local storage or the network mount
-SCRATCH=/nanopore/scratch
+SCRATCH=/nanopore/scratch/"$RESULTS_DIR_NAME"
+test -d "$SCRATCH" || mkdir "$SCRATCH" # make temporary directory if non-existent
 
 ###############################################################################
 
@@ -242,33 +255,33 @@ exit_status=0 # assume success
 
 # index
 /usr/bin/time -v $METHCALL index -d $F5_DIR_LOCAL $FQ_LOCAL 2> $LOG_LOCAL
-if [$? -ne 0]; then
+if [ $? -ne 0 ]; then
     exit_status=1
     echo "index failed" >> $LOG_LOCAL
 fi
 
 # minimap
 /usr/bin/time -v $MINIMAP -x map-ont -a -t4 -K5M --secondary=no --multi-prefix=$MINIMAP_LOCAL $REF_IDX $FQ_LOCAL > $SAM_LOCAL 2>> $LOG_LOCAL
-if [$? -ne 0]; then
+if [ $? -ne 0 ]; then
     exit_status=1
     echo "minimap failed" >> $LOG_LOCAL
 fi
 
 # sorting
 /usr/bin/time -v $SAMTOOLS sort -@3 $SAM_LOCAL > $BAM_LOCAL 2>> $LOG_LOCAL
-if [$? -ne 0]; then
+if [ $? -ne 0 ]; then
     exit_status=1
     echo "samtools sorting failed" >> $LOG_LOCAL
 fi
 /usr/bin/time -v $SAMTOOLS index $BAM_LOCAL 2>> $LOG_LOCAL
-if [$? -ne 0]; then
+if [ $? -ne 0 ]; then
     exit_status=1
     echo "samtools index failed" >> $LOG_LOCAL
 fi
 
 # methylation
 /usr/bin/time -v $METHCALL call-methylation -t 4 -r $FQ_LOCAL -g $REF_FA -b $BAM_LOCAL -K 256 > $METH_LOCAL  2>> $LOG_LOCAL
-if [$? -ne 0]; then
+if [ $? -ne 0 ]; then
     exit_status=1
     echo "methylation failed" >> $LOG_LOCAL
 fi
