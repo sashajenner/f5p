@@ -88,6 +88,7 @@ typedef struct {
     bool eof_signalled;       // the flag for EOF signalled
     bool resuming;            // the flag for processing resuming
     char* format;             // the format of fast5 and fastq files
+    char* results_dir_name;   // the directory name to set for results
 
 } node_global_args_t;
 
@@ -128,7 +129,8 @@ void* node_handler(void* arg) {
 
     // create report file
     char report_fname[100]; // declare file name
-    sprintf(report_fname, "dev%d.cfg", tid + 1); // define file name
+    sprintf(report_fname, "%s%sdev%d.cfg",
+            core.results_dir_name, strcmp(core.results_dir_name, "") == 0 ? "" : "/", tid + 1); // define file name
     // if resume option set, define opening flag to appending, else to writing
     char* opening_flag = core.resuming ? "a" : "w";
     FILE* report = fopen(report_fname, opening_flag); // open file for writing or appending
@@ -209,8 +211,9 @@ void* node_handler(void* arg) {
                 tid + 1, core.ip_list[tid], reprocessing ? "Reassigning" : "Assigning",
                 core.file_list[fidx], fidx + 1 - failed_before_cnt, core.ip_list[tid]);
         
-        sprintf(msg, "--format=%s %s", core.format, core.file_list[fidx]);
-        send_full_msg(socketfd, msg, strlen(msg)); // send filename and format to thread
+        sprintf(msg, "--format=%s --results-dir-name=%s %s", 
+                        core.format, core.results_dir_name, core.file_list[fidx]);
+        send_full_msg(socketfd, msg, strlen(msg)); // send filename and options to thread
         // read msg into buffer and receive the buffer's expected length
         int received = recv_full_msg_try(socketfd, buffer, MAX_PATH_SIZE, RECEIVE_TIME_OUT);
 
@@ -262,8 +265,9 @@ void* node_handler(void* arg) {
                     tid + 1, core.ip_list[tid], reprocessing ? "Reassigning" : "Assigning",
                     core.file_list[fidx], fidx + 1 - failed_before_cnt, core.ip_list[tid]);
 
-            sprintf(msg, "--format %s %s", core.format, core.file_list[fidx]);
-            send_full_msg(socketfd, msg, strlen(msg)); // send filename and format to thread
+            sprintf(msg, "--format=%s --results-dir-name=%s %s", 
+                        core.format, core.results_dir_name, core.file_list[fidx]);
+            send_full_msg(socketfd, msg, strlen(msg)); // send filename and options to thread
             // read msg into buffer and receive the buffer's expected length
             received = recv_full_msg_try(socketfd, buffer, MAX_PATH_SIZE, RECEIVE_TIME_OUT);
         }
@@ -354,6 +358,13 @@ int main(int argc, char* argv[]) {
     if (argc == 4 && 
         ( strcmp(argv[3], "--resume") == 0 || strcmp(argv[3], "-r") == 0 )
         ) { // If there are 3 args and the 3rd is "--resume" or "-r"
+        core.results_dir_name = ""; // Place results in current directory
+        core.resuming = true; // Set resume option to true
+
+    } else if (argc == 5 && 
+        ( strcmp(argv[4], "--resume") == 0 || strcmp(argv[4], "-r") == 0 )
+        ) { // If there are 4 args and the 4rd is "--resume" or "-r"
+        core.results_dir_name = argv[3]; // Set directory name for results
         core.resuming = true; // Set resume option to true
 
     } else if ( strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0 ) { // If help option is set
@@ -361,14 +372,21 @@ int main(int argc, char* argv[]) {
         fflush(stdout); // Flushing stdout buffer
         return 0;
 
-    } else if (argc != 3 ||
+    } else if ((argc != 3 && argc != 4) ||
         ! ( strcmp(argv[1], "--778") == 0 || strcmp(argv[1], "--NA") == 0 || strcmp(argv[1], "--zebra") == 0 )
-        ) { // Check there is at least 2 args
-        ERROR("Not enough arguments. Usage %s [format] [ip_list] [--resume | -r]\n%s",
+        ) { // Check there is at least 2 or 3 args
+        ERROR("Not enough arguments. Usage %s <format> <ip_list> [results_dir_name] [--resume | -r]\n%s",
                 argv[0], help_msg);
         exit(EXIT_FAILURE);
 
-    } else { // If there are 2 args and the formats are correct
+    } else { // If there are 2 or 3 args and the formats are correct
+        
+        if (argc == 3) {
+            core.results_dir_name = "";
+        } else if (argc == 4) {
+            core.results_dir_name = argv[3];
+        }
+
         core.resuming = false; // Set resume option to false
     }
 
@@ -377,7 +395,6 @@ int main(int argc, char* argv[]) {
     initial_time = realtime(); // Retrieving initial time
 
     core.format = argv[1]; // Set format string
-
 
         // read the list of ip addresses
 

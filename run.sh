@@ -127,15 +127,16 @@ scriptinfo() { head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#-" | sed -e "s/^#-
 # Default script to be copied and run on the worker nodes
 PIPELINE_SCRIPT="$SCRIPT_PATH/scripts/fast5_pipeline.sh"
 
-RESULTS_DIR=$SCRIPT_PATH # Default location for results
-LOG=$RESULTS_DIR/log.txt # Default log file
-IP_LIST=$SCRIPT_PATH/data/ip_list.cfg # Define file path of IP list
+RESULTS_DIR_PATH="$SCRIPT_PATH" # Default location for results
+RESULTS_DIR_NAME="" # Default directory name for results
+IP_LIST="$SCRIPT_PATH"/data/ip_list.cfg # Define file path of IP list
 
 # Set options off by default
 resuming=false
 simulate=false
 real_sim=false
 realtime=true
+custom_log_specified=false
 
 # Default timeout of 1 hour
 TIME_FACTOR="hr"
@@ -208,6 +209,7 @@ while [ ! $# -eq 0 ]; do # while there are arguments
             ;;
 
         --log=*)
+            custom_log_specified=true
             LOG="${1#*=}"
             ;;
 
@@ -227,7 +229,16 @@ while [ ! $# -eq 0 ]; do # while there are arguments
 
         --non-realtime)
             realtime=false
-            MONITOR_PARENT_DIR=$SCRIPT_PATH # Place results in current path directory
+            MONITOR_PARENT_DIR="$SCRIPT_PATH" # Place results in current path directory
+            ;;
+
+        --results-dir=*)
+            RESULTS_DIR_PATH="${1#*=}"
+            RESULTS_DIR_NAME=$(basename "$RESULTS_DIR_PATH")
+
+            if ! $custom_log_specified; then # If a custom log hasn't been specified
+                LOG=$RESULTS_DIR_PATH/log.txt # Redefine the log filepath
+            fi
             ;;
 
         --resume | -r)
@@ -349,10 +360,10 @@ while [ ! $# -eq 0 ]; do # while there are arguments
                         exit 1
 
                     else
-                        MAX_WAIT=$(bash $SCRIPT_PATH/max_time_between_files.sh -f $FORMAT $SIMULATE_FOLDER)
+                        MAX_WAIT=$(bash "$SCRIPT_PATH"/max_time_between_files.sh -f "$FORMAT" "$SIMULATE_FOLDER")
                     fi
 
-                    TIME_INACTIVE=$(python -c "print($MAX_WAIT + 600)") # Add buffer of 10 minutes (600s)
+                    TIME_INACTIVE=$(python -c "print('$MAX_WAIT' + 600)") # Add buffer of 10 minutes (600s)
                     shift
                     ;;
 
@@ -384,7 +395,7 @@ fi
 # Warn before cleaning logs
 if ! $resuming; then # If not resuming
     while true; do
-        read -p "This will overwrite stats from the previous run. Do you wish to continue? (y/n) " response
+        read -p "This may overwrite stats from a previous run. Do you wish to continue? (y/n)" response
         
         case $response in
             [Yy]* )
@@ -404,13 +415,9 @@ if ! $resuming; then # If not resuming
     done
 fi
 
-# Clean temporary locations on the NAS and the worker nodes
-rm -rf /scratch_nas/scratch/*
-ansible all -m shell -a "rm -rf /nanopore/scratch/*" |& tee -a $LOG # Force option for no error if no files exist
-
 # Clean and empty local logs directory
-test -d $SCRIPT_PATH/data/logs && rm -r $SCRIPT_PATH/data/logs
-mkdir -p $SCRIPT_PATH/data/logs || exit 1
+test -d $RESULTS_DIR_PATH/data/logs && rm -r $RESULTS_DIR_PATH/data/logs
+mkdir -p $RESULTS_DIR_PATH/data/logs || exit 1
 
 # Create folders to copy the results (SAM files, BAM files, logs and methylation calls)
 test -d $MONITOR_PARENT_DIR/sam         || mkdir $MONITOR_PARENT_DIR/sam            || exit 1
@@ -419,10 +426,11 @@ test -d $MONITOR_PARENT_DIR/log2        || mkdir $MONITOR_PARENT_DIR/log2       
 test -d $MONITOR_PARENT_DIR/methylation || mkdir $MONITOR_PARENT_DIR/methylation    || exit 1
 
 # Copy the pipeline script to all worker nodes
+# (todo: any complications with this and a node already accessing pipeline script?)
 ansible all -m copy -a "src=$PIPELINE_SCRIPT dest=/nanopore/bin/fast5_pipeline.sh mode=0755" |& tee -a $LOG
 
 if ! $realtime; then # If non-realtime option set
-    /usr/bin/time -v $SCRIPT_PATH/f5pl $FORMAT $IP_LIST $SCRIPT_PATH/data/file_list.cfg |& # Redirect all stderr to stdout
+    /usr/bin/time -v "$SCRIPT_PATH"/f5pl "$FORMAT" "$IP_LIST" "$SCRIPT_PATH"/data/file_list.cfg |&
     tee $LOG
 
 else # Else assume realtime analysis is desired
@@ -434,9 +442,9 @@ else # Else assume realtime analysis is desired
 
         # Execute simulator in the background giving time for monitor to set up
         if $real_sim; then
-            (sleep 10; bash $SCRIPT_PATH/testing/simulator.sh -f $FORMAT -r -n $NO_BATCHES $SIMULATE_FOLDER $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
+            (sleep 10; bash "$SCRIPT_PATH"/testing/simulator.sh -f $FORMAT -r -n $NO_BATCHES $SIMULATE_FOLDER $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
         else
-            (sleep 10; bash $SCRIPT_PATH/testing/simulator.sh -f $FORMAT -n $NO_BATCHES -t $TIME_BETWEEN_BATCHES $SIMULATE_FOLDER $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
+            (sleep 10; bash "$SCRIPT_PATH"/testing/simulator.sh -f $FORMAT -n $NO_BATCHES -t $TIME_BETWEEN_BATCHES $SIMULATE_FOLDER $MONITOR_PARENT_DIR 2>&1 | tee -a $LOG) &
         fi
 
     fi
@@ -444,35 +452,35 @@ else # Else assume realtime analysis is desired
     # Monitor the new file creation in fast5 folder and execute realtime f5-pipeline script
     # Close after timeout met
     if $resuming; then # If resuming option set
-        bash $SCRIPT_PATH/monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
-        bash $SCRIPT_PATH/monitor/ensure.sh -r -f $FORMAT 2>> $LOG |
-        /usr/bin/time -v $SCRIPT_PATH/f5pl_realtime $FORMAT $IP_LIST -r |&
+        bash "$SCRIPT_PATH"/monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
+        bash "$SCRIPT_PATH"/monitor/ensure.sh -r -f $FORMAT 2>> $LOG |
+        /usr/bin/time -v "$SCRIPT_PATH"/f5pl_realtime $FORMAT $IP_LIST $RESULTS_DIR_NAME -r |&
         tee -a $LOG
     else
-        bash $SCRIPT_PATH/monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
-        bash $SCRIPT_PATH/monitor/ensure.sh -f $FORMAT 2>> $LOG |
-        /usr/bin/time -v $SCRIPT_PATH/f5pl_realtime $FORMAT $IP_LIST |&
+        bash "$SCRIPT_PATH"/monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
+        bash "$SCRIPT_PATH"/monitor/ensure.sh -f $FORMAT 2>> $LOG |
+        /usr/bin/time -v "$SCRIPT_PATH"/f5pl_realtime $FORMAT $IP_LIST $RESULTS_DIR_NAME |&
         tee -a $LOG
     fi
 fi
 
 echo "[run.sh] handling logs" # testing
 
-mv $SCRIPT_PATH/*.cfg $SCRIPT_PATH/data/logs # Move all config files
+mv $RESULTS_DIR_PATH/*.cfg $RESULTS_DIR_PATH/data/logs # Move all config files
 
 # Tar the logs
-ansible all -m shell -a "cd /nanopore/scratch && tar zcvf logs.tgz *.log"
+ansible all -m shell -a "cd /nanopore/scratch/'$RESULTS_DIR_NAME' && tar zcvf logs.tgz *.log"
 
 # Copy log files from each node locally
-$SCRIPT_PATH/scripts/gather.sh rock64 $IP_LIST /nanopore/scratch/logs.tgz $SCRIPT_PATH/data/logs/log tgz
+"$SCRIPT_PATH"/scripts/gather.sh rock64 "$IP_LIST" /nanopore/scratch/"$RESULTS_DIR_NAME"/logs.tgz "$RESULTS_DIR_PATH"/data/logs/log tgz
 
 # Copy files to logs folder
-cp $LOG $SCRIPT_PATH/data/logs/ # Copy log file
-cp $0 $SCRIPT_PATH/data/logs/ # Copy current script
-cp $PIPELINE_SCRIPT $SCRIPT_PATH/data/logs/ # Copy pipeline script
+cp $LOG "$RESULTS_DIR_PATH"/data/logs/ # Copy log file
+cp $0 "$RESULTS_DIR_PATH"/data/logs/ # Copy current script
+cp $PIPELINE_SCRIPT "$RESULTS_DIR_PATH"/data/logs/ # Copy pipeline script
 
-bash $SCRIPT_PATH/scripts/failed_device_logs.sh # Get the logs of the files where the pipeline crashed
+bash "$SCRIPT_PATH"/scripts/failed_device_logs.sh "$RESULTS_DIR_PATH" # Get the logs of the files where the pipeline crashed
 
-cp -r data $MONITOR_PARENT_DIR/f5pmaster # Copy entire data folder to local f5pmaster folder
+cp -r data "$MONITOR_PARENT_DIR"/f5pmaster # Copy entire data folder to local f5pmaster folder
 
 echo "[run.sh] exiting" # testing
