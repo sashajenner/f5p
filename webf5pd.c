@@ -44,7 +44,9 @@
 
 #define PATH_MAX 4096 // maximum limit for a file path
 #define BUFFER_SIZE 4096 // upper limit for the communication buffer
-#define SCRIPT "/var/www/html/sasha/realf5p/run.sh" // hardcoded location of run script
+#define MAIN_DIR "/var/www/html/sasha/realf5p/" // main directory of files
+#define SCRIPT "screen -S %s -L " + MAIN_DIR + "%s " + \
+                "-d -m bash -c '" + MAIN_DIR + "run.sh %s" // command to run
 #define PORT 20022 // port in which the daemon will listen
 
 void sig_handler(int sig) {
@@ -80,9 +82,31 @@ int main(int argc, char* argv[]) {
             return 0;
         }
 
+        int count = 0;
+        char screen_name[BUFFER_SIZE];
+        char log_name[BUFFER_SIZE];
+        char options[BUFFER_SIZE];
+
+        char* token;
+        while ((token = strsep(&buffer, "\n"))) {
+            switch (count) {
+                case 0:
+                    screen_name = token;
+                    break;
+
+                case 1:
+                    log_name = token;
+                    break;
+
+                case 2:
+                    options = token;
+                    break;
+            }
+        }
+
         // execute the script
         char command[PATH_MAX * 2 + 2]; // declare a string to pass command
-        sprintf(command, "%s %s", SCRIPT, buffer); // define the command
+        sprintf(command, SCRIPT, screen_name, log_name, options); // define the command
         INFO("Command to be run %s.", command);
         system_async(command); // execute command
 
