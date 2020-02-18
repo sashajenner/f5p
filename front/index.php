@@ -711,8 +711,9 @@
                                         if ($realtime) {
 
                                             if ($simulate) {
-                                                $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y | " .
-                                                "bash run.sh -f $format -l front/$log_name-run -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $analysis_script'");
+                                                // $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y | " .
+                                                // "bash run.sh -f $format -l front/$log_name-run -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $analysis_script'");
+                                                $cmd = "-f $format -l front/$log_name-run -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $analysis_script";
 
                                             } else {
 
@@ -722,13 +723,15 @@
                                                     $resume="";
                                                 }
                                                 
-                                                $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y | " . 
-                                                "bash run.sh -f $format -l front/$log_name-run $resume-m $monitor_dir -t $timeout_format$timeout_time -s $analysis_script'");
+                                                // $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y | " . 
+                                                // "bash run.sh -f $format -l front/$log_name-run $resume-m $monitor_dir -t $timeout_format$timeout_time -s $analysis_script'");
+                                                $cmd = "-f $format -l front/$log_name-run $resume-m $monitor_dir -t $timeout_format$timeout_time -s $analysis_script";
                                             }
 
                                         } else {
-                                            $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y |" .
-                                            "bash run.sh -f $format -l front/$log_name-run --non-real-time -s $analysis_script");
+                                            // $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y |" .
+                                            // "bash run.sh -f $format -l front/$log_name-run --non-real-time -s $analysis_script");
+                                            $cmd = "-f $format -l front/$log_name-run --non-real-time -s $analysis_script";
                                         }
 
                                         echo "\nCommand being run:<br>";
@@ -739,13 +742,18 @@
                                             system("rm '$log_name-screen' -f");
                                         }
 
+                                        function int64($i) {
+                                            return is_int($i) ? pack("q", $i) : unpack("q", $i)[1];
+                                        }
+
                                         // Sending cmd to cluster head node
                                         $fp = fsockopen("127.0.0.1", 20022, $errno, $errstr, 30); // 30s timeout
                                         if (!$fp) {
                                             echo "$errstr ($errno)<br />\n";
                                         } else {
-                                            fputs($fp, strlen($cmd));
-                                            fputs($fp, $cmd);
+                                            $len = int64((strlen($cmd)));
+                                            fwrite($fp, $len);
+                                            fwrite($fp, $cmd);
                                             while (!feof($fp)) {
                                                 echo fgets($fp, 4096);
                                             }
