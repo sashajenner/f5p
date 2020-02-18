@@ -76,7 +76,7 @@ int64_t recv_full_msg(int socket, void* buffer, int64_t length) {
     int64_t expected_length = 0;
     recv_all(socket, &expected_length, sizeof(int64_t));
 
-	if(verbose_socklibc>=4){	
+	if(verbose_socklibc >= 4){	
 		INFO("Receiving a message of size %ld.", expected_length);
 	}
 	

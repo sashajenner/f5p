@@ -46,6 +46,8 @@
 #%
 #%    -m [directory], --monitor=[directory]         Monitor a specific directory
 #%    --non-realtime                                Specify non-realtime analysis
+#%    --results-dir=[directory]                     Specify a directory to place results
+#%        default script location
 #%    -r, --resume                                  Resumes from last processing position
 #%    -s [file], --script=[file]                    Custom script for processing files on the cluster
 #%        default scripts/fast5_pipeline.sh             - Default script which calls minimap, f5c & samtools
@@ -125,7 +127,8 @@ scriptinfo() { head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#-" | sed -e "s/^#-
 # Default script to be copied and run on the worker nodes
 PIPELINE_SCRIPT="$SCRIPT_PATH/scripts/fast5_pipeline.sh"
 
-LOG=$SCRIPT_PATH/log.txt # Default log file
+RESULTS_DIR=$SCRIPT_PATH # Default location for results
+LOG=$RESULTS_DIR/log.txt # Default log file
 IP_LIST=$SCRIPT_PATH/data/ip_list.cfg # Define file path of IP list
 
 # Set options off by default
