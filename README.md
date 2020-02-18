@@ -25,7 +25,7 @@ make
 2. Scheduling client `f5pl_realtime` is destined for the *head node*. Copy the scheduling daemon `f5pd` to all *worker nodes*. If you have configured ansible, you can adapt the following command.
 
 ```sh
-ansible all -m copy -a "src=./f5pd_realtime dest=/nanopore/bin/f5pd mode=0755"
+ansible all -m copy -a "src=./f5pd dest=/nanopore/bin/f5pd mode=0755"
 ```
 
 3. Run the scheduling daemon `f5pd` on all *worker nodes*. You may want to add `f5pd` as a *[systemd service](http://manpages.ubuntu.com/manpages/cosmic/man5/systemd.service.5.html)* that runs on the start-up. See [scripts/f5pd.service](https://github.com/sashajenner/realf5p/blob/master/scripts/f5pd.service) for an example *systemd configuration* and  [scripts/install_f5pd_service.sh](https://github.com/sashajenner/realf5p/blob/master/scripts/install_f5pd_service.sh) for an example script.
@@ -93,20 +93,21 @@ There are two types of scheduling clients; one for real-time analysis (`f5pl_rea
 ### `f5pl_realtime`
 
 ```sh
-[fast5_filenames] | ./f5pl_realtime [format] data/ip_list.cfg [-r | --resume]
+[fast5_filenames] | ./f5pl_realtime [format] data/ip_list.cfg [results_dir_name] [-r | --resume]
 ```
 
 `f5pl_realtime` takes a number of arguments:
   - arg[1]: the directory structure format
   - arg[2]: list of IPs of worker nodes
-  - arg[3]: (optional) resume flag if analysis is resuming due to some failure
+  - arg[3]: (optional) the name of the directory for results
+  - arg[4]: (optional) resume flag if analysis is resuming due to some failure
   
 The path to new *fast5* files is received through standard input.
 
 ### `f5pl`
 
 ```sh
-./f5pl [format] data/ip_list.cfg data/file_list.cfg
+./f5pl [format] data/ip_list.cfg data/file_list.cfg [results_dir_name]
 ```
 
 See [forked repo](https://github.com/hasindu2008/f5p) for more information.
