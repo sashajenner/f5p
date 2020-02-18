@@ -1,10 +1,12 @@
 #/bin/bash
 
-test -e data/logs/failed_other.cfg || exit 1
+RESULTS_DIR_PATH="$1"
 
-mkdir data/logs/failed_other/
+test -e "$RESULTS_DIR_PATH"/data/logs/failed_other.cfg || exit 1
 
-grep -v "^#" data/logs/failed_other.cfg | 
+mkdir "$RESULTS_DIR_PATH"/data/logs/failed_other/
+
+grep -v "^#" "$RESULTS_DIR_PATH"/data/logs/failed_other.cfg | 
 while read filepath; do
 
 	file=$(basename $filepath)
@@ -15,5 +17,5 @@ while read filepath; do
 	LOG="$folder/log2/$prefix.log"
 	
 	echo $LOG
-	cp $LOG data/logs/failed_other/
+	cp $LOG "$RESULTS_DIR_PATH"/data/logs/failed_other/
 done
