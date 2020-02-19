@@ -204,6 +204,7 @@ while [ ! $# -eq 0 ]; do # while there are arguments
             ;;
 
         -l)
+            custom_log_specified=true
             LOG=$2
             shift
             ;;
@@ -237,7 +238,7 @@ while [ ! $# -eq 0 ]; do # while there are arguments
             RESULTS_DIR_NAME=$(basename "$RESULTS_DIR_PATH")
 
             if ! $custom_log_specified; then # If a custom log hasn't been specified
-                LOG=$RESULTS_DIR_PATH/log.txt # Redefine the log filepath
+                LOG="$RESULTS_DIR_PATH"/log.txt # Redefine the log filepath
             fi
             ;;
 

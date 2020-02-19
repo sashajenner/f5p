@@ -25,7 +25,7 @@ f5pl_realtime : socket.c f5pl_realtime.c error.c $(DEPS)
 	$(CC) $(CFLAGS) socket.c f5pl_realtime.c error.c $(LDFLAGS) -o $@
 	
 clean:
-	rm -rf f5pd f5pl f5pl_realtime *.o *.out
+	rm -rf f5pd webf5pd f5pl f5pl_realtime *.o *.out
 
 # Autoformat code with clang format
 format:

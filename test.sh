@@ -7,10 +7,10 @@ cp /dev/null screenlog.0 # Empty previous log file
 #    echo y | 
 #    bash run.sh -f --NA -m /mnt/simulator_out -8 /mnt/NA12878_cq --n=10 -t -m 10" # 10 batches, 5 min timeout
 
-# Run NA realtime simulation in the background  :::rock64 - Failure | some analysis failures:::
-screen -S sim_NA -L -d -m bash -c "
-    echo y | 
-    bash run.sh -f --NA -m /mnt/simulator_out -8 /mnt/NA12878_cq --real -t -a"
+# Run NA realtime simulation in the background  :::rock64 - Failure | ansible hung at node 11:::
+# screen -S sim_NA -L -d -m bash -c "
+#     echo y | 
+#     bash run.sh -f --NA -m /mnt/simulator_out -8 /mnt/NA12878_cq --real -t -a"
 
 # Run 778-1500 realtime simulation in the background  :::rock64 - Success:::
 # screen -S sim_778-1500 -L -d -m bash -c "
@@ -33,6 +33,6 @@ screen -S sim_NA -L -d -m bash -c "
 #    bash run.sh -f --zebra -m /mnt/simulator_out -8 /mnt/zebrafish/zebrafish_test/ --real -t -a"
 
 # Run zebra normal simulation in the background :::rock64 - Success:::
-# screen -S normal_zebra -L -d -m bash -c "
-#    echo y | 
-#    bash run.sh -f --zebra -m /mnt/simulator_out -8 /mnt/zebrafish/zebrafish_test/ --n=1 -t -s 20" # 1 batche, 20 sec timeout
+screen -S normal_zebra -L -Logfile screenlog-normal_zebra.txt -d -m bash -c "
+   echo y | 
+   bash run.sh -f --zebra -m /mnt/simulator_out -8 /mnt/zebrafish/zebrafish_test/ --n=1 -t -m 1 --results-dir=normal_zebra" # 1 batch, 20 sec timeout
