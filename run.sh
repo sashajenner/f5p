@@ -65,6 +65,8 @@
 #%    -8 [directory] [simulate_options],
 #%    --simul8=[directory] [simulate_options]       Simulate sequenced files for testing (or fun!)
 #%
+#%    -y, --yes                                     Say yes to 'Are you sure?' message in advance
+#%
 #%    simulate options
 #%        --n=[number_of_batches]                   Stop simulating after a certain number of batches
 #%        --real                                    Simulate realistically given sequencing summary files
@@ -138,6 +140,7 @@ simulate=false
 real_sim=false
 realtime=true
 custom_log_specified=false
+say_yes=false
 
 # Default timeout of 1 hour
 TIME_FACTOR="hr"
@@ -377,6 +380,10 @@ while [ ! $# -eq 0 ]; do # while there are arguments
             shift
             ;;
 
+        -y | --yes)
+            say_yes=true
+            ;;
+
     esac
     shift
 done
@@ -394,7 +401,7 @@ fi
     #== Begin Run ==#
 
 # Warn before cleaning logs
-if ! $resuming; then # If not resuming
+if ! $resuming && ! $say_yes; then # If not resuming
     while true; do
         read -p "This may overwrite stats from a previous run. Do you wish to continue? (y/n)" response
         
