@@ -46,9 +46,9 @@
 #%
 #%    -m [directory], --monitor=[directory]         Monitor a specific directory
 #%    --non-realtime                                Specify non-realtime analysis
+#%    -r, --resume                                  Resumes from last processing position
 #%    --results-dir=[directory]                     Specify a directory to place results
 #%        default script location
-#%    -r, --resume                                  Resumes from last processing position
 #%    -s [file], --script=[file]                    Custom script for processing files on the cluster
 #%        default scripts/fast5_pipeline.sh             - Default script which calls minimap, f5c & samtools
 #%
@@ -130,6 +130,7 @@ PIPELINE_SCRIPT="$SCRIPT_PATH/scripts/fast5_pipeline.sh"
 RESULTS_DIR_PATH="$SCRIPT_PATH" # Default location for results
 RESULTS_DIR_NAME="" # Default directory name for results
 IP_LIST="$SCRIPT_PATH"/data/ip_list.cfg # Define file path of IP list
+LOG="$SCRIPT_PATH"/log.txt # Default log filepath
 
 # Set options off by default
 resuming=false
@@ -361,11 +362,10 @@ while [ ! $# -eq 0 ]; do # while there are arguments
                         exit 1
 
                     else
-                        MAX_WAIT=$(bash "$SCRIPT_PATH"/max_time_between_files.sh -f "$FORMAT" "$SIMULATE_FOLDER")
+                        MAX_WAIT=$(bash $SCRIPT_PATH/max_time_between_files.sh -f $FORMAT $SIMULATE_FOLDER)
                     fi
 
-                    TIME_INACTIVE=$(python -c "print('$MAX_WAIT' + 600)") # Add buffer of 10 minutes (600s)
-                    shift
+                    TIME_INACTIVE=$(python -c "print($MAX_WAIT + 600)") # Add buffer of 10 minutes (600s)
                     ;;
 
                 *)

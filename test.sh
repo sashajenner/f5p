@@ -28,11 +28,11 @@ cp /dev/null screenlog.0 # Empty previous log file
 #    bash run.sh -f --zebra -m /mnt/simulator_out -8 /mnt/zebrafish/zebrafish_tiny/ --real -t -a"
 
 # Run zebra realtime simulation in the background  :::rock64 - Success, jetson - ?:::
-# screen -S sim_zebra-actual -L -d -m bash -c "
-#    echo y | 
-#    bash run.sh -f --zebra -m /mnt/simulator_out -8 /mnt/zebrafish/zebrafish_test/ --real -t -a"
+screen -S sim_zebra-actual -L -d -m bash -c "
+   echo y | 
+   bash run.sh -f --zebra -m /mnt/simulator_out -8 /mnt/zebrafish/zebrafish_test/ --real -t -a --results-dir=sim_zebra-actual"
 
 # Run zebra normal simulation in the background :::rock64 - Success:::
-screen -S normal_zebra -L -Logfile screenlog-normal_zebra.txt -d -m bash -c "
-   echo y | 
-   bash run.sh -f --zebra -m /mnt/simulator_out -8 /mnt/zebrafish/zebrafish_test/ --n=1 -t -m 1 --results-dir=normal_zebra" # 1 batch, 20 sec timeout
+# screen -S normal_zebra -L -d -m bash -c "
+#    echo y | 
+#    bash run.sh -f --zebra -m /mnt/simulator_out -8 /mnt/zebrafish/zebrafish_test/ --n=1 -t -m 1 --results-dir=normal_zebra" # 1 batch, 20 sec timeout
