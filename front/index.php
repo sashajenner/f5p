@@ -713,7 +713,7 @@
                                             if ($simulate) {
                                                 // $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y | " .
                                                 // "bash run.sh -f $format -l front/$log_name-run -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $analysis_script'");
-                                                $cmd = "$name\n$log_name-screen\n-f $format -l front/$log_name-run -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $analysis_script --results-dir=$name";
+                                                $cmd = "$name\tfront/$log_name-screen\t-f $format -l front/$log_name-run -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $analysis_script --results-dir=$name -y";
 
                                             } else {
 
@@ -725,13 +725,13 @@
                                                 
                                                 // $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y | " . 
                                                 // "bash run.sh -f $format -l front/$log_name-run $resume-m $monitor_dir -t $timeout_format$timeout_time -s $analysis_script'");
-                                                $cmd = "$name\n$log_name-screen\n-f $format -l front/$log_name-run $resume-m $monitor_dir -t $timeout_format$timeout_time -s $analysis_script --results-dir=$name";
+                                                $cmd = "$name\tfront/$log_name-screen\t-f $format -l front/$log_name-run $resume-m $monitor_dir -t $timeout_format$timeout_time -s $analysis_script --results-dir=$name -y";
                                             }
 
                                         } else {
                                             // $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y |" .
                                             // "bash run.sh -f $format -l front/$log_name-run --non-real-time -s $analysis_script");
-                                            $cmd = "$name\n$log_name-screen\n-f $format -l front/$log_name-run --non-real-time -s $analysis_script --results-dir=$name";
+                                            $cmd = "$name\tfront/$log_name-screen\t-f $format -l front/$log_name-run --non-real-time -s $analysis_script --results-dir=$name -y";
                                         }
 
                                         echo "\nCommand being run:<br>";
@@ -751,7 +751,7 @@
                                         if (!$fp) {
                                             echo "$errstr ($errno)<br />\n";
                                         } else {
-                                            $len = int64((strlen($cmd)));
+                                            $len = int64(strlen($cmd));
                                             fwrite($fp, $len);
                                             fwrite($fp, $cmd);
                                             while (!feof($fp)) {
