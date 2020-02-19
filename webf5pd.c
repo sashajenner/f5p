@@ -125,17 +125,24 @@ int main(int argc, char* argv[]) {
             return 0;
         }
 
-        char** tokens = str_split(buffer, '\n');
-        char* screen_name = *tokens;
-        char* log_name = *(tokens + 1);
-        char* options = *(tokens + 2);
+        char** tokens = str_split(buffer, '\t');
+        if (tokens) {
+            char* screen_name = *tokens;
+            char* log_name = *(tokens + 1);
+            char* options = *(tokens + 2);
 
-        // execute the script
-        char command[PATH_MAX * 2 + 2]; // declare a string to pass command
-        sprintf(command, "screen -S %s -L %s%s -d -m bash -c '%srun.sh %s'", // define command to run
-                screen_name, MAIN_DIR, log_name, MAIN_DIR, options);
-        INFO("Command to be run %s.", command);
-        system_async(command); // execute command
+            // execute the script
+            char command[PATH_MAX * 2 + 2]; // declare a string to pass command
+            sprintf(command, "/usr/bin/screen -S %s -L -Logfile %s%s -d -m %srun.sh %s", // define command to run
+                    screen_name, MAIN_DIR, log_name, MAIN_DIR, options);
+            INFO("Command to be run %s.", command);
+            system_async(command); // execute command
+
+            for (int i = 0; *(tokens + i); i ++) {
+                free(*(tokens + i));
+            }
+            free(tokens);
+        }
 
         TCP_server_disconnect_client(connectfd); // close down the client connection
     }
