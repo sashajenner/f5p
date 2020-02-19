@@ -28,7 +28,6 @@ SOFTWARE.
 #define F5PMISC_H
 
 #include "error.h"
-
 #include "socket.h"
 #include <arpa/inet.h>
 #include <assert.h>
@@ -44,6 +43,7 @@ SOFTWARE.
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 #define MAXARG 256
 static inline int system_async(char* buffer) {
@@ -51,15 +51,34 @@ static inline int system_async(char* buffer) {
     int pid;               // process id
     char* arglist[MAXARG]; // store the arguments
     char* pch;             // for strtok
+    bool apostrophe;       // flag for apostrophe parsing
 
     pch = strtok(buffer, " \n"); // initiate breaking into tokens
 
+    apostrophe = false;
     for (i = 0; i < MAXARG; i ++) { // fill the argument list
 
         // if there is a tokened argument add it to the argument list
         if (pch != NULL) {
             arglist[i] = malloc(sizeof(char) * 256);
-            strcpy(arglist[i], pch);
+
+            if (apostrophe) {
+                i --;
+                strcat(arglist[i], "\t");
+                strcat(arglist[i], pch);
+
+                if (pch[strlen(pch) - 1] == '\'') {
+                    apostrophe = false;
+                }
+
+            } else {
+                strcpy(arglist[i], pch);
+
+                if (pch[0] == '\'' && pch[strlen(pch) - 1] != '\'') {
+                    apostrophe = true;
+                }
+            }
+
             pch = strtok(NULL, " \n");
         }
 
@@ -68,6 +87,11 @@ static inline int system_async(char* buffer) {
             arglist[i] = NULL;
             break;
         }
+    }
+
+    // testing
+    for (i = 0; *(arglist + i); i ++) {
+        INFO("%s", *(arglist + i));
     }
 
     /* fork a new process
