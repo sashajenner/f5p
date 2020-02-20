@@ -79,8 +79,7 @@ char** str_split(char* a_str, const char a_delim) {
         size_t idx  = 0;
         char* token = strtok(a_str, delim);
 
-        while (token)
-        {
+        while (token) {
             assert(idx < count);
             *(result + idx++) = strdup(token);
             token = strtok(0, delim);
@@ -128,7 +127,7 @@ int main(int argc, char* argv[]) {
 
         } else if (strcmp(buffer, "kill all") == 0) {
             sprintf(command, "/usr/bin/pkill screen");
-            system_async(command);           
+            system_async(command);
 
         } else {
             char** tokens = str_split(buffer, '\t');
