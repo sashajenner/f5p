@@ -3,7 +3,7 @@
     <head>
         <title>Realtime Analysis - Log Viewer</title>
         <script src="js/jquery-3.4.1.min.js"></script>
-        <link rel="stylesheet" href="css/style.css?13-02-2020:12 00" />
+        <link rel="stylesheet" href="css/style.css?20-02-2020:14 34" />
         <link rel="icon" type="image/png" href="favicon.png?13-02-2020:13 02" sizes="32x32"/>
         <meta name="google" content="notranslate">
     </head>
@@ -25,6 +25,7 @@
                         '[1;33m'  =>  '<span style="color:orange">',
                         '[1;34m'  =>  '<span style="color:magenta">',
                         '[1;35m'  =>  '<span style="color:yellow">',
+                        '[0;33m'  =>  '<span style="color:rgba(36, 109, 245, 1)">',
                         '[0m'     =>  '</span>',
                         '[0;39m'  =>  '</span>',
                     );

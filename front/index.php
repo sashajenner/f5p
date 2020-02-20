@@ -3,7 +3,7 @@
     <head>
         <title>Realtime Analysis - Home</title>
         <script src="js/jquery-3.4.1.min.js"></script>
-        <link rel="stylesheet" href="css/style.css?12-02-2020:12 04" />
+        <link rel="stylesheet" href="css/style.css?20-02-2020:14 48" />
         <link rel="icon" type="image/png" href="favicon.png?13-02-2020:13 02" sizes="32x32"/>
     </head>
 
@@ -718,7 +718,7 @@
                                             if ($simulate) {
                                                 // $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y | " .
                                                 // "bash run.sh -f $format -l front/$log_name-run -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $analysis_script'");
-                                                $cmd = "$name\tfront/$log_name/screen_log.txt\t-f $format -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $analysis_script --results-dir=front/$log_name -y";
+                                                $cmd = "$name\tfront/$log_name-screen.txt\t-f $format -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $analysis_script --results-dir=logs/$log_name -y";
 
                                             } else {
 
@@ -730,23 +730,21 @@
                                                 
                                                 // $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y | " . 
                                                 // "bash run.sh -f $format -l front/$log_name-run $resume-m $monitor_dir -t $timeout_format$timeout_time -s $analysis_script'");
-                                                $cmd = "$name\tfront/$log_name/screen_log.txt\t-f $format $resume-m $monitor_dir -t $timeout_format$timeout_time -s $analysis_script --results-dir=front/$log_name -y";
+                                                $cmd = "$name\tfront/$log_name-screen.txt\t-f $format $resume-m $monitor_dir -t $timeout_format$timeout_time -s $analysis_script --results-dir=logs/$log_name -y";
                                             }
 
                                         } else {
                                             // $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y |" .
                                             // "bash run.sh -f $format -l front/$log_name-run --non-real-time -s $analysis_script");
-                                            $cmd = "$name\tfront/$log_name/screen_log.txt\t-f $format --non-real-time -s $analysis_script --results-dir=front/$log_name -y";
+                                            $cmd = "$name\tfront/$log_name-screen.txt\t-f $format --non-real-time -s $analysis_script --results-dir=logs/$log_name -y";
                                         }
 
                                         echo "\nCommand being run:<br>";
                                         echo $cmd;
 
-                                        if ( shell_exec("ls '$log_name'") != "") {
-                                            system("rm -r '$log_name'");
+                                        if (shell_exec("ls '$log_name-screen.txt' && echo success") == "success") {
+                                            system("rm '$log_name-screen.txt'");
                                         }
-
-                                        system("mkdir '$log_name'");
 
                                         // Sending cmd to cluster head node
                                         $fp = fsockopen("127.0.0.1", 20022, $errno, $errstr, 30); // 30s timeout
@@ -785,6 +783,12 @@
                     <h2 class="title">Jobs</h2>
                     <form id="job_buttons" method="POST" onSubmit="return confirm('Are you sure? This action is irreversible.');">
                         <input type='submit' class='button kill' name='kill all' value='kill all jobs' />
+                        <button type='button' class='button navigate' id="js-navigate_logs">navigate logs</button>
+                        <script type="text/javascript">
+                            document.getElementById("js-navigate_logs").onclick = function () {
+                                window.open("http://129.94.15.98/sasha/realf5p/logs", '_blank');
+                            };
+                        </script>
                         <br><br>
                         <?php
 
@@ -806,7 +810,8 @@
                                 }
 
                                 system("cp /dev/null database.csv");
-                                system("rm -rf log_*_*");
+                                system("rm -f log_*_*-screen.txt");
+                                system("rm -rf ../logs/*");
                             }
 
                             $jobs_str = shell_exec("cat database.csv | tail -n +2 | cut -d , -f1"); // extract list of screen pids
@@ -860,7 +865,8 @@
                                         fclose($file);
                                         
                                         if ($log_filename != "") {
-                                            system("rm -r $log_filename");
+                                            system("rm -f '$log_filename-screen.txt'");
+                                            system("rm -rf '../logs/$log_filename'");
                                         }
                                     }
 
@@ -926,7 +932,7 @@
                                 <script type='text/javascript'>
                                     $(document).ready(function() {
                                         $('#$job_name-output').click(function() {
-                                            window.open('show_log.php?log_filename=log_$job_name/screen_log.txt', '_blank');
+                                            window.open('show_log.php?log_filename=log_$job_name-screen.txt', '_blank');
                                         });
                                     });
                                 </script>";
