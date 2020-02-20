@@ -542,6 +542,11 @@
                         <h3>Options specified</h3>
                         <br>
                         <?php
+
+                            function int64($i) {
+                                return is_int($i) ? pack("q", $i) : unpack("q", $i)[1];
+                            }
+
                             echo "<pre>";
 
                             if (isset($_POST['format'])) {
@@ -685,7 +690,7 @@
                             }
                             $name = $num_screens . "_" . str_replace("/", "-", $monitor_dir);
 
-                            echo "<ul>Screen name: $name</ul>"; // testing
+                            echo "<ul>Screen name: $name</ul>";
 
                             $log_name = "log_$name";
 
@@ -713,7 +718,7 @@
                                             if ($simulate) {
                                                 // $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y | " .
                                                 // "bash run.sh -f $format -l front/$log_name-run -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $analysis_script'");
-                                                $cmd = "$name\tfront/$log_name-screen\t-f $format -l front/$log_name-run -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $analysis_script --results-dir=$name -y";
+                                                $cmd = "$name\tfront/$log_name/screen_log.txt\t-f $format -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $analysis_script --results-dir=front/$log_name -y";
 
                                             } else {
 
@@ -725,26 +730,23 @@
                                                 
                                                 // $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y | " . 
                                                 // "bash run.sh -f $format -l front/$log_name-run $resume-m $monitor_dir -t $timeout_format$timeout_time -s $analysis_script'");
-                                                $cmd = "$name\tfront/$log_name-screen\t-f $format -l front/$log_name-run $resume-m $monitor_dir -t $timeout_format$timeout_time -s $analysis_script --results-dir=$name -y";
+                                                $cmd = "$name\tfront/$log_name/screen_log.txt\t-f $format $resume-m $monitor_dir -t $timeout_format$timeout_time -s $analysis_script --results-dir=front/$log_name -y";
                                             }
 
                                         } else {
                                             // $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y |" .
                                             // "bash run.sh -f $format -l front/$log_name-run --non-real-time -s $analysis_script");
-                                            $cmd = "$name\tfront/$log_name-screen\t-f $format -l front/$log_name-run --non-real-time -s $analysis_script --results-dir=$name -y";
+                                            $cmd = "$name\tfront/$log_name/screen_log.txt\t-f $format --non-real-time -s $analysis_script --results-dir=front/$log_name -y";
                                         }
 
                                         echo "\nCommand being run:<br>";
                                         echo $cmd;
 
-                                        if ( shell_exec("ls '$log_name*'") != "") {
-                                            system("rm '$log_name-run' -f");
-                                            system("rm '$log_name-screen' -f");
+                                        if ( shell_exec("ls '$log_name'") != "") {
+                                            system("rm -r '$log_name'");
                                         }
 
-                                        function int64($i) {
-                                            return is_int($i) ? pack("q", $i) : unpack("q", $i)[1];
-                                        }
+                                        system("mkdir '$log_name'");
 
                                         // Sending cmd to cluster head node
                                         $fp = fsockopen("127.0.0.1", 20022, $errno, $errstr, 30); // 30s timeout
@@ -786,6 +788,27 @@
                         <br><br>
                         <?php
 
+                            if (isset($_POST["kill_all"])) {
+                                // Sending cmd to cluster head node
+                                $cmd = "kill all";
+
+                                $fp = fsockopen("127.0.0.1", 20022, $errno, $errstr, 30); // 30s timeout
+                                if (!$fp) {
+                                    echo "$errstr ($errno)<br />\n";
+                                } else {
+                                    $len = int64(strlen($cmd));
+                                    fwrite($fp, $len);
+                                    fwrite($fp, $cmd);
+                                    while (!feof($fp)) {
+                                        echo fgets($fp, 4096);
+                                    }
+                                    fclose($fp);
+                                }
+
+                                system("cp /dev/null database.csv");
+                                system("rm -rf log_*_*");
+                            }
+
                             $jobs_str = shell_exec("cat database.csv | tail -n +2 | cut -d , -f1"); // extract list of screen pids
                             $jobs_arr = explode("\n", $jobs_str);
                             if (empty($jobs_arr[count($jobs_arr)-1])) { // remove last element if empty
@@ -795,15 +818,22 @@
                             foreach ($jobs_arr as $job) {
                                 $job_name = $job;
 
-                                if (isset($_POST["kill_all"])) {
-                                    system("pkill screen");
-                                    system("cp /dev/null database.csv");
-                                    system("rm log_*");
-                                
-                                } else if (isset($_POST["kill_$job_name"])) {
-                                    system('for session in $(screen -ls | ' . 
-                                    "grep -o '[0-9]*\.$job'); " . 
-                                    'do screen -S "${session}" -X quit; done');
+                                if (isset($_POST["kill_$job_name"])) {
+
+                                    $cmd = "kill\t$job_name";
+
+                                    $fp = fsockopen("127.0.0.1", 20022, $errno, $errstr, 30); // 30s timeout
+                                    if (!$fp) {
+                                        echo "$errstr ($errno)<br />\n";
+                                    } else {
+                                        $len = int64(strlen($cmd));
+                                        fwrite($fp, $len);
+                                        fwrite($fp, $cmd);
+                                        while (!feof($fp)) {
+                                            echo fgets($fp, 4096);
+                                        }
+                                        fclose($fp);
+                                    }
 
                                     if (($file = fopen("database.csv", "r")) != FALSE) {
 
@@ -830,8 +860,7 @@
                                         fclose($file);
                                         
                                         if ($log_filename != "") {
-                                            system("rm $log_filename-run");
-                                            system("rm $log_filename-screen");
+                                            system("rm -r $log_filename");
                                         }
                                     }
 
@@ -897,7 +926,7 @@
                                 <script type='text/javascript'>
                                     $(document).ready(function() {
                                         $('#$job_name-output').click(function() {
-                                            window.open('show_log.php?log_filename=log_$job_name-screen', '_blank');
+                                            window.open('show_log.php?log_filename=log_$job_name/screen_log.txt', '_blank');
                                         });
                                     });
                                 </script>";

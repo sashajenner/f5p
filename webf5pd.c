@@ -121,27 +121,47 @@ int main(int argc, char* argv[]) {
         buffer[received] = '\0'; // append null byte before printing the string
         INFO("Received %s.", buffer);
 
+        char command[PATH_MAX * 2 + 2]; // declare a string to pass command
+
         if (strcmp(buffer, "quit!") == 0) { // exit if the message is "quit!"
             return 0;
-        }
 
-        char** tokens = str_split(buffer, '\t');
-        if (tokens) {
-            char* screen_name = *tokens;
-            char* log_name = *(tokens + 1);
-            char* options = *(tokens + 2);
+        } else if (strcmp(buffer, "kill all") == 0) {
+            sprintf(command, "/usr/bin/pkill screen");
+            system_async(command);           
 
-            // execute the script
-            char command[PATH_MAX * 2 + 2]; // declare a string to pass command
-            sprintf(command, "/usr/bin/screen -S %s -L -Logfile %s%s -d -m %srun.sh %s", // define command to run
-                    screen_name, MAIN_DIR, log_name, MAIN_DIR, options);
-            INFO("Command to be run %s.", command);
-            system_async(command); // execute command
+        } else {
+            char** tokens = str_split(buffer, '\t');
+            if (tokens) {
+                int num_tokens = 0;
+                for (int i = 0; tokens[i]; i ++) {
+                    num_tokens ++;
+                }
 
-            for (int i = 0; *(tokens + i); i ++) {
-                free(*(tokens + i));
+                INFO("num tokens: %d", num_tokens); // testing
+
+                if (num_tokens == 2 && strcmp(tokens[0], "kill") == 0) {
+                    char* session_name = tokens[1];
+
+                    sprintf(command, "/usr/bin/screen -S %s -X quit", session_name);
+
+                } else if (num_tokens == 3) {
+                    char* screen_name = tokens[0];
+                    char* log_name = tokens[1];
+                    char* options = tokens[2];
+
+                    sprintf(command, "/usr/bin/screen -S %s -L -Logfile %s%s -d -m %srun.sh %s", // define command to run
+                            screen_name, MAIN_DIR, log_name, MAIN_DIR, options);
+                }
+
+                INFO("Command to be run %s.", command);
+                system_async(command); // execute command
+
+                for (int i = 0; *(tokens + i); i ++) {
+                    free(*(tokens + i));
+                }
+                free(tokens);
             }
-            free(tokens);
         }
 
         TCP_server_disconnect_client(connectfd); // close down the client connection
