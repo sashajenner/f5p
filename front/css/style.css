@@ -87,7 +87,7 @@ div.log {
     display: block;
     font-family: monospace;
     word-wrap: break-word;
-    font-size: 150%;
+    font-size: 20px;
     margin: 2%;
 }
 
@@ -204,6 +204,10 @@ div.log {
 
 .button.kill:hover {
     background-color: orangered;
+}
+
+.button.navigate:hover {
+    background-color: rgb(255, 115, 255);
 }
 
 .button.log-info:hover {
