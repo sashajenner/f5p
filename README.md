@@ -92,30 +92,36 @@ You may adapt the script to suit your purposes [scripts/run.sh](https://github.c
 
 2. Edit the global constants in [front/config.php](https://github.com/sashajenner/realf5p/blob/master/front/config.php) to suit your setup.
 
-3. Setup web daemon `webf5pd` on the *head node* which manages jobs from PHP requests. You may want to add `webf5pd` as a *[systemd service](http://manpages.ubuntu.com/manpages/cosmic/man5/systemd.service.5.html)* that runs on the start-up. See [scripts/webf5pd.service](https://github.com/sashajenner/realf5p/blob/master/scripts/webf5pd.service) for an example *systemd configuration* and [scripts/install_webf5pd_service.sh](https://github.com/sashajenner/realf5p/blob/master/scripts/install_webf5pd_service.sh) for an example script.
+3. Similarly edit the constant `MAIN_DIR` in [webf5pd.c](https://github.com/sashajenner/realf5p/blob/master/webf5pd.c) to point to the absolute path to your *realf5p* repository, and re-compile:
 
-4. Create a permission group encompassing www-data (the user that Apache runs on) and the core *headnode* user:
+```sh
+make
+```
+
+4. Setup web daemon `webf5pd` on the *head node* which manages jobs from PHP requests. You may want to add `webf5pd` as a *[systemd service](http://manpages.ubuntu.com/manpages/cosmic/man5/systemd.service.5.html)* that runs on the start-up. See [scripts/webf5pd.service](https://github.com/sashajenner/realf5p/blob/master/scripts/webf5pd.service) for an example *systemd configuration* and [scripts/install_webf5pd_service.sh](https://github.com/sashajenner/realf5p/blob/master/scripts/install_webf5pd_service.sh) for an example script.
+
+5. Create a permission group encompassing www-data (the user that Apache runs on) and the core *headnode* user:
 
 ```sh
 sudo groupadd [group_name]
 sudo usermod -a -G [group_name] www-data [headnode_user]
 ```
 
-5. Now ensure that the group has full access to all files within the realf5p cloned directory:
+6. Now ensure that the group has full access to all files within the realf5p cloned directory:
 
 ```sh
 chown -R :[group_name] /var/www/html/realf5p/*
 chmod -R g=rwx /var/www/html/realf5p/*
 ```
 
-6. Also ensure that the core *headnode* user has full access to all files within the directory containing the nanopore output:
+7. Also ensure that the core *headnode* user has full access to all files within the directory containing the nanopore output:
 
 ```sh
 chown -R [headnode_user] [nanopore_output_dir]/*
 chmod -R u=rw [nanopore_output_dir]/*
 ```
 
-7. Open http://[web_server_ip_address]/realf5p/ in your browser.
+8. Open http://[web_server_ip_address]/realf5p/ in your browser.
 
 </br>
 
