@@ -88,7 +88,7 @@ typedef struct {
     bool eof_signalled;       // the flag for EOF signalled
     bool resuming;            // the flag for processing resuming
     char* format;             // the format of fast5 and fastq files
-    char* results_dir_name;   // the directory name to set for results
+    char* results_dir;   // the directory to set for results
 
 } node_global_args_t;
 
@@ -130,7 +130,7 @@ void* node_handler(void* arg) {
     // create report file
     char report_fname[100]; // declare file name
     sprintf(report_fname, "%s%sdev%d.cfg",
-            core.results_dir_name, strcmp(core.results_dir_name, "") == 0 ? "" : "/", tid + 1); // define file name
+            core.results_dir, strcmp(core.results_dir, "") == 0 ? "" : "/", tid + 1); // define file name
     // if resume option set, define opening flag to appending, else to writing
     char* opening_flag = core.resuming ? "a" : "w";
     FILE* report = fopen(report_fname, opening_flag); // open file for writing or appending
@@ -211,8 +211,8 @@ void* node_handler(void* arg) {
                 tid + 1, core.ip_list[tid], reprocessing ? "Reassigning" : "Assigning",
                 core.file_list[fidx], fidx + 1 - failed_before_cnt, core.ip_list[tid]);
         
-        sprintf(msg, "--format=%s --results-dir-name=%s %s", 
-                        core.format, core.results_dir_name, core.file_list[fidx]);
+        sprintf(msg, "--format=%s --results-dir=%s %s", 
+                        core.format, core.results_dir, core.file_list[fidx]);
         send_full_msg(socketfd, msg, strlen(msg)); // send filename and options to thread
         // read msg into buffer and receive the buffer's expected length
         int received = recv_full_msg_try(socketfd, buffer, MAX_PATH_SIZE, RECEIVE_TIME_OUT);
@@ -265,8 +265,8 @@ void* node_handler(void* arg) {
                     tid + 1, core.ip_list[tid], reprocessing ? "Reassigning" : "Assigning",
                     core.file_list[fidx], fidx + 1 - failed_before_cnt, core.ip_list[tid]);
 
-            sprintf(msg, "--format=%s --results-dir-name=%s %s", 
-                        core.format, core.results_dir_name, core.file_list[fidx]);
+            sprintf(msg, "--format=%s --results-dir=%s %s", 
+                        core.format, core.results_dir, core.file_list[fidx]);
             send_full_msg(socketfd, msg, strlen(msg)); // send filename and options to thread
             // read msg into buffer and receive the buffer's expected length
             received = recv_full_msg_try(socketfd, buffer, MAX_PATH_SIZE, RECEIVE_TIME_OUT);
@@ -358,13 +358,13 @@ int main(int argc, char* argv[]) {
     if (argc == 4 && 
         ( strcmp(argv[3], "--resume") == 0 || strcmp(argv[3], "-r") == 0 )
         ) { // If there are 3 args and the 3rd is "--resume" or "-r"
-        core.results_dir_name = ""; // Place results in current directory
+        core.results_dir = ""; // Place results in current directory
         core.resuming = true; // Set resume option to true
 
     } else if (argc == 5 && 
         ( strcmp(argv[4], "--resume") == 0 || strcmp(argv[4], "-r") == 0 )
         ) { // If there are 4 args and the 4rd is "--resume" or "-r"
-        core.results_dir_name = argv[3]; // Set directory name for results
+        core.results_dir = argv[3]; // Set directory for results
         core.resuming = true; // Set resume option to true
 
     } else if ( strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0 ) { // If help option is set
@@ -375,16 +375,16 @@ int main(int argc, char* argv[]) {
     } else if ((argc != 3 && argc != 4) ||
         ! ( strcmp(argv[1], "--778") == 0 || strcmp(argv[1], "--NA") == 0 || strcmp(argv[1], "--zebra") == 0 )
         ) { // Check there is at least 2 or 3 args
-        ERROR("Not enough arguments. Usage %s <format> <ip_list> [results_dir_name] [--resume | -r]\n%s",
+        ERROR("Not enough arguments. Usage %s <format> <ip_list> [results_dir] [--resume | -r]\n%s",
                 argv[0], help_msg);
         exit(EXIT_FAILURE);
 
     } else { // If there are 2 or 3 args and the formats are correct
         
         if (argc == 3) {
-            core.results_dir_name = "";
+            core.results_dir = "";
         } else if (argc == 4) {
-            core.results_dir_name = argv[3];
+            core.results_dir = argv[3];
         }
 
         core.resuming = false; // Set resume option to false
@@ -575,7 +575,11 @@ int main(int argc, char* argv[]) {
     // write failure report due to device hangs
     if (core.failed_cnt > 0) {
 
-        FILE* failed_report = fopen("failed.cfg", "w"); // open failure config file
+        char failed_report_fname[100]; // declare file name
+        sprintf(failed_report_fname, "%s%sfailed.cfg",
+            core.results_dir, strcmp(core.results_dir, "") == 0 ? "" : "/"); // define failed report file name
+
+        FILE* failed_report = fopen(failed_report_fname, "w"); // open failure config file
         NULL_CHK(failed_report); // check `failed_report` is not null
 
         ERROR("List of failures due to consecutively device hangs in %s", "failed.cfg");
@@ -593,7 +597,11 @@ int main(int argc, char* argv[]) {
     // write other failure report due to segfaults or other non 0 exit status (see logs)
     if (core.failed_other_cnt > 0) {
 
-        FILE* other_failed_report = fopen("failed_other.cfg", "w"); // open other failure config file
+        char other_failed_report_fname[100]; // declare file name
+        sprintf(other_failed_report_fname, "%s%sfailed_other.cfg",
+            core.results_dir, strcmp(core.results_dir, "") == 0 ? "" : "/"); // define failed report file name
+        
+        FILE* other_failed_report = fopen(other_failed_report_fname, "w"); // open other failure config file
         NULL_CHK(other_failed_report); // check it is not null
 
         ERROR("List of failures with non 0 exit stats in %s", "failed_other.cfg");

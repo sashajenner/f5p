@@ -79,7 +79,7 @@ typedef struct {
         [MAX_FILES];
     int32_t failed_other_cnt; //the number of other failures
     char* format;          //the format of fast5 and fastq files
-    char* results_dir_name;//the directory name to set for results
+    char* results_dir;     //the directory to set for results
 } node_global_args_t;
 
 node_global_args_t core; //remember that core is used throughout
@@ -100,7 +100,7 @@ void* node_handler(void* arg) {
     //open report file
     char report_fname[100];
     sprintf(report_fname, "%s%sdev%d.cfg",
-            core.results_dir_name, strcmp(core.results_dir_name, "") == 0 ? "" : "/", tid + 1); // define file name
+            core.results_dir, strcmp(core.results_dir, "") == 0 ? "" : "/", tid + 1); // define file name
     FILE* report = fopen(report_fname, "w");
     NULL_CHK(report);
 
@@ -136,8 +136,8 @@ void* node_handler(void* arg) {
 
         fprintf(stderr, "[t%d(%s)::INFO] Assigning %s (%d of %d) to %s.\n", tid,
                 core.ip_list[tid], core.file_list[fidx], fidx+1 , core.file_list_cnt, core.ip_list[tid]);
-        sprintf(msg, "--format=%s --results-dir-name=%s %s", 
-                        core.format, core.results_dir_name, core.file_list[fidx]);
+        sprintf(msg, "--format=%s --results-dir=%s %s", 
+                        core.format, core.results_dir, core.file_list[fidx]);
         send_full_msg(socketfd, msg, strlen(msg)); // send filename and options to thread
 
         //receive the ''done' message (will block until done)
@@ -185,8 +185,8 @@ void* node_handler(void* arg) {
             }            
             fprintf(stderr, "[t%d(%s)::INFO] Assigning %s (%d of %d) to %s\n", tid,
                     core.ip_list[tid], core.file_list[fidx],  fidx+1 , core.file_list_cnt, core.ip_list[tid]);
-            sprintf(msg, "--format=%s --results-dir-name=%s %s", 
-                        core.format, core.results_dir_name, core.file_list[fidx]);
+            sprintf(msg, "--format=%s --results-dir=%s %s", 
+                        core.format, core.results_dir, core.file_list[fidx]);
             send_full_msg(socketfd, msg, strlen(msg)); // send filename and options to thread
             received = recv_full_msg_try(socketfd, buffer, MAX_PATH_SIZE, 5);
         }
@@ -270,15 +270,15 @@ int main(int argc, char* argv[]) {
     } else if ( (argc != 4 && argc != 5) ||
         ! ( strcmp(argv[1], "--778") == 0 || strcmp(argv[1], "--NA") == 0 || strcmp(argv[1], "--zebra") == 0 )
         ) { // Check there is at least 3 args
-        ERROR("Not enough arguments or incorrect format. Usage %s <format> <ip_list> <file_list> [results_dir_name]\n%s",
+        ERROR("Not enough arguments or incorrect format. Usage %s <format> <ip_list> <file_list> [results_dir]\n%s",
                 argv[0], help_msg);
         exit(EXIT_FAILURE);
 
     } else {
         if (argc == 4) {
-            core.results_dir_name = ""; // Assume intended results directory is the current directory
+            core.results_dir = ""; // Assume intended results directory is the current directory
         } else if (argc == 5) {
-            core.results_dir_name = argv[4]; // Set results directory name
+            core.results_dir = argv[4]; // Set results directory
         }
     }
 
