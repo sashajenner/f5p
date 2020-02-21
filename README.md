@@ -92,7 +92,7 @@ You may adapt the script to suit your purposes [scripts/run.sh](https://github.c
 
 2. Edit the global constants in [front/config.php](https://github.com/sashajenner/realf5p/blob/master/front/config.php) to suit your setup.
 
-3. Similarly edit the constant `MAIN_DIR` in [webf5pd.c](https://github.com/sashajenner/realf5p/blob/master/webf5pd.c) to point to the absolute path to your *realf5p* repository, and re-compile:
+3. Similarly, edit the constant `MAIN_DIR` in [webf5pd.c](https://github.com/sashajenner/realf5p/blob/master/webf5pd.c) to point to the absolute path to your *realf5p* repository, and re-compile:
 
 ```sh
 make
@@ -121,7 +121,7 @@ chown -R [headnode_user] [nanopore_output_dir]/*
 chmod -R u=rw [nanopore_output_dir]/*
 ```
 
-8. Open http://[web_server_ip_address]/realf5p/ in your browser.
+8. Open `http://[web_server_ip_address]/realf5p/` in your browser.
 
 </br>
 
