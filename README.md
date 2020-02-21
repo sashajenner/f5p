@@ -4,11 +4,11 @@ Lightweight job scheduler, daemon & user-friendly run script for real-time nanop
 
 ## Pre-requisites
 
-- A computer-cluster composed of devices running Linux connected to each other preferably using Ethernet.
+- A computer-cluster composed of devices running Linux connected to each other preferably using Ethernet. See [related project](https://github.com/hasindu2008/nanopore-cluster) for further information about how to setup a Rock64 cluster for this purpose.
 - One of the devices will act as the *head node* to issue commands to other *worker nodes*.
 - A shared network mounted storage for storing data.
 - SSH key based access from head node to worker nodes.
-- Optionally you may configure [ansible](https://docs.ansible.com/ansible/latest/index.html) to automate configuration tasks to all worker nodes.
+- (Recommended) [Ansible](https://docs.ansible.com/ansible/latest/index.html) set up to automate configuration tasks to all worker nodes.
 
 </br>
 
@@ -16,13 +16,13 @@ Lightweight job scheduler, daemon & user-friendly run script for real-time nanop
 
 ### Building and Initial Configuration
 
-1. First build the scheduling daemon `f5pd` and client `f5pl_realtime`
+1. First build the scheduling daemon `f5pd`, web daemon `webf5pd`, and clients `f5pl_realtime` & `f5pl`. As well as their respective dependencies `error.c` & `socket.c`.
 
 ```sh
 make
 ```
 
-2. Scheduling client `f5pl_realtime` is destined for the *head node*. Copy the scheduling daemon `f5pd` to all *worker nodes*. If you have configured ansible, you can adapt the following command.
+2. Scheduling clients `f5pl_realtime` & `f5pl` are destined for the *head node*. Copy the scheduling daemon `f5pd` to all *worker nodes*. If you have configured ansible, you can adapt the following command.
 
 ```sh
 ansible all -m copy -a "src=./f5pd dest=/nanopore/bin/f5pd mode=0755"
@@ -32,15 +32,15 @@ ansible all -m copy -a "src=./f5pd dest=/nanopore/bin/f5pd mode=0755"
 
 4. On the *head node* create a file containing the list of IP addresses of the *worker nodes*, one IP address per line. An example is in [data/ip_list.cfg](https://github.com/sashajenner/realf5p/blob/master/data/ip_list.cfg).
 
-5. Optionally, you may install a web server on the *head node* and host `index.php` under [front](https://github.com/sashajenner/realf5p/tree/master/front) to view the logs on a web-browser. Note that these scripts are not safe to be hosted on a public server.
+5. Optionally, you may [install a web server](#installing-web-server) on the *head node* and host the entire repository, using `index.php` under [front](https://github.com/sashajenner/realf5p/tree/master/front) to manage jobs on a web-browser. Note that these scripts are not safe enough to be hosted on a public server.
 
 ### Running Analysis
 
 1. Modify the shell script [scripts/fast5_pipeline.sh](https://github.com/sashajenner/realf5p/blob/master/scripts/fast5_pipeline.sh) for your use-case. This script is to be called on *worker nodes* by `f5pd`, each time a nanopore read (*fast5* file) is assigned. The example script:
     - uses the *fast5* file location to deduce the location of the *fastq* file on the network mount, and copies these locally
-    - runs a methylation-calling pipeline that uses the tools *minimap2*, *samtools* and *nanopolish* to copy the results back to the network mount
+    - runs a methylation-calling pipeline that uses the tools *minimap2*, *samtools* and *f5c* to copy the results back to the network mount
 
-  Note that this scripts should exit with a non-zero status if any thing went wrong. After modifying the script, copy it to the *worker nodes* to the location `/nanopore/bin/fast5_pipeline.sh`
+  Note that this scripts should exit with a non-zero status if any thing went wrong. After modifying the script, copy it to the *worker nodes* to the location `/nanopore/bin/fast5_pipeline.sh`.
 
 2. Execute `run.sh` to begin real-time analysis given the format (specific directory and filename structure of the sequencer's output) and monitor directory (the directory where the sequencer's output is continually being created).
 
@@ -84,6 +84,37 @@ See other options using help flag: `./run.sh -h`.
 
 You may adapt the script to suit your purposes [scripts/run.sh](https://github.com/sashajenner/realf5p/blob/master/run.sh).
 
+### Installing Web Server
+
+![](https://github.com/sashajenner/realf5p/blob/master/front/screenshots/indexphp.png "Screenshot of index.php")
+
+1. Clone this entire repository to location `/var/www/html/realf5p`
+
+2. Edit the global constants in [front/config.php](https://github.com/sashajenner/realf5p/blob/master/front/config.php) to suit your setup.
+
+3. Setup web daemon `webf5pd` on the *head node* which manages jobs from PHP requests. You may want to add `webf5pd` as a *[systemd service](http://manpages.ubuntu.com/manpages/cosmic/man5/systemd.service.5.html)* that runs on the start-up. See [scripts/webf5pd.service](https://github.com/sashajenner/realf5p/blob/master/scripts/webf5pd.service) for an example *systemd configuration* and [scripts/install_webf5pd_service.sh](https://github.com/sashajenner/realf5p/blob/master/scripts/install_webf5pd_service.sh) for an example script.
+
+4. Create a permission group encompassing www-data (the user that Apache runs on) and the core *headnode* user:
+
+```sh
+sudo groupadd [group_name]
+sudo usermod -a -G [group_name] www-data [headnode_user]
+```
+
+5. Now ensure that the group has full access to all files within the realf5p cloned directory:
+
+```sh
+chown -R :[group_name] /var/www/html/realf5p/*
+chmod -R g=rwx /var/www/html/realf5p/*
+```
+
+6. Also ensure that the core *headnode* user has full access to all files within the directory containing the nanopore output:
+
+```sh
+chown -R [headnode_user] [nanopore_output_dir]/*
+chmod -R u=rw [nanopore_output_dir]/*
+```
+
 </br>
 
 ## Other Information
@@ -93,13 +124,13 @@ There are two types of scheduling clients; one for real-time analysis (`f5pl_rea
 ### `f5pl_realtime`
 
 ```sh
-[fast5_filenames] | ./f5pl_realtime [format] data/ip_list.cfg [results_dir_name] [-r | --resume]
+[fast5_filenames] | ./f5pl_realtime [format] data/ip_list.cfg [results_dir] [-r | --resume]
 ```
 
 `f5pl_realtime` takes a number of arguments:
   - arg[1]: the directory structure format
   - arg[2]: list of IPs of worker nodes
-  - arg[3]: (optional) the name of the directory for results
+  - arg[3]: (optional) the path of the results directory
   - arg[4]: (optional) resume flag if analysis is resuming due to some failure
   
 The path to new *fast5* files is received through standard input.
@@ -107,7 +138,7 @@ The path to new *fast5* files is received through standard input.
 ### `f5pl`
 
 ```sh
-./f5pl [format] data/ip_list.cfg data/file_list.cfg [results_dir_name]
+./f5pl [format] data/ip_list.cfg data/file_list.cfg [results_dir]
 ```
 
 See [forked repo](https://github.com/hasindu2008/f5p) for more information.
