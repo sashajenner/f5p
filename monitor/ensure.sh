@@ -34,7 +34,9 @@
 #%                                                             
 #%    -h, --help                                    Print help message
 #%    -i, --info                                    Print script information
-#%    -r, --resume                                  Check if dev files already contain any of the filenames                            
+#%    -r, --resume                                  Check if dev files already contain any of the filenames
+#%    --results-dir=[directory]                     Specify directory where results are from previous run.
+#%                                                  Only used when resume option set.                           
 #%
 #================================================================
 #- IMPLEMENTATION
@@ -80,6 +82,7 @@ scriptinfo() { head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#-" | sed -e "s/^#-
 
 RESUME=false # Set resume option to false by default
 format_specified=false # Assume no format specified
+RESULTS_DIR="./" # Default current directory as the results directory
 
 ## Handle flags
 while [ ! $# -eq 0 ]; do # While there are arguments
@@ -130,8 +133,13 @@ while [ ! $# -eq 0 ]; do # While there are arguments
             exit 0
             ;;
 
+        --results-dir=*)
+            RESULTS_DIR="${1#*=}"
+            ;;
+
         --resume | -r)
             RESUME=true
+            ;;
 
     esac
     shift
@@ -176,7 +184,7 @@ if [ "$FORMAT" = "--778" ]; then
         if echo $filename | grep -q \\.fast5\\.tar; then # If it is a fast5 file
 
             if $RESUME; then # If resume option set
-                grep -q /$prefix\\.fast5\\.tar$ dev*.cfg # Check if filename exists in config files
+                grep -q /$prefix\\.fast5\\.tar$ "$RESULTS_DIR"/dev*.cfg # Check if filename exists in config files
                 
                 if [ $? -eq "0" ]; then # If the file has been processed
                     ((i_old ++))
@@ -204,7 +212,7 @@ if [ "$FORMAT" = "--778" ]; then
         elif echo $filename | grep -q \\.fastq\\.gz; then # If it a fastq file
 
             if $RESUME; then # If resume option set
-                grep -q /${prefix##*.}\\.fast5\\.tar$ dev*.cfg # Check if filename exists in config files
+                grep -q /${prefix##*.}\\.fast5\\.tar$ "$RESULTS_DIR"/dev*.cfg # Check if filename exists in config files
                 
                 if [ $? -eq "0" ]; then # If the file has been processed
                     ((i_old ++))
@@ -250,7 +258,7 @@ elif [ "$FORMAT" = "--NA" ]; then
             prefix=${pathless%.*} # Remove extension
 
             if $RESUME; then # If resume option set
-                grep -q /$prefix\\.fast5$ dev*.cfg # Check if filename exists in config files
+                grep -q /$prefix\\.fast5$ "$RESULTS_DIR"/dev*.cfg # Check if filename exists in config files
                 
                 if [ $? -eq "0" ]; then # If the file has been processed
                     ((i_old ++))
@@ -280,7 +288,7 @@ elif [ "$FORMAT" = "--NA" ]; then
             prefix=$(basename $parent_dir) # Strip path from directory
 
             if $RESUME; then # If resume option set
-                grep -q /$prefix/$prefix\\.fastq$ dev*.cfg # Check if filename exists in config files
+                grep -q /$prefix/$prefix\\.fastq$ "$RESULTS_DIR"/dev*.cfg # Check if filename exists in config files
                 
                 if [ $? -eq "0" ]; then # If the file has been processed
                     ((i_old ++))
@@ -326,7 +334,7 @@ elif [ "$FORMAT" = "--zebra" ]; then
         if echo $filename | grep -q \\.fast5; then # If it is a fast5 file
 
             if $RESUME; then # If resume option set
-                grep -q /$prefix\\.fast5$ dev*.cfg # Check if filename exists in config files
+                grep -q /$prefix\\.fast5$ "$RESULTS_DIR"/dev*.cfg # Check if filename exists in config files
                 
                 if [ $? -eq "0" ]; then # If the file has been processed
                     ((i_old ++))
@@ -354,7 +362,7 @@ elif [ "$FORMAT" = "--zebra" ]; then
         elif echo $filename | grep -q \\.fastq; then # If it a fastq file
 
             if $RESUME; then # If resume option set
-                grep -q /$prefix\\.fastq$ dev*.cfg # Check if filename exists in config files
+                grep -q /$prefix\\.fastq$ "$RESULTS_DIR"/dev*.cfg # Check if filename exists in config files
                 
                 if [ $? -eq "0" ]; then # If the file has been processed
                     ((i_old ++))
