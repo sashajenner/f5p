@@ -461,7 +461,7 @@ else # Else assume realtime analysis is desired
     # Close after timeout met
     if $resuming; then # If resuming option set
         bash "$SCRIPT_PATH"/monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
-        bash "$SCRIPT_PATH"/monitor/ensure.sh -r -f $FORMAT 2>> $LOG |
+        bash "$SCRIPT_PATH"/monitor/ensure.sh -r -f $FORMAT --results-dir=$RESULTS_DIR_PATH 2>> $LOG |
         /usr/bin/time -v "$SCRIPT_PATH"/f5pl_realtime $FORMAT $IP_LIST $RESULTS_DIR_PATH -r |&
         tee -a $LOG
     else
