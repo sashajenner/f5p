@@ -115,6 +115,8 @@ chown -R [headnode_user] [nanopore_output_dir]/*
 chmod -R u=rw [nanopore_output_dir]/*
 ```
 
+7. Open http://[web_server_ip_address]/realf5p/ in your browser.
+
 </br>
 
 ## Other Information
