@@ -22,6 +22,7 @@
                         '[34m'    =>  '<span style="color:rgba(62, 194, 10, 1)">',
                         '[0;31m'  =>  '<span style="color:red">',
                         '[1;31m'  =>  '<span style="color:red">',
+                        '[0;33m'  =>  '<span style="color:orange">',
                         '[1;33m'  =>  '<span style="color:orange">',
                         '[1;34m'  =>  '<span style="color:magenta">',
                         '[1;35m'  =>  '<span style="color:yellow">',
