@@ -88,7 +88,7 @@ You may adapt the script to suit your purposes [scripts/run.sh](https://github.c
 
 ![](https://github.com/sashajenner/realf5p/blob/master/front/screenshots/indexphp.png "Screenshot of index.php")
 
-1. Clone this entire repository to location `/var/www/html/realf5p`
+1. Clone this entire repository to location `/var/www/html/realf5p`.
 
 2. Edit the global constants in [front/config.php](https://github.com/sashajenner/realf5p/blob/master/front/config.php) to suit your setup.
 
