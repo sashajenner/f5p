@@ -65,6 +65,8 @@
 #%    -8 [directory] [simulate_options],
 #%    --simul8=[directory] [simulate_options]       Simulate sequenced files for testing (or fun!)
 #%
+#%    -y, --yes                                     Say yes to 'Are you sure?' message in advance
+#%
 #%    simulate options
 #%        --n=[number_of_batches]                   Stop simulating after a certain number of batches
 #%        --real                                    Simulate realistically given sequencing summary files
@@ -138,6 +140,7 @@ simulate=false
 real_sim=false
 realtime=true
 custom_log_specified=false
+say_yes=false
 
 # Default timeout of 1 hour
 TIME_FACTOR="hr"
@@ -377,6 +380,10 @@ while [ ! $# -eq 0 ]; do # while there are arguments
             shift
             ;;
 
+        -y | --yes)
+            say_yes=true
+            ;;
+
     esac
     shift
 done
@@ -394,7 +401,7 @@ fi
     #== Begin Run ==#
 
 # Warn before cleaning logs
-if ! $resuming; then # If not resuming
+if ! $resuming && ! $say_yes; then # If not resuming
     while true; do
         read -p "This may overwrite stats from a previous run. Do you wish to continue? (y/n)" response
         
@@ -454,13 +461,13 @@ else # Else assume realtime analysis is desired
     # Close after timeout met
     if $resuming; then # If resuming option set
         bash "$SCRIPT_PATH"/monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f -e $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
-        bash "$SCRIPT_PATH"/monitor/ensure.sh -r -f $FORMAT 2>> $LOG |
-        /usr/bin/time -v "$SCRIPT_PATH"/f5pl_realtime $FORMAT $IP_LIST $RESULTS_DIR_NAME -r |&
+        bash "$SCRIPT_PATH"/monitor/ensure.sh -r -f $FORMAT --results-dir=$RESULTS_DIR_PATH 2>> $LOG |
+        /usr/bin/time -v "$SCRIPT_PATH"/f5pl_realtime $FORMAT $IP_LIST $RESULTS_DIR_PATH -r |&
         tee -a $LOG
     else
         bash "$SCRIPT_PATH"/monitor/monitor.sh -t -$TIME_FACTOR $TIME_INACTIVE -f $MONITOR_PARENT_DIR/fast5/ $MONITOR_PARENT_DIR/fastq/ 2>> $LOG |
         bash "$SCRIPT_PATH"/monitor/ensure.sh -f $FORMAT 2>> $LOG |
-        /usr/bin/time -v "$SCRIPT_PATH"/f5pl_realtime $FORMAT $IP_LIST $RESULTS_DIR_NAME |&
+        /usr/bin/time -v "$SCRIPT_PATH"/f5pl_realtime $FORMAT $IP_LIST $RESULTS_DIR_PATH |&
         tee -a $LOG
     fi
 fi
@@ -473,7 +480,7 @@ mv $RESULTS_DIR_PATH/*.cfg $RESULTS_DIR_PATH/data/logs # Move all config files
 ansible all -m shell -a "cd /nanopore/scratch/'$RESULTS_DIR_NAME' && tar zcvf logs.tgz *.log"
 
 # Copy log files from each node locally
-"$SCRIPT_PATH"/scripts/gather.sh rock64 "$IP_LIST" /nanopore/scratch/"$RESULTS_DIR_NAME"/logs.tgz "$RESULTS_DIR_PATH"/data/logs/log tgz
+"$SCRIPT_PATH"/scripts/gather.sh "$IP_LIST" /nanopore/scratch/"$RESULTS_DIR_NAME"/logs.tgz "$RESULTS_DIR_PATH"/data/logs/log tgz
 
 # Copy files to logs folder
 cp $LOG "$RESULTS_DIR_PATH"/data/logs/ # Copy log file
@@ -482,6 +489,6 @@ cp $PIPELINE_SCRIPT "$RESULTS_DIR_PATH"/data/logs/ # Copy pipeline script
 
 bash "$SCRIPT_PATH"/scripts/failed_device_logs.sh "$RESULTS_DIR_PATH" # Get the logs of the files where the pipeline crashed
 
-cp -r data "$MONITOR_PARENT_DIR"/f5pmaster # Copy entire data folder to local f5pmaster folder
+cp -r "$RESULTS_DIR_PATH"/data "$MONITOR_PARENT_DIR"/f5pmaster # Copy entire data folder to local f5pmaster folder
 
 echo "[run.sh] exiting" # testing

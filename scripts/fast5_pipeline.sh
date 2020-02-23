@@ -29,7 +29,7 @@ USAGE="Usage: $0 -f [format] [options ...] [fast5_filepath]"
 : ${2?$USAGE} # require at least 2 args else give usage message
 
 HELP=$"Flags:
--f [format], --format=[format]          Follows a specified format of fast5 and fastq files
+-f [format], --format=[format]              Follows a specified format of fast5 and fastq files
         --778           [directory]
                         |-- fast5/
                             |-- <prefix>.fast5.tar
@@ -43,15 +43,15 @@ HELP=$"Flags:
                             |-- <prefix>/
                                 |-- <prefix>.fastq
 
-        --zebra         [directory]               Newest format
+        --zebra         [directory]         Newest format
                         |-- fast5/
                             |-- [prefix].fast5
                         |-- fastq/
                             |-- [prefix].fastq
 
---results-dir-name=[directory_name]
+--results-dir=[directory]                   Directory to place results
                                 
--h, --help          help message"
+-h, --help                                  Help message"
 
 # Assume necessary options not specified
 format_specified=false
@@ -105,9 +105,10 @@ while [ ! $# -eq 0 ]; do # while there are arguments
             exit 0
             ;;
 
-        --results-dir-name=*)
+        --results-dir=*)
             results_dir_name_specified=true
-            RESULTS_DIR_NAME="${1#*=}"
+            RESULTS_DIR="${1#*=}"
+            RESULTS_DIR_NAME=$(basename "$RESULTS_DIR")
             ;;
         
         *)

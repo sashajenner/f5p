@@ -3,7 +3,7 @@
     <head>
         <title>Realtime Analysis - Home</title>
         <script src="js/jquery-3.4.1.min.js"></script>
-        <link rel="stylesheet" href="css/style.css?12-02-2020:12 04" />
+        <link rel="stylesheet" href="css/style.css?20-02-2020:14 48" />
         <link rel="icon" type="image/png" href="favicon.png?13-02-2020:13 02" sizes="32x32"/>
     </head>
 
@@ -162,7 +162,9 @@
                             <br>
                             <select name="dir" id="dir" required>
                                 <?php
-                                    $cmd = 'find /mnt/ -maxdepth 3 -type d | grep -v "/fast5\|/fastq\|/log2\|/logs\|/sam\|/methylation\|/bam"';
+                                    require "config.php";
+
+                                    $cmd = "find $NANOPORE_OUTPUT_ABSOLUTE_PATH -maxdepth 3 -type d | grep -v '/fast5\|/fastq\|/log2\|/logs\|/sam\|/methylation\|/bam'";
                                     $mnt_dirs_str = shell_exec($cmd);
                                     $mnt_dirs_arr = explode("\n", $mnt_dirs_str);
                                     if (empty($mnt_dirs_arr[count($mnt_dirs_arr)-1])) { // remove last element if empty
@@ -359,7 +361,9 @@
                             <label for="sim-dir" id="sim-dir_label">Simulate Directory</label>
                             <select name="simulate dir" id="sim-dir">
                                 <?php
-                                    $cmd = 'find /mnt/ -maxdepth 3 -type d | grep -v "/fast5\|/fastq\|/log2\|/logs\|/sam\|/methylation\|/bam"';
+                                    require "config.php";
+
+                                    $cmd = "find $NANOPORE_OUTPUT_ABSOLUTE_PATH -maxdepth 3 -type d | grep -v '/fast5\|/fastq\|/log2\|/logs\|/sam\|/methylation\|/bam'";
                                     $mnt_dirs_str = shell_exec($cmd);
                                     $mnt_dirs_arr = explode("\n", $mnt_dirs_str);
                                     if (empty($mnt_dirs_arr[count($mnt_dirs_arr)-1])) { // remove last element if empty
@@ -542,6 +546,12 @@
                         <h3>Options specified</h3>
                         <br>
                         <?php
+                            require "config.php";
+
+                            function int64($i) {
+                                return is_int($i) ? pack("q", $i) : unpack("q", $i)[1];
+                            }
+
                             echo "<pre>";
 
                             if (isset($_POST['format'])) {
@@ -685,7 +695,7 @@
                             }
                             $name = $num_screens . "_" . str_replace("/", "-", $monitor_dir);
 
-                            echo "<ul>Screen name: $name</ul>"; // testing
+                            echo "<ul>Screen name: $name</ul>";
 
                             $log_name = "log_$name";
 
@@ -708,12 +718,14 @@
                                         echo "<script>alert('No script was chosen. Analysis uninitiated.')</script>";
                                     } else {
 
+                                        $common_prefix = "$name\tfront/$log_name-screen.txt\t-f $format";
+
                                         if ($realtime) {
 
                                             if ($simulate) {
                                                 // $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y | " .
                                                 // "bash run.sh -f $format -l front/$log_name-run -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $analysis_script'");
-                                                $cmd = "$name\n$log_name-screen\n-f $format -l front/$log_name-run -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $analysis_script --results-dir=$name";
+                                                $cmd = "$common_prefix -m $monitor_dir -8 $simulate_dir$real_sim --t=$time_between_reads --n=$no_reads -t $timeout_format$timeout_time -s $analysis_script --results-dir=$REALF5P_ABSOLUTE_PATH/logs/$log_name -y";
 
                                             } else {
 
@@ -725,25 +737,21 @@
                                                 
                                                 // $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y | " . 
                                                 // "bash run.sh -f $format -l front/$log_name-run $resume-m $monitor_dir -t $timeout_format$timeout_time -s $analysis_script'");
-                                                $cmd = "$name\n$log_name-screen\n-f $format -l front/$log_name-run $resume-m $monitor_dir -t $timeout_format$timeout_time -s $analysis_script --results-dir=$name";
+                                                $cmd = "$common_prefix $resume-m $monitor_dir -t $timeout_format$timeout_time -s $analysis_script --results-dir=$REALF5P_ABSOLUTE_PATH/logs/$log_name -y";
                                             }
 
                                         } else {
                                             // $cmd = sprintf("screen -S $name -L -Logfile $log_name-screen -d -m bash -c 'cd ../ && echo y |" .
                                             // "bash run.sh -f $format -l front/$log_name-run --non-real-time -s $analysis_script");
-                                            $cmd = "$name\n$log_name-screen\n-f $format -l front/$log_name-run --non-real-time -s $analysis_script --results-dir=$name";
+                                            $cmd = "$common_prefix --non-real-time -s $analysis_script --results-dir=$REALF5P_ABSOLUTE_PATH/logs/$log_name -y";
                                         }
 
                                         echo "\nCommand being run:<br>";
                                         echo $cmd;
 
-                                        if ( shell_exec("ls '$log_name*'") != "") {
-                                            system("rm '$log_name-run' -f");
-                                            system("rm '$log_name-screen' -f");
-                                        }
-
-                                        function int64($i) {
-                                            return is_int($i) ? pack("q", $i) : unpack("q", $i)[1];
+                                        // If log already exists
+                                        if (shell_exec("ls '$log_name-screen.txt' && echo exists") == "exists") {
+                                            system("rm '$log_name-screen.txt'"); // Remove it
                                         }
 
                                         // Sending cmd to cluster head node
@@ -751,7 +759,7 @@
                                         if (!$fp) {
                                             echo "$errstr ($errno)<br />\n";
                                         } else {
-                                            $len = int64((strlen($cmd)));
+                                            $len = int64(strlen($cmd));
                                             fwrite($fp, $len);
                                             fwrite($fp, $cmd);
                                             while (!feof($fp)) {
@@ -760,10 +768,12 @@
                                             fclose($fp);
                                         }
 
+                                        // Enter header into database
                                         if (shell_exec("cat database.csv") == "") {
                                             system("printf 'Name,Resuming,Log_file,Format,Monitor_dir,Analysis_script,Timeout_format,Timeout_time,Simulate,Simulate_dir,Real_sim,Time_between_reads,Num_reads,Real-time\n' >> database.csv");
                                         }
 
+                                        // Enter job into database
                                         system("printf '$name,$resuming,$log_name,$format,$monitor_dir,$analysis_script,$timeout_format,$timeout_time,$simulate,$simulate_dir,$real_sim,$time_between_reads,$no_reads,$realtime\n' >> database.csv");
                                     }
                                 }
@@ -771,7 +781,7 @@
                             }
 
                             echo "<br>";
-                            print_r(get_defined_vars());
+                            // print_r(get_defined_vars()); // for testing purposes
                         ?>
                     </p>
                 </div>
@@ -783,8 +793,42 @@
                     <h2 class="title">Jobs</h2>
                     <form id="job_buttons" method="POST" onSubmit="return confirm('Are you sure? This action is irreversible.');">
                         <input type='submit' class='button kill' name='kill all' value='kill all jobs' />
+                        <button type='button' class='button navigate' id="js-navigate_logs">navigate logs</button>
+                        <?php
+                            require "config.php";
+                            echo "
+                            <script type='text/javascript'>
+                                document.getElementById('js-navigate_logs').onclick = function () {
+                                    window.open('$REALF5P_WEB_LINK/logs', '_blank');
+                                };
+                            </script>
+                            ";
+                        ?>
                         <br><br>
                         <?php
+
+                            if (isset($_POST["kill_all"])) {
+                                // Sending cmd to cluster head node
+                                $cmd = "kill all";
+
+                                $fp = fsockopen("127.0.0.1", 20022, $errno, $errstr, 30); // 30s timeout
+                                if (!$fp) {
+                                    echo "$errstr ($errno)<br />\n";
+                                } else {
+                                    $len = int64(strlen($cmd));
+                                    fwrite($fp, $len);
+                                    fwrite($fp, $cmd);
+                                    while (!feof($fp)) {
+                                        echo fgets($fp, 4096);
+                                    }
+                                    fclose($fp);
+                                }
+
+                                // Remove all local logs and data
+                                system("cp /dev/null database.csv");
+                                system("rm -f log_*_*-screen.txt");
+                                system("rm -rf ../logs/*"); // (todo: fix to work - permission problem)
+                            }
 
                             $jobs_str = shell_exec("cat database.csv | tail -n +2 | cut -d , -f1"); // extract list of screen pids
                             $jobs_arr = explode("\n", $jobs_str);
@@ -795,15 +839,23 @@
                             foreach ($jobs_arr as $job) {
                                 $job_name = $job;
 
-                                if (isset($_POST["kill_all"])) {
-                                    system("pkill screen");
-                                    system("cp /dev/null database.csv");
-                                    system("rm log_*");
-                                
-                                } else if (isset($_POST["kill_$job_name"])) {
-                                    system('for session in $(screen -ls | ' . 
-                                    "grep -o '[0-9]*\.$job'); " . 
-                                    'do screen -S "${session}" -X quit; done');
+                                if (isset($_POST["kill_$job_name"])) {
+
+                                    // Sending cmd to cluster head node
+                                    $cmd = "kill\t$job_name";
+
+                                    $fp = fsockopen("127.0.0.1", 20022, $errno, $errstr, 30); // 30s timeout
+                                    if (!$fp) {
+                                        echo "$errstr ($errno)<br />\n";
+                                    } else {
+                                        $len = int64(strlen($cmd));
+                                        fwrite($fp, $len);
+                                        fwrite($fp, $cmd);
+                                        while (!feof($fp)) {
+                                            echo fgets($fp, 4096);
+                                        }
+                                        fclose($fp);
+                                    }
 
                                     if (($file = fopen("database.csv", "r")) != FALSE) {
 
@@ -829,12 +881,14 @@
 
                                         fclose($file);
                                         
+                                        // Remove local logs and data for that given job
                                         if ($log_filename != "") {
-                                            system("rm $log_filename-run");
-                                            system("rm $log_filename-screen");
+                                            system("rm -f '$log_filename-screen.txt'");
+                                            system("rm -rf '../logs/$log_filename'");
                                         }
                                     }
 
+                                    // Remove job from database
                                     system("grep -vwE '($job_name)' database.csv > temp && mv temp database.csv");
                                 }
                             }
@@ -897,7 +951,7 @@
                                 <script type='text/javascript'>
                                     $(document).ready(function() {
                                         $('#$job_name-output').click(function() {
-                                            window.open('show_log.php?log_filename=log_$job_name-screen', '_blank');
+                                            window.open('show_log.php?log_filename=log_$job_name-screen.txt', '_blank');
                                         });
                                     });
                                 </script>";

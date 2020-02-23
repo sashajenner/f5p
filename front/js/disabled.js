@@ -1,3 +1,5 @@
+/* Changes certain tick boxes and options on the selection of other options */
+
 const sim_checkbox = document.getElementById("sim");
 const pipeline_script_upload = document.getElementById("script-new");
 var real_checkbox = document.getElementById("sim-real");
@@ -21,6 +23,8 @@ var timeout_label = document.getElementById("timeout_label");
 var monior_dir_label = document.getElementById("dir_label");
 var non_realtime_checkbox_label = document.getElementById("non-real-time_label")
 var resuming_checkbox_label = document.getElementById("resume_label");
+
+/* Reaction functions */
 
 function react_checkbox(event) {
 
@@ -317,6 +321,7 @@ function react_resuming_checkbox(event) {
     }
 }
 
+/* Event listeners */
 
 window.addEventListener("load", react_script);
 window.addEventListener("load", react_timeout_format);

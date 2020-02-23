@@ -1,3 +1,4 @@
+// Define default values for buttons and form options
 var default_format = "--zebra";
 var default_monitor_dir = "/mnt/simulator_out";
 var default_script = "fast5_pipeline.sh";
@@ -13,12 +14,13 @@ var default_no_reads = "";
 var default_non_realtime = "off";
 var default_resuming = "off";
 
+// Function that resets elements to their default
 reset_default = function() {
 
     const select_format = document.getElementById("format");
-    for (var i = 0; i < select_format.options.length; i ++) {
+    for (var i = 0; i < select_format.options.length; i ++) { // Iterate through format options
         if (select_format.options[i].text == default_format) {
-            select_format.selectedIndex = i;
+            select_format.selectedIndex = i; // Select the default format
         }
     }
 
@@ -44,7 +46,7 @@ reset_default = function() {
     }
 
     if (default_upload_script == "-- not selected --") {
-        document.getElementById("script-new_label").classList.add("grey");
+        document.getElementById("script-new_label").classList.add("grey"); // Visual effects
         document.getElementById("script-exist_label").classList.remove("grey");
     } else {
         document.getElementById("script-new_label").classList.remove("grey");
@@ -166,12 +168,12 @@ reset_default = function() {
 
 
 $(document).ready(function() {
-    $('.button').click(function() {
+    $('.button').click(function() { // On click of an element with 'button' class
 
-        if ($(this).val() == "reset to default options") {
+        if ($(this).val() == "reset to default options") { // Reset defaults
             reset_default();
 
-        } else if ($(this).html() == "i"|| $(this).html() == "?") {
+        } else if ($(this).html() == "i"|| $(this).html() == "?") { // For info buttons
             var id = $(this).attr("id");
 
             // Get the modal
@@ -196,10 +198,12 @@ $(document).ready(function() {
                     modal.style.display = "none";
                 }
             }
-        } else if ($(this).attr("id") == "toggle-refresh") {
+
+        } else if ($(this).attr("id") == "toggle-refresh") { // For toggle refresh button
 
             var js_refresh = document.getElementById("js-refresh");
 
+            // Change appearance and class on click
             if (!$(this).hasClass("toggle-green")) {
                 this.classList.add("toggle-green");
                 this.innerHTML = "Auto Refresh: ON";
@@ -209,15 +213,5 @@ $(document).ready(function() {
                 this.innerHTML = "Auto Refresh: OFF";
             }
         }
-
-        // var oReq = new XMLHttpRequest(); // New request object
-        // oReq.onload = function() {
-        //     alert(this.responseText); // testing
-        //     // if (this.responseText == 0) {
-        //     //     alert("success: analyse began");
-        //     // }
-        // };
-        // oReq.open("get", "analyse.php", true);
-        // oReq.send();
     });
 });

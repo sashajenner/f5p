@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Restart=always
 RestartSec=20
-User=rock64
+User=nanojet
 ExecStart=/nanopore/bin/webf5pd
 
 [Install]
