@@ -1,0 +1,126 @@
+EOF signalled
+joining thread 1
+[t2(10.40.18.2)::INFO][1;34m Processed list: sim_zebra-actual/dev2.cfg Elapsed time: 55.395h [0m
+[t10(10.40.18.10)::INFO][1;34m Processed list: sim_zebra-actual/dev10.cfg Elapsed time: 55.395h [0m
+[t3(10.40.18.3)::INFO][1;34m Processed list: sim_zebra-actual/dev3.cfg Elapsed time: 55.395h [0m
+[t6(10.40.18.6)::INFO][1;34m Processed list: sim_zebra-actual/dev6.cfg Elapsed time: 55.395h [0m
+[t9(10.40.18.9)::INFO][1;34m Processed list: sim_zebra-actual/dev9.cfg Elapsed time: 55.395h [0m
+[t15(10.40.18.15)::INFO][1;34m Processed list: sim_zebra-actual/dev15.cfg Elapsed time: 55.395h [0m
+[t14(10.40.18.14)::INFO][1;34m Processed list: sim_zebra-actual/dev14.cfg Elapsed time: 55.395h [0m
+[t8(10.40.18.8)::INFO][1;34m Processed list: sim_zebra-actual/dev8.cfg Elapsed time: 55.395h [0m
+[t1(10.40.18.1)::INFO][1;34m Processed list: sim_zebra-actual/dev1.cfg Elapsed time: 55.395h [0m
+[t16(10.40.18.16)::INFO][1;34m Processed list: sim_zebra-actual/dev16.cfg Elapsed time: 55.395h [0m
+[t11(10.40.18.11)::INFO][1;34m Processed list: sim_zebra-actual/dev11.cfg Elapsed time: 55.395h [0m
+[t4(10.40.18.4)::INFO][1;34m Processed list: sim_zebra-actual/dev4.cfg Elapsed time: 55.395h [0m
+joining thread 2
+joining thread 3
+joining thread 4
+[t13(10.40.18.13)::INFO][1;34m Processed list: sim_zebra-actual/dev13.cfg Elapsed time: 55.395h [0m
+[t12(10.40.18.12)::INFO][1;34m Processed list: sim_zebra-actual/dev12.cfg Elapsed time: 55.395h [0m
+joining thread 5
+[t7(10.40.18.7)::INFO][1;34m Processed list: sim_zebra-actual/dev7.cfg Elapsed time: 55.395h [0m
+[t5(10.40.18.5)::INFO][1;34m Processed list: sim_zebra-actual/dev5.cfg Elapsed time: 55.395h [0m
+joining thread 6
+joining thread 7
+joining thread 8
+joining thread 9
+joining thread 10
+joining thread 11
+joining thread 12
+joining thread 13
+joining thread 14
+joining thread 15
+joining thread 16
+[main::INFO][1;34m Everything done. Elapsed time: 55.395h[0m
+[f5pl_realtime.c] exiting
+        Command being timed: "/home/tmp1/realf5p/f5pl_realtime --zebra /home/tmp1/realf5p/data/ip_list.cfg sim_zebra-actual"
+        User time (seconds): 527620.56
+        System time (seconds): 850782.25
+        Percent of CPU this job got: 691%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 55:23:40
+        Average shared text size (kbytes): 0
+        Average unshared data size (kbytes): 0
+        Average stack size (kbytes): 0
+        Average total size (kbytes): 0
+        Maximum resident set size (kbytes): 2212
+        Average resident set size (kbytes): 0
+        Major (requiring I/O) page faults: 0
+        Minor (reclaiming a frame) page faults: 211
+        Voluntary context switches: 85721148271
+        Involuntary context switches: 11248612372
+        Swaps: 0
+        File system inputs: 0
+        File system outputs: 80
+        Socket messages sent: 0
+        Socket messages received: 0
+        Signals delivered: 0
+        Page size (bytes): 4096
+        Exit status: 0
+[run.sh] handling logs
+[0;31m10.40.18.3 | FAILED | rc=2 >>
+/bin/sh: 1: cd: can't cd to /nanopore/scratch/sim_zebra-actual
+[0m
+[0;31m10.40.18.7 | FAILED | rc=2 >>
+/bin/sh: 1: cd: can't cd to /nanopore/scratch/sim_zebra-actual
+[0m
+[0;31m10.40.18.4 | FAILED | rc=2 >>
+/bin/sh: 1: cd: can't cd to /nanopore/scratch/sim_zebra-actual
+[0m
+[0;31m10.40.18.6 | FAILED | rc=2 >>
+/bin/sh: 1: cd: can't cd to /nanopore/scratch/sim_zebra-actual
+[0m
+[0;31m10.40.18.12 | FAILED | rc=2 >>
+/bin/sh: 1: cd: can't cd to /nanopore/scratch/sim_zebra-actual
+[0m
+[0;31m10.40.18.13 | FAILED | rc=2 >>
+/bin/sh: 1: cd: can't cd to /nanopore/scratch/sim_zebra-actual
+[0m
+[0;31m10.40.18.2 | FAILED | rc=2 >>
+/bin/sh: 1: cd: can't cd to /nanopore/scratch/sim_zebra-actual
+[0m
+[0;31m10.40.18.8 | FAILED | rc=2 >>
+/bin/sh: 1: cd: can't cd to /nanopore/scratch/sim_zebra-actual
+[0m
+[0;32m10.40.18.9 | SUCCESS | rc=0 >>
+PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_274.log
+[0m
+[0;32m10.40.18.14 | SUCCESS | rc=0 >>
+PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_1149.log
+PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_322.log
+[0m
+[0;32m10.40.18.16 | SUCCESS | rc=0 >>
+PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_652.log
+[0m
+[0;32m10.40.18.10 | SUCCESS | rc=0 >>
+PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_744.log
+[0m
+[0;32m10.40.18.5 | SUCCESS | rc=0 >>
+PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_1462.log
+[0m
+[0;32m10.40.18.11 | SUCCESS | rc=0 >>
+PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_1298.log
+PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_775.log
+[0m
+[0;32m10.40.18.15 | SUCCESS | rc=0 >>
+PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_1361.log
+[0m
+[0;32m10.40.18.1 | SUCCESS | rc=0 >>
+PAD71442_b7df8598374963ae48cd6deb55fe05879db70a0f_74.log
+[0m
+logs.tgz                                                                       0%    0     0.0KB/s   --:-- ETAlogs.tgz                                                                     100% 1765     1.7KB/s   00:00    
+scp: /nanopore/scratch/sim_zebra-actual/logs.tgz: No such file or directory
+scp: /nanopore/scratch/sim_zebra-actual/logs.tgz: No such file or directory
+scp: /nanopore/scratch/sim_zebra-actual/logs.tgz: No such file or directory
+logs.tgz                                                                       0%    0     0.0KB/s   --:-- ETAlogs.tgz                                                                     100% 1822     1.8KB/s   00:00    
+scp: /nanopore/scratch/sim_zebra-actual/logs.tgz: No such file or directory
+scp: /nanopore/scratch/sim_zebra-actual/logs.tgz: No such file or directory
+scp: /nanopore/scratch/sim_zebra-actual/logs.tgz: No such file or directory
+logs.tgz                                                                       0%    0     0.0KB/s   --:-- ETAlogs.tgz                                                                     100% 1767     1.7KB/s   00:00    
+logs.tgz                                                                       0%    0     0.0KB/s   --:-- ETAlogs.tgz                                                                     100% 1797     1.8KB/s   00:00    
+logs.tgz                                                                       0%    0     0.0KB/s   --:-- ETAlogs.tgz                                                                     100% 2500     2.4KB/s   00:00    
+scp: /nanopore/scratch/sim_zebra-actual/logs.tgz: No such file or directory
+scp: /nanopore/scratch/sim_zebra-actual/logs.tgz: No such file or directory
+logs.tgz                                                                       0%    0     0.0KB/s   --:-- ETAlogs.tgz                                                                     100% 2491     2.4KB/s   00:00    
+logs.tgz                                                                       0%    0     0.0KB/s   --:-- ETAlogs.tgz                                                                     100% 1848     1.8KB/s   00:00    
+logs.tgz                                                                       0%    0     0.0KB/s   --:-- ETAlogs.tgz                                                                     100% 1812     1.8KB/s   00:00    
+[run.sh] exiting
