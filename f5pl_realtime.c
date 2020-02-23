@@ -572,28 +572,6 @@ int main(int argc, char* argv[]) {
 
         // write fail logs
 
-    // write failure report due to device hangs
-    if (core.failed_cnt > 0) {
-
-        char failed_report_fname[100]; // declare file name
-        sprintf(failed_report_fname, "%s%sfailed.cfg",
-            core.results_dir, strcmp(core.results_dir, "") == 0 ? "" : "/"); // define failed report file name
-
-        FILE* failed_report = fopen(failed_report_fname, "w"); // open failure config file
-        NULL_CHK(failed_report); // check `failed_report` is not null
-
-        ERROR("List of failures due to consecutively device hangs in %s", "failed.cfg");
-
-        fprintf(failed_report, "# Files that failed due to devices that consecutively hanged.\n");
-        for (i = 0; i < core.failed_cnt; i ++) {
-            int id = core.failed[i];
-            ERROR("%s was skipped due to a device retire", core.file_list[id]);
-            fprintf(failed_report, "%s\n", core.file_list[id]);
-        }
-
-        fclose(failed_report); // close report file
-    }
-
     // write other failure report due to segfaults or other non 0 exit status (see logs)
     if (core.failed_other_cnt > 0) {
 
@@ -620,7 +598,6 @@ int main(int argc, char* argv[]) {
         for (i = 0; i < core.file_list_cnt; i ++) {
             free(core.file_list[i]);
         }
-        free(core.file_list); // free the file list
     }
 
     INFO("Everything done. Elapsed time: %.3fh", (realtime() - initial_time)/3600);
