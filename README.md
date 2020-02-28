@@ -32,7 +32,7 @@ ansible all -m copy -a "src=./f5pd dest=/nanopore/bin/f5pd mode=0755"
 
 4. On the *head node* create a file containing the list of IP addresses of the *worker nodes*, one IP address per line. An example is in [data/ip_list.cfg](https://github.com/sashajenner/realf5p/blob/master/data/ip_list.cfg).
 
-5. Optionally, you may [install a web server](#installing-web-server) on the *head node* and host the entire repository, using `index.php` under [front](https://github.com/sashajenner/realf5p/tree/master/front) to manage jobs on a web-browser. Note that these scripts are not safe enough to be hosted on a public server.
+5. Optionally, you may install a web-based user interface to manage and view jobs. Go [here](#installing-web-based-interface) for further instructions. Note that these scripts are not safe enough to be hosted on a public server.
 
 ### Running Analysis
 
@@ -84,44 +84,75 @@ See other options using help flag: `./run.sh -h`.
 
 You may adapt the script to suit your purposes [scripts/run.sh](https://github.com/sashajenner/realf5p/blob/master/run.sh).
 
-### Installing Web Server
+### Installing Web-based Interface
 
 ![](https://github.com/sashajenner/realf5p/blob/master/front/screenshots/indexphp.png "Screenshot of index.php")
+<span style="color:red; text-align:center;">**Disclaimer**: Only install this in a local environment! It is insecure to be hosted online.</span>
 
-1. Clone this entire repository to location `/var/www/html/realf5p`.
+1. Install a web server on the *head node*. Apache2 is recommended and installation steps for Ubuntu can be found [here](https://ubuntu.com/tutorials/install-and-configure-apache#1-overview).
 
-2. Edit the global constants in [front/config.php](https://github.com/sashajenner/realf5p/blob/master/front/config.php) to suit your setup.
+2. Clone this entire repository in the directory of the web root. In Apache2 this would be `/var/www/html/`, so the repository would be cloned to `/var/www/html/realf5p/`.
 
-3. Similarly, edit the constant `MAIN_DIR` in [webf5pd.c](https://github.com/sashajenner/realf5p/blob/master/webf5pd.c) to point to the absolute path to your *realf5p* repository, and re-compile:
+3. Install the latest version of [screen](https://linux.die.net/man/1/screen): 
+
+```sh
+sudo apt-get update
+sudo apt-get install screen
+```
+
+Or otherwise, ensure that your version allows the option `-L -Logfile` (version 4.06.02 definitely works). Check by typing `screen -h`, and look for the option. You can also check your version with `screen -v`.
+
+A list of available versions can be found [here](https://git.savannah.gnu.org/cgit/screen.git).
+
+4. Edit the global constants in [front/config.php](https://github.com/sashajenner/realf5p/blob/master/front/config.php) to suit your setup.
+
+5. Similarly, edit the constants `MAIN_DIR` and `SCREEN_PATH` in [webf5pd.c](https://github.com/sashajenner/realf5p/blob/master/webf5pd.c) to point to the absolute path to your *realf5p* repository, and the absolute path to the command screen's executable respectively. Then re-compile:
 
 ```sh
 make
 ```
 
-4. Setup web daemon `webf5pd` on the *head node* which manages jobs from PHP requests. You may want to add `webf5pd` as a *[systemd service](http://manpages.ubuntu.com/manpages/cosmic/man5/systemd.service.5.html)* that runs on the start-up. See [scripts/webf5pd.service](https://github.com/sashajenner/realf5p/blob/master/scripts/webf5pd.service) for an example *systemd configuration* and [scripts/install_webf5pd_service.sh](https://github.com/sashajenner/realf5p/blob/master/scripts/install_webf5pd_service.sh) for an example script.
+6. Setup web daemon `webf5pd` on the *head node* which manages jobs from PHP requests.
 
-5. Create a permission group encompassing www-data (the user that Apache runs on) and the core *headnode* user:
+You may want to add `webf5pd` as a *[systemd service](http://manpages.ubuntu.com/manpages/cosmic/man5/systemd.service.5.html)* that runs on the start-up. In that case, edit both the *systemd configuration* [scripts/webf5pd.service](https://github.com/sashajenner/realf5p/blob/master/scripts/webf5pd.service) and the script [scripts/install_webf5pd_service.sh](https://github.com/sashajenner/realf5p/blob/master/scripts/install_webf5pd_service.sh) for your own use. Then execute the above script to install the web daemon.
 
-```sh
-sudo groupadd [group_name]
-sudo usermod -a -G [group_name] www-data [headnode_user]
-```
-
-6. Now ensure that the group has full access to all files within the realf5p cloned directory:
+7. Add the core *head node* user to the web user's permission group. For example, in Apache2 www-data is the user and the group that it runs through.
 
 ```sh
-chown -R :[group_name] /var/www/html/realf5p/*
-chmod -R g=rwx /var/www/html/realf5p/*
+sudo usermod -a -G www-data [headnode_user]
 ```
 
-7. Also ensure that the core *headnode* user has full access to all files within the directory containing the nanopore output:
+Otherwise, create a web group encompassing the *head node* user and the web user.
+
+8. Now ensure that the web group has full access to all files within the realf5p cloned directory:
 
 ```sh
-chown -R [headnode_user] [nanopore_output_dir]/*
-chmod -R u=rw [nanopore_output_dir]/*
+chown -R [web_user]:[web_group] [web_root]/realf5p/
+chmod -R g=rwx [web_root]/realf5p/
 ```
 
-8. Open `http://[web_server_ip_address]/realf5p/front/index.php` in your browser.
+For example, for Apache2 the following should be executed:
+
+```sh
+chown -R www-data:www-data /var/www/html/realf5p/
+chmod -R g=rwx /var/www/html/realf5p/
+```
+
+Try to manually create a file as the *head node* user. E.g. `touch a` in the `realf5p/` directory. If this doesn't work refer to Step 11.
+
+9. Also ensure that the core *head node* user has read and write access to all files within the directory containing the nanopore output:
+
+```sh
+chown -R [headnode_user] [nanopore_output_dir]/
+```
+
+10. Open `http://[web_server_ip_address]/realf5p/front/index.php` in your browser.
+
+11. If the analysis is not working as expected and logs are empty, try restarting the server for permissions to be established.
+
+```sh
+sudo reboot
+```
 
 </br>
 
