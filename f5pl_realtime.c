@@ -598,6 +598,8 @@ int main(int argc, char* argv[]) {
         for (i = 0; i < core.file_list_cnt; i ++) {
             free(core.file_list[i]);
         }
+
+        free(core.file_list);
     }
 
     INFO("Everything done. Elapsed time: %.3fh", (realtime() - initial_time)/3600);

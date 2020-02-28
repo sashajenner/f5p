@@ -46,6 +46,7 @@
 #define PATH_MAX 4096 // maximum limit for a file path
 #define BUFFER_SIZE 4096 // upper limit for the communication buffer
 #define MAIN_DIR "/var/www/html/sasha/realf5p/" // main directory of files
+#define SCREEN_PATH "/usr/bin/screen" // path to screen executable
 #define PORT 20022 // port in which the daemon will listen
 
 char** str_split(char* a_str, const char a_delim) {
@@ -142,15 +143,15 @@ int main(int argc, char* argv[]) {
                 if (num_tokens == 2 && strcmp(tokens[0], "kill") == 0) {
                     char* session_name = tokens[1];
 
-                    sprintf(command, "/usr/bin/screen -S %s -X quit", session_name);
+                    sprintf(command, "%s -S %s -X quit", SCREEN_PATH, session_name);
 
                 } else if (num_tokens == 3) {
                     char* screen_name = tokens[0];
                     char* log_name = tokens[1];
                     char* options = tokens[2];
 
-                    sprintf(command, "/usr/bin/screen -S %s -L -Logfile %s%s -d -m %srun.sh %s", // define command to run
-                            screen_name, MAIN_DIR, log_name, MAIN_DIR, options);
+                    sprintf(command, "%s -S %s -L -Logfile %s%s -d -m %srun.sh %s", // define command to run
+                            SCREEN_PATH, screen_name, MAIN_DIR, log_name, MAIN_DIR, options);
                 }
 
                 INFO("Command to be run %s.", command);

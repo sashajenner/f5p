@@ -5,7 +5,9 @@ After=network.target
 [Service]
 Restart=always
 RestartSec=20
+# (1) Below: change user to the primary headnode user
 User=nanojet
+# (2) Below: give hard-coded location for the web daemon to stay
 ExecStart=/nanopore/bin/webf5pd
 
 [Install]
