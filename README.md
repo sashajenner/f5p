@@ -32,7 +32,7 @@ ansible all -m copy -a "src=./f5pd dest=/nanopore/bin/f5pd mode=0755"
 
 4. On the *head node* create a file containing the list of IP addresses of the *worker nodes*, one IP address per line. An example is in [data/ip_list.cfg](https://github.com/sashajenner/realf5p/blob/master/data/ip_list.cfg).
 
-5. Optionally, you may install a web-based user interface to manage and view jobs. Go [here](#installing-web-server) for further instructions. Note that these scripts are not safe enough to be hosted on a public server.
+5. Optionally, you may install a web-based user interface to manage and view jobs. Go [here](#installing-web-based-interface) for further instructions. Note that these scripts are not safe enough to be hosted on a public server.
 
 ### Running Analysis
 
